@@ -1,15 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <SearchBar />
+  <SideBar />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SearchBar from './components/SearchBar.vue'
+import SideBar from './components/SideBar.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    SideBar,
+    SearchBar
   }
 }
 </script>
@@ -19,8 +21,23 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+.color-1{
+  background-color: #383444;
+}
+
+.text-color-1{
+  color:white;
+}
+
+.small-text-color{
+  color:#4f504d;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
 </style>
