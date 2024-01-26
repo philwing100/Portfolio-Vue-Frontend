@@ -1,43 +1,30 @@
 <template>
-  <SearchBar />
-  <SideBar />
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </nav>
+  <router-view/>
 </template>
-
-<script>
-import SearchBar from './components/SearchBar.vue'
-import SideBar from './components/SideBar.vue'
-
-export default {
-  name: 'App',
-  components: {
-    SideBar,
-    SearchBar
-  }
-}
-</script>
 
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
 }
 
-.color-1{
-  background-color: #383444;
+nav {
+  padding: 30px;
 }
 
-.text-color-1{
-  color:white;
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
 }
 
-.small-text-color{
-  color:#4f504d;
+nav a.router-link-exact-active {
+  color: #42b983;
 }
-
-body, html {
-    margin: 0;
-    padding: 0;
-}
-
 </style>
