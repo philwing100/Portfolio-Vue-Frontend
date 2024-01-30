@@ -1,11 +1,5 @@
 <template>
-<SideBar />
-  <nav>
-    <router-link to="/">Dashboard</router-link> |
-    <router-link to="/Lists">Lists</router-link> |
-    <router-link to="/Settings">Settings</router-link>
-  </nav>
-  <router-view/>
+    <SideBar />
 
 </template>
 
