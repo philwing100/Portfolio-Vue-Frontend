@@ -1,28 +1,28 @@
 <template>
-
-<button @click="toggleWidth">Toggle Width</button>
+  <div>
+    <button @click="toggleWidth">Toggle Width</button>
     <div :style="{ width: sidebarWidth + 'px' }" class="sidebar">
+      <div v-show="!toggleBar" class="collapse-icon rotate-180">
+        <i class="fas fa-angle-double-left"></i>
+      </div>
+      <div id="sideNav" class="sidebar-content">
+        <nav>
+          <ul>
+            <div class="sidebarItem">
+              <router-link to="/">Dashboard</router-link>
+            </div>
+            <div class="sidebarItem">
+              <router-link to="/Lists">Lists</router-link>
+            </div>
+            <div class="sidebarItem">
+              <router-link to="/Settings">Settings</router-link>
+            </div>
+          </ul>
+        </nav>
+      </div>
     </div>
-  <div id="sideNav" class="sidebar">
-    <nav>
-      <ul>
-        <span class="collapse-icon">
-          <i class="fas fa-angle-double-left"></i>
-        </span>
-        <div class="sidebarItem">
-          <router-link to="/">Dashboard</router-link>
-        </div>
-        <div class="sidebarItem">
-          <router-link to="/Lists">Lists</router-link>
-        </div>
-        <div class="sidebarItem">
-          <router-link to="/Settings">Settings</router-link>
-        </div>
-      </ul>
-    </nav>
+    <router-view></router-view>
   </div>
-
-  <router-view></router-view>
 </template>
 
 <script>
@@ -31,17 +31,16 @@ import { ref } from 'vue';
 export default {
   name: 'SideBar',
   setup() {
-    // Define a reactive variable for the sidebar width
-    const sidebarWidth = ref(200); // Initial width
+    const toggleBar = ref(false);
+    const sidebarWidth = ref(200);
 
-    // Function to toggle the sidebar width
     const toggleWidth = () => {
-      // Change the sidebar width based on some condition
-      sidebarWidth.value = sidebarWidth.value === 200 ? 100 : 200;
+      toggleBar.value = !toggleBar.value;
+      sidebarWidth.value = toggleBar.value ? 38 : 200;
     };
 
-    // Return data and functions to be used in the template
     return {
+      toggleBar,
       sidebarWidth,
       toggleWidth,
     };
@@ -52,17 +51,20 @@ export default {
 <style>
 .sidebar {
   height: 100%;
-  width: 200px; /* Set an initial width */
   position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
   background-color: #111;
   overflow-x: hidden;
-  transition: width 0.5s; 
+  transition: width 0.5s;
   padding-top: 60px;
   display: flex;
   flex-direction: column;
+}
+
+.sidebar-content {
+  width: 100%;
 }
 
 .sidebarItem {
@@ -78,15 +80,13 @@ export default {
   color: #f1f1f1;
 }
 
-.collapse-icon{
-  position: absolute;
+.collapse-icon {
   padding: 0.75em;
-
   color: white;
   transition: 0.2s linear;
 }
 
-.rotate-180{
+.rotate-180 {
   transform: rotate(180deg);
   transition: 0.2s linear;
 }
