@@ -1,93 +1,93 @@
 <template>
-  <div>
-    <button @click="toggleWidth">Toggle Width</button>
     <div :style="{ width: sidebarWidth + 'px' }" class="sidebar">
-      <div v-show="!toggleBar" class="collapse-icon rotate-180">
-        <i class="fas fa-angle-double-left"></i>
-      </div>
-      <div id="sideNav" class="sidebar-content">
-        <nav>
-          <ul>
-            <div class="sidebarItem">
-              <router-link to="/">Dashboard</router-link>
-            </div>
-            <div class="sidebarItem">
-              <router-link to="/Lists">Lists</router-link>
-            </div>
-            <div class="sidebarItem">
-              <router-link to="/Settings">Settings</router-link>
-            </div>
-          </ul>
+      <div @click="toggleWidth" class="collapse-icon" :class="{ 'rotate-180': !toggleBar }">></div>
+      <nav class="needPadding">
+              <router-link v-if="!toggleBar" to="/" class="sidebarItem">Dashboard</router-link>
+              <router-link v-if="!toggleBar" to="/Lists" class="sidebarItem">Lists</router-link>
+              <router-link v-if="!toggleBar" to="/Settings" class="sidebarItem">Settings</router-link>
+              <router-link v-if="!toggleBar" to="/AboutMe" class="sidebarItem">About Me</router-link>
         </nav>
-      </div>
     </div>
-    <router-view></router-view>
-  </div>
-</template>
+    <router-view class="moveToSide"></router-view>
+  </template>
 
-<script>
-import { ref } from 'vue';
+  <script>
+  import { ref } from 'vue';
+  
+  export default {
+    name: 'SideBar',
+    setup() {
+      const toggleBar = ref(false);
+      const sidebarWidth = ref(180);
+  
+      const toggleWidth = () => {
+        toggleBar.value = !toggleBar.value;
+        sidebarWidth.value = toggleBar.value ? 30 : 180;
+      };
+  
+      return {
+        toggleBar,
+        sidebarWidth,
+        toggleWidth,
+      };
+    },
+  };
+  </script>
+  
+  <style>
 
-export default {
-  name: 'SideBar',
-  setup() {
-    const toggleBar = ref(false);
-    const sidebarWidth = ref(200);
+  .sidebar {
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: width 0.5s;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    color:white;
+  }
+  
+  .sidebarItem {
+    width:100%;
+    padding: 5px;
+    white-space: nowrap;
+    text-decoration: none;
+    font-size: 20px;
+    display: block;
+    transition: 0.3s;
+    text-decoration: none; 
+    color:white;
+    transition: opacity 0.1s;
+  }
 
-    const toggleWidth = () => {
-      toggleBar.value = !toggleBar.value;
-      sidebarWidth.value = toggleBar.value ? 38 : 200;
-    };
+  .sidebarItem:hover{
+    background-color:lightgrey;
+  }
+  
+  .sidebarItem:click {
+    color:darkgrey;
+  }
 
-    return {
-      toggleBar,
-      sidebarWidth,
-      toggleWidth,
-    };
-  },
-};
-</script>
-
-<style>
-.sidebar {
-  height: 100%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: width 0.5s;
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-content {
-  width: 100%;
-}
-
-.sidebarItem {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidebarItem:hover {
-  color: #f1f1f1;
-}
-
-.collapse-icon {
-  padding: 0.75em;
-  color: white;
-  transition: 0.2s linear;
-}
-
-.rotate-180 {
-  transform: rotate(180deg);
-  transition: 0.2s linear;
-}
-</style>
+  .needPadding{
+    padding-top:30px;
+  }
+  .moveToSide{
+    padding-left:200px;
+  }
+  
+  .collapse-icon {
+    cursor: pointer;
+    transition: 0.15s linear;
+    display:flex;
+    justify-content: center;
+  }
+  
+  .rotate-180 { 
+    transform: rotate(180deg);
+  }
+  </style>
+  

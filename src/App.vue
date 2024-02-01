@@ -1,10 +1,13 @@
 <template>
     <SideBar />
+    <div class="everythingElse">
+eeee
+    </div>
 
 </template>
 
 <script>
-import SideBar from './components/Sidebar.vue';
+import SideBar from './components/SideBar.vue';
 
 export default {
   components: {
@@ -21,23 +24,13 @@ body, html {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Lato", sans-serif, Avenir, Helvetica, Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
 }
 
-nav {
-  padding: 30px;
+.everythingElse{
+  padding-left:200px;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>

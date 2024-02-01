@@ -10,7 +10,7 @@ const routes = [
     component: DashboardWorld
   },
   {
-    path: '/lists',
+    path: '/Lists',
     name: 'Lists',
     component: ListsWorld
   },
