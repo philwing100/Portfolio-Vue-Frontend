@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardWorld from '../views/Dashboard.vue'
 import ListsWorld from '../views/Lists.vue'
 import SettingsWorld from '../views/Settings.vue'
+import AboutMe from '../views/AboutMe.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/dashboard',
     name: 'dashboard',
     component: DashboardWorld
   },
@@ -18,6 +19,11 @@ const routes = [
     path: '/Settings',
     name: 'Settings',
     component: SettingsWorld
+  },
+  {
+    path: '/',
+    name: 'About Me',
+    component: AboutMe
   }
 ]
 

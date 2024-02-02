@@ -2,13 +2,13 @@
     <div :style="{ width: sidebarWidth + 'px' }" class="sidebar">
       <div @click="toggleWidth" class="collapse-icon" :class="{ 'rotate-180': !toggleBar }">></div>
       <nav class="needPadding">
-              <router-link v-if="!toggleBar" to="/" class="sidebarItem">Dashboard</router-link>
+              <router-link v-if="!toggleBar" to="/Dashboard" class="sidebarItem">Dashboard</router-link>
               <router-link v-if="!toggleBar" to="/Lists" class="sidebarItem">Lists</router-link>
               <router-link v-if="!toggleBar" to="/Settings" class="sidebarItem">Settings</router-link>
-              <router-link v-if="!toggleBar" to="/AboutMe" class="sidebarItem">About Me</router-link>
+              <router-link v-if="!toggleBar" to="/" class="sidebarItem">About Me</router-link>
         </nav>
     </div>
-    <router-view class="moveToSide"></router-view>
+    <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar' : toggleBar }"></router-view>
   </template>
 
   <script>
@@ -68,16 +68,23 @@
     background-color:lightgrey;
   }
   
-  .sidebarItem:click {
+  .sidebarItem.active {
     color:darkgrey;
   }
 
   .needPadding{
     padding-top:30px;
   }
-  .moveToSide{
-    padding-left:200px;
+
+  .paddingWithoutSidebar{
+    padding-left:50px;
+    transition: 0.3s linear;
   }
+  .paddingWithSidebar{
+    padding-left:200px;
+    transition: 0.3s linear;
+  }
+
   
   .collapse-icon {
     cursor: pointer;

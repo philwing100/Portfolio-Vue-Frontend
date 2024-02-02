@@ -1,7 +1,6 @@
 <template>
     <SideBar />
     <div class="everythingElse">
-eeee
     </div>
 
 </template>
