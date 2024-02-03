@@ -1,0 +1,10 @@
+{
+    "primary": "#3498db",
+    "secondary": "#2ecc71",
+    "downClick": "#e74c3c",
+    "clicked": "e",
+    "hover": "e",
+    "text": "white",
+    "background": "#ecf0f1",
+    "sidebar": "#000000"
+  }
