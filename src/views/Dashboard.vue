@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <h1>BruhDashboard</h1>
+    <h1 class="gey"></h1>
   </div>
 </template>
 
@@ -15,5 +15,7 @@ export default {
 </script>
 
 <style>
-
+.gey{
+  font-size:300px;
+}
 </style>

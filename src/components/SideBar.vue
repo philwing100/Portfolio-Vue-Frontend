@@ -105,18 +105,17 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: colors.sidebar;
     overflow-x: hidden;
     transition: width 0.5s;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
-    color:white;
   }
   
   .sidebarItem {
     width:100%;
-    padding: 5px;
+    padding: 10px;
+    padding-left: 10px;
     white-space: nowrap;
     text-decoration: none;
     font-size: 20px;
@@ -132,7 +131,10 @@
   }
   
   .sidebarItem.active {
-    background-color: green;
+    background-color: #343541;
+    border-radius:12px;
+    width:85%;
+    padding-left:15px;
   }
 
   .needPadding{
@@ -154,6 +156,7 @@
     transition: 0.15s linear;
     display:flex;
     justify-content: center;
+    font-size:20px;
   }
   
   .rotate-180 { 

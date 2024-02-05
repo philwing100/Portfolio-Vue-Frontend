@@ -3,8 +3,8 @@
     "secondary": "#2ecc71",
     "downClick": "#e74c3c",
     "clicked": "e",
-    "hover": "e",
+    "hover": "#383444",
     "text": "white",
-    "background": "#ecf0f1",
+    "background": "#343541",
     "sidebar": "#000000"
   }

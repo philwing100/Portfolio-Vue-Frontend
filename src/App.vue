@@ -20,6 +20,8 @@ export default {
 body, html {
   margin: 0;
   padding: 0;
+  color: white;
+  background-color: #343541;
 }
 
 #app {
