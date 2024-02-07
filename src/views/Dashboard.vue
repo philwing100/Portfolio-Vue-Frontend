@@ -1,65 +1,69 @@
 <template>
-  <div class="grid-container">
+  <div>
+    <div class="grid-container">
     <div class="heroText">Current Task: Work on Dashboard</div>
-    <div class="bigButton previousDay">Previous Day</div>
-    <div class="bigButton nextDay">Next Day</div>
+    <div class="bigButton previousDay" :style="{'background-color': colors.sidebar}">Previous Day</div>
+    <div class="bigButton nextDay" :style="{'background-color': colors.sidebar}">Next Day</div>
+
+
+  
+    <div class="Seperator"></div>
     <div class="listContainer allTasks">All tasks</div>
     <div class="listContainer todayTasks">Today's Tasks</div>
 
     <div class="calendarTemp">Insert Daily Calendar Here</div>
-
   </div>
-
+</div>
 </template>
 
 <script>
+import colors from '@/assets/colors.json';
 
 export default {
-//import colors from '@/assets/colors.json';
-
-
   name: 'DashboardWorld',
-  components: {
-  }
+
+  setup() {
+    return{
+    colors:colors
+  };
+  },
+
 }
 </script>
 
 <style>
 .grid-container{
   display:grid;
-  grid-template-columns: 250px 250px 250px 250px 250px 250px;
-  grid-template-rows: 100px ifr;
-  height:100vh;
+  grid-template-rows: 200px 100px 400px;
+  height: 100vh;
 }
 
 .heroText{
   font-size:30px;
+  grid-row:1;
 }
 
 .bigButton{
-
+  grid-row:1;
+  color:white;
 }
 
 .previousDay{
- grid-column:3;
 }
 
 .nextDay{
-  grid-column:4;
 }
 
 .allTasks{
-  grid-column:1;
-  grid-row:2;
+  grid-row:3;
 }
 
 .todayTasks{
-  grid-column:2;
-  grid-row:2;
+  grid-row:3;
 }
 
 .calendarTemp{
-  grid-column:3;
-  grid-row:2;
+  grid-row:3;
+
 }
 </style>
