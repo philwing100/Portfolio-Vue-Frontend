@@ -25,7 +25,7 @@ body, html {
 }
 
 #app {
-  font-family: "Lato", sans-serif, Avenir, Helvetica, Arial;
+  font-family: 'Roboto', sans-serif, Avenir, Helvetica, Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
