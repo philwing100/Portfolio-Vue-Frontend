@@ -40,7 +40,8 @@
         </router-link>
       </nav>
     </div>
-    <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar' : toggleBar }"></router-view>
+    <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar' : toggleBar }">
+    </router-view>
   </template>
   
   <script>
@@ -142,12 +143,12 @@
   }
 
   .paddingWithoutSidebar{
-    padding-left:50px;
+    padding-left:30px;
     transition: 0.3s linear;
   }
 
   .paddingWithSidebar{
-    padding-left:200px;
+    padding-left:180px;
     transition: 0.3s linear;
   }
 
