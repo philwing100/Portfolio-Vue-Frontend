@@ -22,12 +22,21 @@
         </router-link>
         <router-link
           v-if="!toggleBar"
-          to="/Settings"
+          to="/Learn"
           class="sidebarItem"
-          :class="{ 'active': $route.path === '/Settings' }"
-          @click="setActiveItem('/Settings')"
+          :class="{ 'active': $route.path === '/Learn' }"
+          @click="setActiveItem('/Learn')"
         >
-          Settings
+          Learn
+        </router-link>
+        <router-link
+          v-if="!toggleBar"
+          to="/Type"
+          class="sidebarItem"
+          :class="{ 'active': $route.path === '/Type' }"
+          @click="setActiveItem('/Type')"
+        >
+          Type
         </router-link>
         <router-link
           v-if="!toggleBar"
@@ -37,6 +46,15 @@
           @click="setActiveItem('/')"
         >
           About Me
+        </router-link>
+        <router-link
+          v-if="!toggleBar"
+          to="/Settings"
+          class="sidebarItem"
+          :class="{ 'active': $route.path === '/Settings' }"
+          @click="setActiveItem('/Settings')"
+        >
+          Settings
         </router-link>
       </nav>
     </div>
@@ -136,6 +154,7 @@
     border-radius:12px;
     width:85%;
     padding-left:15px;
+    padding-right:5px;
   }
 
   .needPadding{
