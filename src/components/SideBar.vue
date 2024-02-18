@@ -125,7 +125,7 @@
     top: 0;
     left: 0;
     overflow-x: hidden;
-    transition: width 0.5s;
+    transition: 0.4s ease-out;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
@@ -139,10 +139,10 @@
     text-decoration: none;
     font-size: 20px;
     display: block;
-    transition: 0.3s;
+    transition: 0.3s ease-out;
     text-decoration: none; 
     color:white;
-    transition: opacity 0.1s;
+    transition: opacity 0.2s;
   }
 
   .sidebarItem:hover{
@@ -163,17 +163,17 @@
 
   .paddingWithoutSidebar{
     padding-left:30px;
-    transition: 0.3s linear;
+    transition: 0.4s ease-out;
   }
 
   .paddingWithSidebar{
     padding-left:180px;
-    transition: 0.3s linear;
+    transition: 0.4s ease-out;
   }
 
   .collapse-icon {
     cursor: pointer;
-    transition: 0.15s linear;
+    transition: 0.3s linear;
     display:flex;
     justify-content: center;
     font-size:20px;
