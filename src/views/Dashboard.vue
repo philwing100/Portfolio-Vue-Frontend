@@ -13,44 +13,67 @@
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container" :style="{ 'background-color': colors.background }">
         <div class="listContainer">All tasks
-          <div class="innerListContainer" id="allTasks">
-            <ul>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-            </ul>
-          </div>
-        </div>
-        <div class="listContainer" id="todayTasks">Today's Tasks
-          <div class="innerListContainer">
-            <ul>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-            </ul>
-          </div>
 
+          <div>
+            <!-- Button to toggle rendering of another component -->
+            <button @click="toggleComponent">Toggle Component</button>
+
+            <!-- Render the component based on the value of showComponent -->
+            <div v-if="showComponent">
+              <!-- AnotherComponent will be rendered here when showComponent is true -->
+              <PopupContainer />
+            </div>
+          </div>
+          <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+          </ul>
         </div>
       </div>
-      <div class="calendarTemp">Insert Daily Calendar Here</div>
+      <div class="listContainer" id="todayTasks">Today's Tasks
+        <div class="innerListContainer">
+          <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+          </ul>
+        </div>
+
+      </div>
     </div>
+    <div class="calendarTemp">Insert Daily Calendar Here</div>
   </div>
 </template>
 
 <script>
 import colors from '@/assets/colors.json';
+import { ref } from 'vue';
+import PopupContainer from '@/components/ListItems/PopupContainer.vue';
 
 export default {
   name: 'DashboardWorld',
-
-  setup() {
-    return {
-      colors: colors
-    };
+  components: {
+    PopupContainer
   },
 
+  setup() {
+    // Define a reactive variable to control the rendering of the component
+    const showComponent = ref(false);
+
+    // Function to toggle the value of showComponent
+    const toggleComponent = () => {
+      showComponent.value = !showComponent.value;
+    };
+
+    return {
+      colors: colors,
+      showComponent,
+      toggleComponent
+    };
+  },
 }
 </script>
 
@@ -70,7 +93,7 @@ export default {
 
 .heroText {
   font-size: 30px;
-  margin:10px 0px 10px 20px;
+  margin: 10px 0px 10px 20px;
 }
 
 .bigButton {
@@ -100,20 +123,16 @@ export default {
   margin: 10px 10px 20px 10px;
 }
 
-.innerListContainer {
+.innerListContainer {}
 
-}
-
-li{
-
-}
+li {}
 
 .content-container {
   grid-row: 2;
   display: flex;
   flex-flow: row;
   min-width: 600px;
-  justify-content:space-around;
+  justify-content: space-around;
 }
 
 .calendarTemp {
@@ -125,6 +144,6 @@ li{
   flex: 1;
   min-width: 450px;
   max-width: 700px;
-  margin-left:10px
+  margin-left: 10px
 }
 </style>
