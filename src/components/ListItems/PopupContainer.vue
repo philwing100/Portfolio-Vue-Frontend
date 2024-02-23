@@ -1,27 +1,57 @@
 <template>
-    <div class="popup-overlay">
-      <div class="popup">
-        <span class="close" @click="$emit('close')">X</span>
-        <div class="popup-content">
-          <slot></slot>
+  <div>
+    <button @click="showListPage">Open List</button>
+    <div v-if="showList">
+      <list />
+    </div>
+    <div v-if="showPopup">
+      <div class="popup-overlay">
+        <div class="popup">
+          <span class="close" @click="closePopup">X</span>
+          <input type="text" v-model="newItem" placeholder="Enter new item">
+          <button @click="addNewItem">Add</button>
+          <ListBruh />
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
-  export default {
-    name: 'PopupContainer',
-    setup() {
+import ListBruh from './List.vue';
 
-      return {
-      };
+export default {
+  name: 'PopupContainer',
+  components: {
+    ListBruh
+  },
+  data() {
+    return {
+      newItem: '',
+      showList: false,
+      showPopup: false
+    };
+  },
+  methods: {
+    closePopup() {
+      this.showPopup = false;
+      this.newItem = '';
     },
-
+    addNewItem() {
+      if (this.newItem.trim() !== '') {
+        this.$emit('add', this.newItem.trim());
+        this.newItem = '';
+        this.closePopup();
+      }
+    },
+    showListPage() {
+      this.showList = true;
     }
+  }
+};
 </script>
 
-<style>
+<style scoped>
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -52,6 +82,5 @@
 .popup-content {
   /* Add additional styles for popup content */
 }
-
 
 </style>
