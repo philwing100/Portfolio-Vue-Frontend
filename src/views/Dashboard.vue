@@ -3,45 +3,27 @@
     <div class="top-row" :style="{ 'background-color': colors.sidebar }">
       <div class="heroText" :style="{ 'background-color': colors.sidebar }">Current Task: Work on Dashboard</div>
       <div class="button-container">
-
-        <div class="bigButton" id="previousDay" :style="{ 'background-color': colors.background }">Previous Day
-        </div>
-        <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">Next Day
-        </div>
+        <div class="bigButton" id="previousDay" :style="{ 'background-color': colors.background }">Previous Day</div>
+        <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">Next Day</div>
       </div>
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
-      <div class="content-container" :style="{ 'background-color': colors.background }">
-        <div class="listContainer">All tasks
-
-          <div>
-            <!-- Button to toggle rendering of another component -->
-            <button @click="toggleComponent">Toggle Component</button>
-
-            <!-- Render the component based on the value of showComponent -->
-            <div v-if="showComponent">
-              <!-- AnotherComponent will be rendered here when showComponent is true -->
-              <PopupContainer />
-            </div>
+      <div class="content-container">
+        <div class="listContainer">
+          <h2>All tasks</h2>
+          <ListElement :items="allTasks" />
+        </div>
+        <div class="listContainer" id="todayTasks">
+          <h2>Today's Tasks</h2>
+          <div class="innerListContainer">
+            <ul>
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+            </ul>
           </div>
-          <ul>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-          </ul>
         </div>
-      </div>
-      <div class="listContainer" id="todayTasks">Today's Tasks
-        <div class="innerListContainer">
-          <ul>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-          </ul>
-        </div>
-
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>
@@ -50,30 +32,33 @@
 
 <script>
 import colors from '@/assets/colors.json';
-import { ref } from 'vue';
-import PopupContainer from '@/components/ListItems/PopupContainer.vue';
+import ListElement from '@/components/ListItems/ListElement.vue';
 
 export default {
   name: 'DashboardWorld',
   components: {
-    PopupContainer
+    ListElement
   },
-
-  setup() {
-    // Define a reactive variable to control the rendering of the component
-    const showComponent = ref(false);
-
-    // Function to toggle the value of showComponent
-    const toggleComponent = () => {
-      showComponent.value = !showComponent.value;
-    };
-
+  data() {
     return {
       colors: colors,
-      showComponent,
-      toggleComponent
+      allTasks: [] // Initialize allTasks data
     };
   },
+  mounted() {
+    // Simulate loading allTasks from API or local storage
+    this.loadAllTasks();
+  },
+  methods: {
+    loadAllTasks() {
+      // Simulate loading allTasks data
+      // Replace this with your actual logic to load allTasks from API or local storage
+      // For example:
+      // this.allTasks = fetchDataFromAPI();
+      // or
+      // this.allTasks = JSON.parse(localStorage.getItem('allTasks'));
+    }
+  }
 }
 </script>
 

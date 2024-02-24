@@ -17,7 +17,11 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+export default {
+  name: 'LearnWorld'
+}
+
+/*import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
@@ -46,7 +50,8 @@ export default {
       fetchData
     };
   },
-};
+
+};*/
 </script>
 
 <style>
