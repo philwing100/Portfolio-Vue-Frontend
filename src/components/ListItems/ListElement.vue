@@ -6,29 +6,42 @@
       <div class="popup">
         <span class="close" @click="closePopup">X</span>
         <div class="popup-content">
-          <PopupList :items="items" />
+          <!--<PopupList :items="items" />-->
         </div>
       </div>
+    </div>
+    <button @click="setList">Execute</button>
+    <div class="ListContainer">
+      <ul class="ListItem">
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
-import PopupList from './PopupList.vue';
+//import PopupList from './PopupList.vue';
 
-
+const testArray = ["Obamna", 52]
+localStorage.setItem('user', JSON.stringify(testArray));
 
 export default {
   name: 'ListElement',
   components: {
-    PopupList
+    //PopupList
   },
   data() {
     return {
     };
   },
-
+  methods: {
+    setList() {
+      const li = document.createElement('li')
+      li.textContent = localStorage.getItem('user');
+      const ul = document.querySelector('ul');
+      ul.appendChild(li);
+    }
   }
+}
 </script>
 
 <style scoped>
