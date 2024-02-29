@@ -1,6 +1,11 @@
 <template>
   <!-- ListElement.vue -->
   <div>
+    <div class="input-container">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem">
+      <button @click="addItem">Add Item</button>
+    </div>
+    <button @click="removeAllItems">Remove All</button>
     <button @click="togglePopup">Toggle Popup</button>
     <div class="popup-overlay" v-if="showPopup">
       <div class="popup">
@@ -10,41 +15,54 @@
         </div>
       </div>
     </div>
-    <button @click="setList">Execute</button>
     <div class="ListContainer">
       <ul class="ListItem">
+        <li v-for="(item, index) in itemsArray" :key="index">{{ item }}</li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
-//import PopupList from './PopupList.vue';
-
-const testArray = ["Obamna", 52]
-localStorage.setItem('user', JSON.stringify(testArray));
-
 export default {
   name: 'ListElement',
-  components: {
-    //PopupList
-  },
   data() {
     return {
+      showPopup: false,
+      newItem: '',
+      itemsArray: []
     };
   },
   methods: {
-    setList() {
-      const li = document.createElement('li')
-      li.textContent = localStorage.getItem('user');
-      const ul = document.querySelector('ul');
-      ul.appendChild(li);
+    togglePopup() {
+      this.showPopup = !this.showPopup;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    addItem() {
+      if (this.newItem.trim() !== '') {
+        this.itemsArray.push(this.newItem);
+        localStorage.setItem('items', JSON.stringify(this.itemsArray));
+        this.newItem = '';
+      }
+    },
+    removeAllItems() {
+      localStorage.removeItem('items');
+      this.itemsArray = [];
     }
+  },
+  mounted() {
+    this.itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
   }
 }
 </script>
 
 <style scoped>
+.input-container {
+  margin-bottom: 10px;
+}
+
 .popup-overlay {
   position: fixed;
   top: 0;
