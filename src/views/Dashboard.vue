@@ -9,10 +9,7 @@
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
-        <div class="listContainer">
-          <h2>All tasks</h2>
-          <ListElement :items="allTasks" />
-        </div>
+        <ListElement :items="allTasks" />
         <div class="listContainer" id="todayTasks">
           <h2>Today's Tasks</h2>
           <div class="innerListContainer">
