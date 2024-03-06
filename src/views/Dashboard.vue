@@ -10,17 +10,7 @@
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
         <ListElement :items="allTasks" />
-        <div class="listContainer" id="todayTasks">
-          <h2>Today's Tasks</h2>
-          <div class="innerListContainer">
-            <ul>
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-            </ul>
-          </div>
-        </div>
+        <ListElement :items="bacBurner" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>
@@ -39,7 +29,7 @@ export default {
   data() {
     return {
       colors: colors,
-      allTasks: [] // Initialize allTasks data
+      allTasks: [] 
     };
   },
   mounted() {
@@ -106,8 +96,6 @@ export default {
 }
 
 .innerListContainer {}
-
-li {}
 
 .content-container {
   grid-row: 2;

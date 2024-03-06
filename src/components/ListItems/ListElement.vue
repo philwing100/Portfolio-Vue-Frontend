@@ -1,6 +1,8 @@
 <template>
   <div class="template-container">
-    <h2>All tasks</h2>
+    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput">
+      {{ title }}
+    </h2>
     <div class="input-container">
       <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem">
       <button @click="addItem">Add Item</button>
@@ -17,10 +19,10 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index">
-          {{ item }}
-          <button @click="removeItem(index)">X</button> <!-- Add X button -->
-        </li>
+        <li v-for="(item, index) in itemsArray" :key="index" contenteditable="true" @blur="updateItem(index, $event)">
+      <button class="remove-button" contenteditable="false" @click="removeItem(index)">X</button> <!-- Add X button -->
+      <span class="item-text">{{ item }}</span>
+    </li>
       </ul>
     </div>
   </div>
@@ -31,12 +33,24 @@ export default {
   name: 'ListElement',
   data() {
     return {
+      title: 'All tasks', // Initial title
       showPopup: false,
       newItem: '',
       itemsArray: []
     };
   },
   methods: {
+    updateTitle() {
+      // Update the title when the <h2> element loses focus
+      this.title = this.$refs.titleInput.innerText;
+      localStorage.setItem('title', this.title);
+    },
+
+    updateItem(index, event) {
+      // Update the item at the specified index when the list item loses focus
+      this.itemsArray[index] = event.target.innerText.trim();
+      localStorage.setItem('items', JSON.stringify(this.itemsArray));
+    },
     togglePopup() {
       this.showPopup = !this.showPopup;
     },
@@ -60,6 +74,7 @@ export default {
     }
   },
   mounted() {
+    this.title = localStorage.getItem('title') || 'All tasks';
     this.itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
   }
 }
@@ -120,20 +135,30 @@ export default {
 }
 
 .ListContainer {
-  max-height: 300px; /* Set a maximum height for the container */
-  overflow-y: auto; /* Enable vertical scrollbar when needed */
+  max-height: 300px;
+  max-width: 300px;
+  overflow-y: auto;
+  /* Enable vertical scrollbar when needed */
 }
 
 .ListItem {
-  padding: 0; /* Remove padding to avoid additional space */
+  padding: 0;
 }
 
 .ListItem li button {
-  margin-left: 10px; /* Add some spacing between the item and the X button */
+
 }
 
 li {
   background-color: green;
   list-style-type: none;
+}
+
+.item-text{
+  margin-left:10px;
+}
+
+.remove-button {
+  user-select: none; /* Prevent the button from being selectable */
 }
 </style>
