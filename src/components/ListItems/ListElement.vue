@@ -19,10 +19,12 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" contenteditable="true" @blur="updateItem(index, $event)">
-      <button class="remove-button" contenteditable="false" @click="removeItem(index)">X</button> <!-- Add X button -->
-      <span class="item-text">{{ item }}</span>
-    </li>
+        <li v-for="(item, index) in itemsArray" :key="index">
+          <div class="item-container">
+            <button class="remove-button" @click="removeItem(index)">X</button>
+            <span contenteditable="true" @blur="updateItem(index, $event)">{{ item }}</span>
+          </div>
+        </li>
       </ul>
     </div>
   </div>
@@ -81,8 +83,13 @@ export default {
 </script>
 
 <style scoped>
+
+.remove-button {
+  user-select: none;
+}
+
 .template-container {
-  background-color: purple;
+  background-color: black;
   border-radius: 10px;
   border-color: white;
   border-width: 1px;
@@ -127,30 +134,33 @@ export default {
 }
 
 .popup-content {
-  background-color: green;
+  background-color: red;
 }
 
 .ListItem li {
   position: relative;
+  padding-top:1.45px;
+  padding-bottom:1.45px;
+  padding-left:10px;
 }
 
 .ListContainer {
   max-height: 300px;
   max-width: 300px;
   overflow-y: auto;
-  /* Enable vertical scrollbar when needed */
+  display: flex;
 }
 
 .ListItem {
   padding: 0;
 }
 
-.ListItem li button {
-
+.ListItem, .RemoveButtonContainer {
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-  background-color: green;
   list-style-type: none;
 }
 
@@ -158,7 +168,4 @@ li {
   margin-left:10px;
 }
 
-.remove-button {
-  user-select: none; /* Prevent the button from being selectable */
-}
 </style>
