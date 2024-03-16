@@ -10,7 +10,7 @@
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
         <ListElement :items="allTasks" />
-        <ListElement :items="bacBurner" />
+        <ListElement :items="bruhWhat" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>

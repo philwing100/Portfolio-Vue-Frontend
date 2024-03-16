@@ -4,8 +4,7 @@
       {{ title }}
     </h2>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
-        spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -19,11 +18,11 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" draggable @dragstart="dragStart(index)" @dragover="dragOver" @drop="drop(index)">
+        <li v-for="(item, index) in itemsArray" :key="index" 
+            draggable="true" @dragstart="dragStart(index)" @dragover="dragOver" @drop="drop(index)" @click="focusEditable(index)">
           <div class="item-container">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <button class="drag-button" @click="enableDragging(index)">≡</button>
-            <span contenteditable="true" @blur="updateItem(index, $event)" class="item-text" spellcheck="false">{{ item }}</span>
+            <span contenteditable="true" @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)" class="item-text" spellcheck="false">{{ item }}</span>
           </div>
         </li>
       </ul>
@@ -36,23 +35,32 @@ export default {
   name: 'ListElement',
   data() {
     return {
-      title: 'All tasks', // Initial title
+      title: 'Alltasks',
       showPopup: false,
       newItem: '',
       itemsArray: [],
-      draggedIndex: null,
-      draggingEnabledIndex: null
+      draggedIndex: null
     };
   },
   methods: {
     updateTitle() {
-      // Update the title when the <h2> element loses focus
       this.title = this.$refs.titleInput.innerText;
       localStorage.setItem('title', this.title);
     },
-
+    dragStart(index) {
+      this.draggedIndex = index;
+    },
+    dragOver(event) {
+      event.preventDefault();
+    },
+    drop(index) {
+      if (index !== this.draggedIndex) {
+        const itemToMove = this.itemsArray.splice(this.draggedIndex, 1)[0];
+        this.itemsArray.splice(index, 0, itemToMove);
+        localStorage.setItem('items', JSON.stringify(this.itemsArray));
+      }
+    },
     updateItem(index, event) {
-      // Update the item at the specified index when the list item loses focus
       this.itemsArray[index] = event.target.innerText.trim();
       localStorage.setItem('items', JSON.stringify(this.itemsArray));
     },
@@ -69,59 +77,35 @@ export default {
         this.newItem = '';
       }
     },
-    removeAllItems() {
-      localStorage.removeItem('items');
-      this.itemsArray = [];
-    },
-    removeItem(index) { // Method to remove item from array and localStorage
+    removeItem(index) {
       this.itemsArray.splice(index, 1);
       localStorage.setItem('items', JSON.stringify(this.itemsArray));
     },
     addItemAfter(index) {
-      // Insert a new empty item after the specified index
       this.itemsArray.splice(index + 1, 0, '');
-
-      // Update localStorage
       localStorage.setItem('items', JSON.stringify(this.itemsArray));
-
-      // Wait for the DOM to update
       this.$nextTick(() => {
-        // Find the newly added span element
         const newItemSpan = this.$el.querySelectorAll('.item-text')[index + 1];
         if (newItemSpan) {
-          // Focus on the newly added span element
           newItemSpan.focus();
         }
       });
     },
-    dragStart(index) {
-      // Store the index of the dragged item
-      this.draggedIndex = index;
-    },
-
-    enableDragging(index) {
-      // Store the index of the item for which dragging is enabled
-      this.draggingEnabledIndex = index;
-    },
-
-    dragOver(event) {
-      event.preventDefault();
-    },
-
-    drop(index) {
-      // Update the order of items after dropping
-      if (this.draggedIndex !== index) {
-        const itemToMove = this.itemsArray.splice(this.draggedIndex, 1)[0];
-        this.itemsArray.splice(index, 0, itemToMove);
-        localStorage.setItem('items', JSON.stringify(this.itemsArray));
+    focusEditable(index) {
+      const editableSpan = this.$el.querySelectorAll('.item-text')[index];
+      if (editableSpan) {
+        editableSpan.focus();
       }
+    },
+    handleEnter(index) {
+      this.addItemAfter(index);
     }
   },
   mounted() {
     this.title = localStorage.getItem('title') || 'All tasks';
     this.itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
   }
-}
+};
 </script>
 
 <style scoped>
@@ -169,7 +153,6 @@ export default {
 }
 
 .add-button,
-.remove-all-button,
 .toggle-popup-button {
   padding: 8px 16px;
   background-color: #2d5dc7;
@@ -208,6 +191,7 @@ export default {
 
 .item-text {
   margin-left: 10px;
+  outline: none;
 }
 
 .ListItem li {
