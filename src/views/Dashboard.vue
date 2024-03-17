@@ -9,8 +9,9 @@
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
-        <ListElement :items="allTasks" />
-        <ListElement :items="bruhWhat" />
+        <!-- Pass list name and items to ListElement components -->
+        <ListElement list-name="Daily List" :list-items="dailyList" />
+        <ListElement list-name="Weekly List" :list-items="weeklyList" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>
@@ -29,24 +30,42 @@ export default {
   data() {
     return {
       colors: colors,
-      allTasks: [] 
+      dailyList: [],
+      weeklyList: []
     };
   },
   mounted() {
-    // Simulate loading allTasks from API or local storage
-    this.loadAllTasks();
+    // Load lists from local storage when component mounts
+    this.loadListsFromLocalStorage();
   },
   methods: {
-    loadAllTasks() {
-      // Simulate loading allTasks data
-      // Replace this with your actual logic to load allTasks from API or local storage
-      // For example:
-      // this.allTasks = fetchDataFromAPI();
-      // or
-      // this.allTasks = JSON.parse(localStorage.getItem('allTasks'));
+    loadListsFromLocalStorage() {
+      // Load data from local storage
+      this.dailyList = JSON.parse(localStorage.getItem('dailyList')) || [];
+      this.weeklyList = JSON.parse(localStorage.getItem('weeklyList')) || [];
+    },
+    saveListsToLocalStorage() {
+      // Save data to local storage
+      localStorage.setItem('dailyList', JSON.stringify(this.dailyList));
+      localStorage.setItem('weeklyList', JSON.stringify(this.weeklyList));
+    }
+  },
+  watch: {
+    // Save lists to local storage whenever they change
+    dailyList: {
+      handler() {
+        this.saveListsToLocalStorage();
+      },
+      deep: true
+    },
+    weeklyList: {
+      handler() {
+        this.saveListsToLocalStorage();
+      },
+      deep: true
     }
   }
-}
+};
 </script>
 
 <style>

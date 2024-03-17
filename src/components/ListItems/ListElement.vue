@@ -1,7 +1,7 @@
 <template>
-  <div class="template-container">
+ <div class="template-container">
     <h2 @blur="updateTitle" contenteditable="true" ref="titleInput">
-      {{ title }}
+      {{ listName }}
     </h2>
     <div class="input-container">
       <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
@@ -41,6 +41,10 @@ export default {
       itemsArray: [],
       draggedIndex: null
     };
+  },
+  props: {
+    listName: String,
+    listItems: Array
   },
   methods: {
     updateTitle() {
