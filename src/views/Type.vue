@@ -1,15 +1,18 @@
 <template>
   <div class="Type">
-    <h1>MonkeyType with Quizlet Sets</h1>
     <div class="quote">
       <span v-for="(word, index) in words" :key="index" :class="{ 'highlighted': index === currentIndex }">
-        <span v-for="(char, charIndex) in word" :key="charIndex" :class="{ 'correct': isCorrect(index, charIndex), 'active': isActive(index, charIndex), 'incorrect': isIncorrect(index, charIndex) }">
+        <span v-for="(char, charIndex) in word" :key="charIndex"
+          :class="{ 'correct': isCorrect(index, charIndex), 'active': isActive(index, charIndex), 'incorrect': isIncorrect(index, charIndex) }">
           {{ char }}
         </span>
         <template v-if="index !== words.length - 1 || index === currentIndex">&nbsp;</template>
       </span>
     </div>
     <input type="text" v-model="typedText" @keydown="checkKeyPress" :disabled="isDisabled" autofocus />
+    <div v-if="isCompleted">Final Time: {{ formatTime(timer) }} seconds</div>
+    <div v-if="isCompleted">Accuracy: {{ accuracy }}%</div>
+    <div v-if="isCompleted">WPM: {{ wordsPerMinute }}</div>
   </div>
 </template>
 
@@ -22,7 +25,12 @@ export default {
       typedText: "",
       currentIndex: 0,
       words: [],
-      isCompleted: false
+      isCompleted: false,
+      isTyping: false,
+      timer: 0,
+      timerInterval: null,
+      incorrectInputs: 0,
+      totalKeypresses: 0
     };
   },
   created() {
@@ -31,6 +39,14 @@ export default {
   computed: {
     isDisabled() {
       return this.currentIndex === this.words.length || this.isCompleted;
+    },
+    accuracy() {
+      const totalCharacters = this.countTotalCharacters(this.quote)*1.0;
+      return (totalCharacters / this.totalKeypresses) * 100.0;
+    },
+    wordsPerMinute(){
+      const wpm = (this.countTotalCharacters(this.quote) / 5) * (60 / (this.timer / 100));
+      return wpm.toFixed(2)
     }
   },
   methods: {
@@ -43,13 +59,42 @@ export default {
     isActive(wordIndex, charIndex) {
       return wordIndex === this.currentIndex && charIndex === this.typedText.length;
     },
-    delay(){
-        this.isCompleted=true;
+    delay() {
+      this.isCompleted = true;
+      clearInterval(this.timerInterval);
+    },
+    startTimer() {
+      this.isTyping = true;
+      this.timerInterval = setInterval(() => {
+        this.timer++;
+      }, 10); // increase the timer every 10 milliseconds for thousandths place precision
+    },
+    formatTime(milliseconds) {
+      return (milliseconds / 100).toFixed(2);
     },
     checkKeyPress(event) {
-      if (this.currentIndex === this.words.length - 1 && this.typedText.trim() === this.words[this.currentIndex].substring(0,this.words.length)) {
-          setTimeout(this.delay,1);
-        }
+      if (
+        event.key !== "Control" &&
+        event.key !== "Alt" &&
+        event.key !== "Shift" &&
+        event.key !== "CapsLock" &&
+        event.key !== "Backspace" &&
+        event.key !== "Escape" &&
+        event.key !== "Delete" &&
+        !event.key.startsWith("Arrow")
+      ) {
+        this.totalKeypresses++;
+        console.log('bruh');
+      }
+
+      if (!this.isTyping && event.key.length === 1) {
+        this.startTimer();
+      }
+
+      if (this.currentIndex === this.words.length - 1 && this.typedText.trim() === this.words[this.currentIndex].substring(0, this.words.length)) {
+        setTimeout(this.delay, 1);
+      }
+
       if (event.key === " ") {
         if (this.typedText.trim() === this.words[this.currentIndex]) {
           this.currentIndex++;
@@ -64,6 +109,9 @@ export default {
           this.currentIndex++;
         }
       }
+    },
+    countTotalCharacters(quote) {
+      return quote.length;
     }
   }
 }
@@ -80,19 +128,23 @@ export default {
 }
 
 .quote .correct {
-  color: green; /* Color for correctly typed characters */
+  color: green;
+  /* Color for correctly typed characters */
 }
 
 .quote .active {
-  color: blue; /* Color for currently active letter */
+  color: blue;
+  /* Color for currently active letter */
 }
 
 .quote .incorrect {
-  color: red; /* Color for incorrectly typed characters */
+  color: red;
+  /* Color for incorrectly typed characters */
 }
 
 .quote .highlighted {
-  color: #fff; /* White color */
+  color: #fff;
+  /* White color */
 }
 
 input[type="text"] {
@@ -104,10 +156,12 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  border-color: #ff6347; /* Focus color */
+  border-color: #ff6347;
+  /* Focus color */
 }
 
 input[type="text"]:disabled {
-  background-color: #f0f0f0; /* Disabled color */
+  background-color: #f0f0f0;
+  /* Disabled color */
 }
 </style>
