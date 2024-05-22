@@ -56,6 +56,15 @@
         >
           Settings
         </router-link>
+        <router-link
+          v-if="!toggleBar"
+          to="/Login"
+          class="sidebarItem"
+          :class="{ 'active': $route.path === '/Login' }"
+          @click="setActiveItem('/Login')"
+        >
+          Login
+        </router-link>
       </nav>
     </div>
     <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar' : toggleBar }">

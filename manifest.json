@@ -1,0 +1,14 @@
+{
+    "name": "Productivity",
+    "short_name": "Prod",
+    "lang": "en-US",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#228B22",
+    "description": "Test to get pwa working",
+    "icons": [
+      {
+      }
+    ]
+  }
+  

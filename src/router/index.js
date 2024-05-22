@@ -5,6 +5,7 @@ import SettingsWorld from '../views/Settings.vue'
 import AboutMe from '../views/AboutMe.vue'
 import Learn from '../views/Learn.vue'
 import Type from '../views/Type.vue'
+import Login from '../views/Login.vue'
 
 const routes = [
   {
@@ -31,12 +32,16 @@ const routes = [
     path: '/Learn',
     name: 'Learn',
     component: Learn
-  }
-  ,
+  },
   {
     path: '/Type',
     name: 'Type',
     component: Type
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: Login
   }
 ]
 

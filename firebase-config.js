@@ -1,10 +1,3 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-
-createApp(App).use(router).mount('#app')
-
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {getFirestore} from "firebase/firestore";
@@ -31,3 +24,4 @@ const analytics = getAnalytics(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+
