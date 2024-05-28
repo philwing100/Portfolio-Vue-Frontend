@@ -35,7 +35,7 @@ export default {
   name: 'ListElement',
   data() {
     return {
-      title: 'Alltasks',
+      title: '',
       showPopup: false,
       newItem: '',
       itemsArray: [],
@@ -46,10 +46,48 @@ export default {
     listName: String,
     listItems: Array
   },
+  watch: {
+    title(newTitle, oldTitle) {
+      if (newTitle !== oldTitle) {
+        this.loadItems(newTitle);
+      }
+    }
+  },
   methods: {
     updateTitle() {
-      this.title = this.$refs.titleInput.innerText;
-      localStorage.setItem('title', this.title);
+      const newTitle = this.$refs.titleInput.innerText;
+      if (newTitle !== this.title) {
+        this.title = newTitle;
+        this.saveItems(); // Save items under the new title
+      }
+    },
+    loadItems(title) {
+      const savedItems = localStorage.getItem(`${title}-items`);
+      if (savedItems) {
+        this.itemsArray = JSON.parse(savedItems);
+      } else {
+        this.itemsArray = [];
+      }
+    },
+    saveItems() {
+      localStorage.setItem(`${this.title}-items`, JSON.stringify(this.itemsArray));
+    },
+    updateItem(index, event) {
+      this.itemsArray[index] = event.target.innerText.trim();
+      this.saveItems();
+    },
+    togglePopup() {
+      this.showPopup = !this.showPopup;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    addItem() {
+      if (this.newItem.trim() !== '') {
+        this.itemsArray.push(this.newItem);
+        this.saveItems();
+        this.newItem = '';
+      }
     },
     dragStart(index) {
       this.draggedIndex = index;
@@ -61,33 +99,16 @@ export default {
       if (index !== this.draggedIndex) {
         const itemToMove = this.itemsArray.splice(this.draggedIndex, 1)[0];
         this.itemsArray.splice(index, 0, itemToMove);
-        localStorage.setItem('items', JSON.stringify(this.itemsArray));
-      }
-    },
-    updateItem(index, event) {
-      this.itemsArray[index] = event.target.innerText.trim();
-      localStorage.setItem('items', JSON.stringify(this.itemsArray));
-    },
-    togglePopup() {
-      this.showPopup = !this.showPopup;
-    },
-    closePopup() {
-      this.showPopup = false;
-    },
-    addItem() {
-      if (this.newItem.trim() !== '') {
-        this.itemsArray.push(this.newItem);
-        localStorage.setItem('items', JSON.stringify(this.itemsArray));
-        this.newItem = '';
+        this.saveItems();
       }
     },
     removeItem(index) {
       this.itemsArray.splice(index, 1);
-      localStorage.setItem('items', JSON.stringify(this.itemsArray));
+      this.saveItems();
     },
     addItemAfter(index) {
       this.itemsArray.splice(index + 1, 0, '');
-      localStorage.setItem('items', JSON.stringify(this.itemsArray));
+      this.saveItems();
       this.$nextTick(() => {
         const newItemSpan = this.$el.querySelectorAll('.item-text')[index + 1];
         if (newItemSpan) {
@@ -106,8 +127,8 @@ export default {
     }
   },
   mounted() {
-    this.title = localStorage.getItem('title') || 'All tasks';
-    this.itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
+    this.title = this.listName || 'All tasks'; // Use the prop as the initial title
+    this.loadItems(this.title); // Load items based on the initial title
   }
 };
 </script>
