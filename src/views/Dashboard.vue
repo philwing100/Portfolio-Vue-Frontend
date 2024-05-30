@@ -9,9 +9,9 @@
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
-        <!-- Pass list name and items to ListElement components -->
-        <ListElement list-name="Daily List" :list-items="dailyList" />
-        <ListElement list-name="Weekly List" :list-items="weeklyList" />
+        <!-- Pass list name as prop to ListElement component -->
+        <ListElement list-name="Daily List" />
+        <ListElement list-name="Weekly List" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>
@@ -29,41 +29,8 @@ export default {
   },
   data() {
     return {
-      colors: colors,
-      dailyList: [],
-      weeklyList: []
+      colors: colors
     };
-  },
-  mounted() {
-    // Load lists from local storage when component mounts
-    this.loadListsFromLocalStorage();
-  },
-  methods: {
-    loadListsFromLocalStorage() {
-      // Load data from local storage
-      this.dailyList = JSON.parse(localStorage.getItem('dailyList')) || [];
-      this.weeklyList = JSON.parse(localStorage.getItem('weeklyList')) || [];
-    },
-    saveListsToLocalStorage() {
-      // Save data to local storage
-      localStorage.setItem('dailyList', JSON.stringify(this.dailyList));
-      localStorage.setItem('weeklyList', JSON.stringify(this.weeklyList));
-    }
-  },
-  watch: {
-    // Save lists to local storage whenever they change
-    dailyList: {
-      handler() {
-        this.saveListsToLocalStorage();
-      },
-      deep: true
-    },
-    weeklyList: {
-      handler() {
-        this.saveListsToLocalStorage();
-      },
-      deep: true
-    }
   }
 };
 </script>

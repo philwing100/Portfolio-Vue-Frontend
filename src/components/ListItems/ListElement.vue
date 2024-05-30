@@ -1,7 +1,7 @@
 <template>
- <div class="template-container">
+  <div class="template-container">
     <h2 @blur="updateTitle" contenteditable="true" ref="titleInput">
-      {{ listName }}
+      {{ title }}
     </h2>
     <div class="input-container">
       <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
@@ -12,7 +12,7 @@
       <div class="popup">
         <span class="close" @click="closePopup">X</span>
         <div class="popup-content">
-          <!--<PopupList :items="items" />-->
+          <!-- Optional Popup Content -->
         </div>
       </div>
     </div>
@@ -33,105 +33,24 @@
 <script>
 export default {
   name: 'ListElement',
+  props: {
+    listName: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      title: '',
+      title: this.listName,
       showPopup: false,
       newItem: '',
       itemsArray: [],
       draggedIndex: null
     };
-  },
-  props: {
-    listName: String,
-    listItems: Array
-  },
-  watch: {
-    title(newTitle, oldTitle) {
-      if (newTitle !== oldTitle) {
-        this.loadItems(newTitle);
-      }
-    }
-  },
-  methods: {
-    updateTitle() {
-      const newTitle = this.$refs.titleInput.innerText;
-      if (newTitle !== this.title) {
-        this.title = newTitle;
-        this.saveItems(); // Save items under the new title
-      }
-    },
-    loadItems(title) {
-      const savedItems = localStorage.getItem(`${title}-items`);
-      if (savedItems) {
-        this.itemsArray = JSON.parse(savedItems);
-      } else {
-        this.itemsArray = [];
-      }
-    },
-    saveItems() {
-      localStorage.setItem(`${this.title}-items`, JSON.stringify(this.itemsArray));
-    },
-    updateItem(index, event) {
-      this.itemsArray[index] = event.target.innerText.trim();
-      this.saveItems();
-    },
-    togglePopup() {
-      this.showPopup = !this.showPopup;
-    },
-    closePopup() {
-      this.showPopup = false;
-    },
-    addItem() {
-      if (this.newItem.trim() !== '') {
-        this.itemsArray.push(this.newItem);
-        this.saveItems();
-        this.newItem = '';
-      }
-    },
-    dragStart(index) {
-      this.draggedIndex = index;
-    },
-    dragOver(event) {
-      event.preventDefault();
-    },
-    drop(index) {
-      if (index !== this.draggedIndex) {
-        const itemToMove = this.itemsArray.splice(this.draggedIndex, 1)[0];
-        this.itemsArray.splice(index, 0, itemToMove);
-        this.saveItems();
-      }
-    },
-    removeItem(index) {
-      this.itemsArray.splice(index, 1);
-      this.saveItems();
-    },
-    addItemAfter(index) {
-      this.itemsArray.splice(index + 1, 0, '');
-      this.saveItems();
-      this.$nextTick(() => {
-        const newItemSpan = this.$el.querySelectorAll('.item-text')[index + 1];
-        if (newItemSpan) {
-          newItemSpan.focus();
-        }
-      });
-    },
-    focusEditable(index) {
-      const editableSpan = this.$el.querySelectorAll('.item-text')[index];
-      if (editableSpan) {
-        editableSpan.focus();
-      }
-    },
-    handleEnter(index) {
-      this.addItemAfter(index);
-    }
-  },
-  mounted() {
-    this.title = this.listName || 'All tasks'; // Use the prop as the initial title
-    this.loadItems(this.title); // Load items based on the initial title
   }
-};
+}
 </script>
+
 
 <style scoped>
 .drag-button {
