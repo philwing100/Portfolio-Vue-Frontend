@@ -11,7 +11,6 @@
       <div class="content-container">
         <!-- Pass list name as prop to ListElement component -->
         <ListElement list-name="Daily List" />
-        <ListElement list-name="Weekly List" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>

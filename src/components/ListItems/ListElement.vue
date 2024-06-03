@@ -1,10 +1,11 @@
 <template>
   <div class="template-container">
-    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput">
+    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="">
       {{ title }}
     </h2>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
+        spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -18,11 +19,12 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" 
-            draggable="true" @dragstart="dragStart(index)" @dragover="dragOver" @drop="drop(index)" @click="focusEditable(index)">
+        <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
+          @dragover="dragOver" @drop="drop(index)" @click="focusEditable(index)">
           <div class="item-container">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <span contenteditable="true" @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)" class="item-text" spellcheck="false">{{ item }}</span>
+            <span contenteditable="true" @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)"
+              class="item-text" spellcheck="false">{{ item }}</span>
           </div>
         </li>
       </ul>
@@ -44,9 +46,26 @@ export default {
       title: this.listName,
       showPopup: false,
       newItem: '',
-      itemsArray: [],
+      itemsArray: [[]],
       draggedIndex: null
     };
+  },
+  created() {
+
+  },
+  methods: {
+    updateTitle(){
+        const titleElement = this.$refs.titleInput.innerText;
+        this.title = titleElement;
+        if()
+
+    },
+    addItem(){
+
+    },
+    loadItems(){
+
+    }
   }
 }
 </script>
