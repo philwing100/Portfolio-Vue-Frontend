@@ -1,12 +1,12 @@
 <template>
   <div class="template-container">
-    <h2 @blur="changeTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="changeTitle">
+    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="">
       {{ title }}
     </h2>
-    <button @click="clearStorage">Clearstorage</button>
+    <button @click="clearStorage">clearStorage</button>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter.prevent="addItem"
-        class="input-field" spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
+        spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -20,9 +20,14 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" :class="{ 'checked': itemsArrayBoolean[index] }">
-          <input type="checkbox" v-model="itemsArrayBoolean[index]" @change="checkBoxClicked(index)">
-          {{ item }}
+        <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
+          @dragover="dragOver" @drop="drop(index)">
+          <div class="item-container">
+            <button class="remove-button" @click="removeItem(index)">X</button>
+            <div ref="itemSpan" contenteditable="true" @click="focusEditable(index)"
+              @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)" class="item-text"
+              spellcheck="false">{{ item }}</div>
+            </div>
         </li>
       </ul>
     </div>
@@ -30,79 +35,119 @@
 </template>
 
 <script>
+
 export default {
   name: 'ListElement',
-  //So the data is all the stuff currently being displayed
+  props: {
+    listName: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      title: "",
+      title: this.listName,
+      showPopup: false,
       newItem: '',
       itemsArray: [],
-      storageItems: 0,
-      itemsArrayBoolean: [] // Array to store boolean values for checkboxes
+      listsArray: [],
+      draggedIndex: null
     };
   },
   created() {
-    this.title = localStorage.getItem('title') || this.listName;
-    this.itemsArray = JSON.parse(localStorage.getItem('items')) || [];
-    // Initialize itemsArrayBoolean with false values for each item
-    this.itemsArrayBoolean = new Array(this.itemsArray.length).fill(false);
-    this.loadListItems(this.title);
+    // Call a method to load initial data
+    this.loadInitialData();
   },
   methods: {
-    changeTitle() {
-      const newTitle = this.getTitle();
-      localStorage.setItem("title", newTitle);
-      this.loadListItems(newTitle);
-    },
-    getTitle() {
-      const titleElement = this.$refs.titleInput;
-      this.title = titleElement.innerText; // Correct capitalization
-      return this.title;
-    },
-    saveListItems() {
-      if (this.title) {
-        localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
+    loadInitialData() {
+      const storedTitle = localStorage.getItem('title');
+      if (storedTitle) {
+        this.title = storedTitle;
+      }
+
+      const storedItemsArray = localStorage.getItem('itemsArray');
+      if (storedItemsArray) {
+        this.itemsArray = JSON.parse(storedItemsArray);
       }
     },
-    loadListItems(title) {
-      if (title) {
-        const items = localStorage.getItem(title);
-        this.itemsArray = items ? JSON.parse(items) : [];
-        // Update itemsArrayBoolean length based on new itemsArray length
-        this.itemsArrayBoolean = new Array(this.itemsArray.length).fill(false);
-      }
+    updateTitle() {
+      const titleElement = this.$refs.titleInput.innerText;
+      this.title = titleElement;
+      localStorage.setItem('title', this.title);
     },
     addItem() {
       if (this.newItem.trim() !== '') {
         this.itemsArray.push(this.newItem.trim());
-        // Add corresponding boolean value for the new item
-        this.itemsArrayBoolean.push(false);
         this.newItem = '';
-        this.saveListItems();
+        localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
       }
     },
+    togglePopup() {
+      this.showPopup = !this.showPopup;
+    },
+    closePopup() {
+      this.showPopup = false;
+    },
+    dragStart(index) {
+      this.draggedIndex = index;
+    },
+    dragOver(event) {
+      event.preventDefault();
+    },
+    drop(index) {
+      const draggedItem = this.itemsArray[this.draggedIndex];
+      this.itemsArray.splice(this.draggedIndex, 1);
+      this.itemsArray.splice(index, 0, draggedItem);
+      this.draggedIndex = null;
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+    },
+    focusEditable(index) {
+      this.$nextTick(() => {
+        this.$refs.itemSpan[index].focus();
+      });
+    },
+    handleBackspace() {
+
+    },
+    handleEnter(index) {
+      this.itemsArray.splice(index, 0, '');
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      this.focusEditable(index + 1);
+    },
+    handleArrowUp() {
+
+    },
+    handArrowDown() {
+
+    },
+    updateItem(index, event) {
+
+      this.itemsArray.splice(index, 1, event.target.innerText);
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+    },
     removeItem(index) {
-      // Remove item from both arrays
-      this.itemsArray.splice(index, 1);
-      this.itemsArrayBoolean.splice(index, 1);
-      this.saveListItems();
+      //error occurs when the x is clicked but near the edge and so the tab tries to focus on the deleted item
+      if (index === 0) {
+        // Check if itemsArray exists and has at least one element
+        if (this.itemsArray && this.itemsArray.length > 0) {
+          this.itemsArray = this.itemsArray.slice(1);
+        } else {
+          // Handle the case when itemsArray is empty or undefined
+          console.warn('itemsArray is empty or undefined.');
+        }
+      } else {
+        this.itemsArray.splice(index, 1);
+      }
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
     },
-    checkBoxClicked(index) {
-      // Reorder list and gray out checked item
-      const checkedItem = this.itemsArray.splice(index, 1)[0];
-      const checkedItemBoolean = this.itemsArrayBoolean.splice(index, 1)[0];
-      this.itemsArray.push(checkedItem);
-      this.itemsArrayBoolean.push(checkedItemBoolean);
-      // Save list state
-      this.saveListItems();
-    },
-    clearStorage(){
+    clearStorage() {
       localStorage.clear();
     }
+
   }
 }
 </script>
+
 
 
 <style scoped>
@@ -119,11 +164,6 @@ export default {
 /* Styles for dragging */
 .ListItem li {
   cursor: move;
-}
-
-.checked {
-  color: green; /* Gray out checked item */
-  background-color:green;
 }
 
 .template-container {
