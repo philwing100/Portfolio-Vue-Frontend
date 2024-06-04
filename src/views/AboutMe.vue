@@ -11,9 +11,8 @@
       <h2>Skills</h2>
       <ul>
         <li>Proficient in Vue.js, JavaScript, HTML, and CSS</li>
-        <li>Experience with front-end frameworks like React.js and Angular</li>
-        <li>Familiarity with back-end technologies such as Node.js and Express.js</li>
-        <li>Strong understanding of database management systems, including SQL and NoSQL</li>
+        <li>Familiarity with back-end technologies such as Node.js</li>
+        <li>Understanding of MySql database design.</li>
         <li>Knowledgeable in version control systems like Git</li>
         <li>Ability to design responsive and user-friendly interfaces</li>
       </ul>

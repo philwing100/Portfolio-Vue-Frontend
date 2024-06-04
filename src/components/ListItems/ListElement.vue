@@ -1,10 +1,12 @@
 <template>
   <div class="template-container">
-    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput">
+    <h2 @blur="changeTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="changeTitle">
       {{ title }}
     </h2>
+    <button @click="clearStorage">Clearstorage</button>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter.prevent="addItem"
+        class="input-field" spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -18,12 +20,9 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" 
-            draggable="true" @dragstart="dragStart(index)" @dragover="dragOver" @drop="drop(index)" @click="focusEditable(index)">
-          <div class="item-container">
-            <button class="remove-button" @click="removeItem(index)">X</button>
-            <span contenteditable="true" @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)" class="item-text" spellcheck="false">{{ item }}</span>
-          </div>
+        <li v-for="(item, index) in itemsArray" :key="index" :class="{ 'checked': itemsArrayBoolean[index] }">
+          <input type="checkbox" v-model="itemsArrayBoolean[index]" @change="checkBoxClicked(index)">
+          {{ item }}
         </li>
       </ul>
     </div>
@@ -33,20 +32,74 @@
 <script>
 export default {
   name: 'ListElement',
-  props: {
-    listName: {
-      type: String,
-      required: true
-    }
-  },
+  //So the data is all the stuff currently being displayed
   data() {
     return {
-      title: this.listName,
-      showPopup: false,
+      title: "",
       newItem: '',
       itemsArray: [],
-      draggedIndex: null
+      storageItems: 0,
+      itemsArrayBoolean: [] // Array to store boolean values for checkboxes
     };
+  },
+  created() {
+    this.title = localStorage.getItem('title') || this.listName;
+    this.itemsArray = JSON.parse(localStorage.getItem('items')) || [];
+    // Initialize itemsArrayBoolean with false values for each item
+    this.itemsArrayBoolean = new Array(this.itemsArray.length).fill(false);
+    this.loadListItems(this.title);
+  },
+  methods: {
+    changeTitle() {
+      const newTitle = this.getTitle();
+      localStorage.setItem("title", newTitle);
+      this.loadListItems(newTitle);
+    },
+    getTitle() {
+      const titleElement = this.$refs.titleInput;
+      this.title = titleElement.innerText; // Correct capitalization
+      return this.title;
+    },
+    saveListItems() {
+      if (this.title) {
+        localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
+      }
+    },
+    loadListItems(title) {
+      if (title) {
+        const items = localStorage.getItem(title);
+        this.itemsArray = items ? JSON.parse(items) : [];
+        // Update itemsArrayBoolean length based on new itemsArray length
+        this.itemsArrayBoolean = new Array(this.itemsArray.length).fill(false);
+      }
+    },
+    addItem() {
+      if (this.newItem.trim() !== '') {
+        this.itemsArray.push(this.newItem.trim());
+        // Add corresponding boolean value for the new item
+        this.itemsArrayBoolean.push(false);
+        this.newItem = '';
+        this.saveListItems();
+      }
+    },
+    removeItem(index) {
+      // Remove item from both arrays
+      this.itemsArray.splice(index, 1);
+      this.itemsArrayBoolean.splice(index, 1);
+      this.saveListItems();
+    },
+    checkBoxClicked(index) {
+      // Reorder list and gray out checked item
+      const checkedItem = this.itemsArray.splice(index, 1)[0];
+      const checkedItemBoolean = this.itemsArrayBoolean.splice(index, 1)[0];
+      this.itemsArray.push(checkedItem);
+      this.itemsArrayBoolean.push(checkedItemBoolean);
+      // Save list state
+      this.saveListItems();
+    },
+    clearStorage(){
+      localStorage.clear();
+    }
   }
 }
 </script>
@@ -66,6 +119,11 @@ export default {
 /* Styles for dragging */
 .ListItem li {
   cursor: move;
+}
+
+.checked {
+  color: green; /* Gray out checked item */
+  background-color:green;
 }
 
 .template-container {

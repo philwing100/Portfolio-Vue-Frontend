@@ -6,6 +6,7 @@ createApp(App).use(router).mount('#app')
 
 
 // Import the functions you need from the SDKs you need
+/*
 import { initializeApp } from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
@@ -13,6 +14,8 @@ import { getAnalytics } from "firebase/analytics";
 import {getAuth, GoogleAuthProvider} from 'firebase/auth'
 
 //https://www.youtube.com/watch?v=zL0dKETbCNE
+
+//https://www.youtube.com/watch?v=fgdpvwEWJ9M Free codecamp tutorial
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHgoH9FW6h4mLPwtoUo8MspUdMOm4k6QU",
@@ -31,3 +34,4 @@ const analytics = getAnalytics(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+*/
