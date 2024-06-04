@@ -1,12 +1,21 @@
 <template>
   <div class="template-container">
+<<<<<<< HEAD
     <h2 @blur="changeTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="changeTitle">
+=======
+    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="">
+>>>>>>> f1b18ed0f558732cf9fa5a1c878f9632fd9bffa4
       {{ title }}
     </h2>
     <button @click="clearStorage">Clearstorage</button>
     <div class="input-container">
+<<<<<<< HEAD
       <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter.prevent="addItem"
         class="input-field" spellcheck="false">
+=======
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
+        spellcheck="false">
+>>>>>>> f1b18ed0f558732cf9fa5a1c878f9632fd9bffa4
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -20,9 +29,19 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
+<<<<<<< HEAD
         <li v-for="(item, index) in itemsArray" :key="index" :class="{ 'checked': itemsArrayBoolean[index] }">
           <input type="checkbox" v-model="itemsArrayBoolean[index]" @change="checkBoxClicked(index)">
           {{ item }}
+=======
+        <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
+          @dragover="dragOver" @drop="drop(index)" @click="focusEditable(index)">
+          <div class="item-container">
+            <button class="remove-button" @click="removeItem(index)">X</button>
+            <span contenteditable="true" @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)"
+              class="item-text" spellcheck="false">{{ item }}</span>
+          </div>
+>>>>>>> f1b18ed0f558732cf9fa5a1c878f9632fd9bffa4
         </li>
       </ul>
     </div>
@@ -37,6 +56,7 @@ export default {
     return {
       title: "",
       newItem: '',
+<<<<<<< HEAD
       itemsArray: [],
       storageItems: 0,
       itemsArrayBoolean: [] // Array to store boolean values for checkboxes
@@ -99,6 +119,27 @@ export default {
     },
     clearStorage(){
       localStorage.clear();
+=======
+      itemsArray: [[]],
+      draggedIndex: null
+    };
+  },
+  created() {
+
+  },
+  methods: {
+    updateTitle(){
+        const titleElement = this.$refs.titleInput.innerText;
+        this.title = titleElement;
+        if()
+
+    },
+    addItem(){
+
+    },
+    loadItems(){
+
+>>>>>>> f1b18ed0f558732cf9fa5a1c878f9632fd9bffa4
     }
   }
 }
