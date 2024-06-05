@@ -22,12 +22,12 @@
       <ul class="ListItem">
         <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
           @dragover="dragOver" @drop="drop(index)">
-          <div class="item-container">
+          <div class="item-container" @click="focusEditable(index)">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <div ref="itemSpan" contenteditable="true" @click="focusEditable(index)"
-              @keydown.enter.prevent="handleEnter(index)" @blur="updateItem(index, $event)" class="item-text"
+            <div ref="itemSpan" contenteditable="true" @keydown.enter.prevent="handleEnter(index, $event)"
+              @keydown.backspace="handleBackspace(index, $event)" @blur="updateItem(index, $event)" class="item-text"
               spellcheck="false">{{ item }}</div>
-            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -75,11 +75,14 @@ export default {
       this.title = titleElement;
       localStorage.setItem('title', this.title);
     },
+    saveList() {
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+    },
     addItem() {
       if (this.newItem.trim() !== '') {
         this.itemsArray.push(this.newItem.trim());
         this.newItem = '';
-        localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+        this.saveList();
       }
     },
     togglePopup() {
@@ -99,20 +102,43 @@ export default {
       this.itemsArray.splice(this.draggedIndex, 1);
       this.itemsArray.splice(index, 0, draggedItem);
       this.draggedIndex = null;
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      this.saveList();
     },
     focusEditable(index) {
       this.$nextTick(() => {
         this.$refs.itemSpan[index].focus();
       });
     },
-    handleBackspace() {
+    handleEnter(index, event) {
+      const text = event.target.innerText;
+      const selection = window.getSelection();
+      const caretPosition = selection.anchorOffset;
 
+      const textBeforeCaret = text.substring(0, caretPosition);
+      const textAfterCaret = text.substring(caretPosition);
+
+      this.itemsArray.splice(index, 1, textBeforeCaret);
+      this.itemsArray.splice(index + 1, 0, textAfterCaret);
+
+      this.$nextTick(() => {
+        this.$refs.itemSpan[index + 1].focus();
+      });
+
+      this.saveList();
     },
-    handleEnter(index) {
-      this.itemsArray.splice(index, 0, '');
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
-      this.focusEditable(index + 1);
+    handleBackspace(index, event) {
+      if (window.getSelection().anchorOffset === 0 && index > 0) {
+        const currentText = event.target.innerText;
+        const previousText = this.itemsArray[index - 1];
+        this.itemsArray[index - 1] = previousText + currentText;
+        this.itemsArray.splice(index, 1);
+
+        this.$nextTick(() => {
+          this.$refs.itemSpan[index - 1].focus();
+          this.setCaretPosition(this.$refs.itemSpan[index + 1], 0);
+        });
+        this.saveList();
+      }
     },
     handleArrowUp() {
 
@@ -121,9 +147,8 @@ export default {
 
     },
     updateItem(index, event) {
-
       this.itemsArray.splice(index, 1, event.target.innerText);
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      this.saveList();
     },
     removeItem(index) {
       //error occurs when the x is clicked but near the edge and so the tab tries to focus on the deleted item
@@ -138,7 +163,7 @@ export default {
       } else {
         this.itemsArray.splice(index, 1);
       }
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      this.saveList();
     },
     clearStorage() {
       localStorage.clear();
