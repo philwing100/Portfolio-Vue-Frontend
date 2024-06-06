@@ -5,7 +5,8 @@
     </h2>
     <button @click="clearStorage">clearStorage</button>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
+        spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -23,9 +24,12 @@
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index)">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <div class="text-cursor item-text" ref="itemSpan" contenteditable="true" @keydown.enter.prevent="handleEnter(index, $event)"
-              @keydown.backspace="handleBackspace(index, $event)" @blur="updateItem(index, $event)"
-              spellcheck="false">{{ item }}</div>
+            <div class="text-cursor item-text" ref="itemSpan" contenteditable="true"
+              @keydown.enter.prevent="handleEnter(index, $event)" 
+              @keydown.backspace="handleBackspace(index, $event)"
+              @keydown.up="handleArrowUp(index, $event)" 
+              @keydown.down="handleArrowDown(index, $event)"
+              @blur="updateItem(index, $event)" spellcheck="false">{{ item }}</div>
           </div>
         </li>
       </ul>
@@ -156,12 +160,41 @@ export default {
         });
       }
     },
-    handleArrowUp() {
+    handleArrowUp(index, event) {
+      if (event.target.innerText.length===0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+      }
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const elementRect = event.target.getBoundingClientRect();
 
-    },
-    handArrowDown() {
+      // Check if the caret is in the top row
+      const isTopRow = rect.top === elementRect.top;
 
+      if (isTopRow && index > 0 || event.target.innerText.length===0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+      }
     },
+    handleArrowDown(index, event) {
+      if (event.target.innerText.length===0) {
+      event.preventDefault(); // Prevent default arrow key behavior
+      this.focusEditable(index +1, 0);
+    }
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    const elementRect = event.target.getBoundingClientRect();
+
+    const isBottomRow = Math.abs(rect.bottom - elementRect.bottom) < 1;
+
+    if (isBottomRow && index < this.itemsArray.length || event.target.innerText.length===0) {
+      event.preventDefault(); // Prevent default arrow key behavior
+      this.focusEditable(index +1, 0);
+    }
+  },
     updateItem(index, event) {
       this.itemsArray.splice(index, 1, event.target.innerText);
       this.saveList();
@@ -202,7 +235,6 @@ export default {
 </script>
 
 <style scoped>
-
 .text-cursor {
   cursor: text;
 }
