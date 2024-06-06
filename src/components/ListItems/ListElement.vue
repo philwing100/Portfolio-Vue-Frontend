@@ -23,8 +23,8 @@
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index)">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <div ref="itemSpan" contenteditable="true" @keydown.enter.prevent="handleEnter(index, $event)"
-              @keydown.backspace="handleBackspace(index, $event)" @blur="updateItem(index, $event)" class="item-text"
+            <div class="text-cursor item-text" ref="itemSpan" contenteditable="true" @keydown.enter.prevent="handleEnter(index, $event)"
+              @keydown.backspace="handleBackspace(index, $event)" @blur="updateItem(index, $event)"
               spellcheck="false">{{ item }}</div>
           </div>
         </li>
@@ -109,10 +109,10 @@ export default {
           element.focus();
           if (position !== null) {
             this.setCaretPosition(element, position);
-          } else {
+          }/* else {
             // Ensure the caret is placed at the end if position is not specified
             this.setCaretPosition(element, element.innerText.length);
-          }
+          }*/
         }
       });
     },
@@ -195,12 +195,18 @@ export default {
     },
     clearStorage() {
       localStorage.clear();
+      this.loadInitialData();
     }
   }
 }
 </script>
 
 <style scoped>
+
+.text-cursor {
+  cursor: text;
+}
+
 .item-text:focus {
   outline: none;
   /* Remove default outline for focused element */
