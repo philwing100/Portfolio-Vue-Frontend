@@ -5,8 +5,7 @@
     </h2>
     <button @click="clearStorage">clearStorage</button>
     <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
-        spellcheck="false">
+      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
       <button @click="addItem" class="add-button">Add Item</button>
     </div>
     <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
@@ -35,7 +34,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'ListElement',
   props: {
@@ -104,9 +102,18 @@ export default {
       this.draggedIndex = null;
       this.saveList();
     },
-    focusEditable(index) {
+    focusEditable(index, position = null) {
       this.$nextTick(() => {
-        this.$refs.itemSpan[index].focus();
+        const element = this.$refs.itemSpan[index];
+        if (element) {
+          element.focus();
+          if (position !== null) {
+            this.setCaretPosition(element, position);
+          } else {
+            // Ensure the caret is placed at the end if position is not specified
+            this.setCaretPosition(element, element.innerText.length);
+          }
+        }
       });
     },
     handleEnter(index, event) {
@@ -121,23 +128,32 @@ export default {
       this.itemsArray.splice(index + 1, 0, textAfterCaret);
 
       this.$nextTick(() => {
-        this.$refs.itemSpan[index + 1].focus();
+        this.focusEditable(index + 1, 0);
       });
 
       this.saveList();
     },
     handleBackspace(index, event) {
       if (window.getSelection().anchorOffset === 0 && index > 0) {
+        event.preventDefault(); // Prevent default backspace behavior
+
         const currentText = event.target.innerText;
         const previousText = this.itemsArray[index - 1];
-        this.itemsArray[index - 1] = previousText + currentText;
+        const newText = previousText + currentText;
+
+        // Update the itemsArray correctly
+        this.itemsArray.splice(index - 1, 1, newText);
         this.itemsArray.splice(index, 1);
 
         this.$nextTick(() => {
-          this.$refs.itemSpan[index - 1].focus();
-          this.setCaretPosition(this.$refs.itemSpan[index + 1], 0);
+          const previousElement = this.$refs.itemSpan[index - 1];
+          if (previousElement) {
+            previousElement.focus();
+            this.setCaretPosition(previousElement, previousText.length);
+            this.removeItem(index);
+          }
+          this.saveList();
         });
-        this.saveList();
       }
     },
     handleArrowUp() {
@@ -151,31 +167,45 @@ export default {
       this.saveList();
     },
     removeItem(index) {
-      //error occurs when the x is clicked but near the edge and so the tab tries to focus on the deleted item
-      if (index === 0) {
-        // Check if itemsArray exists and has at least one element
-        if (this.itemsArray && this.itemsArray.length > 0) {
-          this.itemsArray = this.itemsArray.slice(1);
-        } else {
-          // Handle the case when itemsArray is empty or undefined
-          console.warn('itemsArray is empty or undefined.');
-        }
-      } else {
-        this.itemsArray.splice(index, 1);
+      this.itemsArray.splice(index, 1);
+      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+
+      // Check if the array is not empty and the index is valid before focusing
+      if (this.itemsArray.length > 0) {
+        const newIndex = index === this.itemsArray.length ? index - 1 : index;
+        this.$nextTick(() => {
+          this.focusEditable(newIndex);
+        });
       }
-      this.saveList();
+    },
+    setCaretPosition(element, position) {
+      const range = document.createRange();
+      const sel = window.getSelection();
+      if (element.firstChild) {
+        range.setStart(element.firstChild, position);
+      } else {
+        // Create a text node if the element is empty
+        const textNode = document.createTextNode('');
+        element.appendChild(textNode);
+        range.setStart(textNode, 0);
+      }
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
     },
     clearStorage() {
       localStorage.clear();
     }
-
   }
 }
 </script>
 
-
-
 <style scoped>
+.item-text:focus {
+  outline: none;
+  /* Remove default outline for focused element */
+}
+
 .drag-button {
   padding: 4px;
   background-color: #ccc;
