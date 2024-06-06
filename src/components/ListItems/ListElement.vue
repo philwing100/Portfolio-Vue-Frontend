@@ -195,7 +195,6 @@ export default {
     },
     clearStorage() {
       localStorage.clear();
-      this.loadInitialData();
     }
   }
 }
