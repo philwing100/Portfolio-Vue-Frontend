@@ -1,21 +1,21 @@
 <template>
   <div class="template-container">
-    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="">
+    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="" spellcheck="false">
       {{ title }}
     </h2>
     <button @click="clearStorage">clearStorage</button>
-    <div class="input-container">
-      <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field" spellcheck="false">
-      <button @click="addItem" class="add-button">Add Item</button>
-    </div>
-    <button @click="togglePopup" class="toggle-popup-button">Toggle Popup</button>
-    <div class="popup-overlay" v-if="showPopup">
-      <div class="popup">
-        <span class="close" @click="closePopup">X</span>
-        <div class="popup-content">
-          <!-- Optional Popup Content -->
-        </div>
+    <div>
+      <div class="input-container">
+        <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
+          spellcheck="false">
+        <button @click="addItem" class="add-button">Add Item</button>
       </div>
+      <div class="dropdown">
+          <button @click="toggleDropdown" class="dropbtn">Dropdown</button>
+          <div v-if="isDropdownOpen" class="dropdown-content">
+            <a v-for="(option, index) in titlesArray" :key="index" @click="selectOption(option)">{{ option }}</a>
+          </div>
+        </div>
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
@@ -23,9 +23,10 @@
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index)">
             <button class="remove-button" @click="removeItem(index)">X</button>
-            <div class="text-cursor item-text" ref="itemSpan" contenteditable="true" @keydown.enter.prevent="handleEnter(index, $event)"
-              @keydown.backspace="handleBackspace(index, $event)" @blur="updateItem(index, $event)"
-              spellcheck="false">{{ item }}</div>
+            <div class="text-cursor item-text" ref="itemSpan" contenteditable="true"
+              @keydown.enter.prevent="handleEnter(index, $event)" @keydown.backspace="handleBackspace(index, $event)"
+              @keydown.up="handleArrowUp(index, $event)" @keydown.down="handleArrowDown(index, $event)"
+              @blur="updateItem(index, $event)" spellcheck="false">{{ item }}</div>
           </div>
         </li>
       </ul>
@@ -39,17 +40,17 @@ export default {
   props: {
     listName: {
       type: String,
-      required: true
+      required: false
     }
   },
   data() {
     return {
       title: this.listName,
-      showPopup: false,
       newItem: '',
       itemsArray: [],
-      listsArray: [],
-      draggedIndex: null
+      titlesArray: [],
+      draggedIndex: null,
+      isDropdownOpen: false
     };
   },
   created() {
@@ -63,31 +64,54 @@ export default {
         this.title = storedTitle;
       }
 
-      const storedItemsArray = localStorage.getItem('itemsArray');
+      const storedItemsArray = localStorage.getItem(this.title);
       if (storedItemsArray) {
         this.itemsArray = JSON.parse(storedItemsArray);
       }
+
+      const storedTitlesArray = localStorage.getItem('titlesArray');
+      if(storedTitlesArray){
+        this.titlesArray = JSON.parse(storedTitlesArray);
+      }
     },
     updateTitle() {
+      this.saveList();//Save the current list items to the title before changing the title
       const titleElement = this.$refs.titleInput.innerText;
       this.title = titleElement;
+      let flag=true;
+    if(this.titlesArray.length !== 0){
+      for(let i=0;i<this.titlesArray.length;i++){
+      //  console.log(this.titlesArray[i]);
+      //  console.log(this.title);
+        if(this.titlesArray[i]===this.title){
+          flag=false;
+        }
+      }
+    }
+      if(flag){
+        this.titlesArray.push(this.title);
+        this.saveTitlesArray();
+      }
       localStorage.setItem('title', this.title);
+      let newItems = localStorage.getItem(this.title)
+      this.itemsArray=JSON.parse(newItems);
     },
     saveList() {
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
+    },
+    saveTitlesArray(){
+      localStorage.setItem('titlesArray', JSON.stringify(this.titlesArray));
     },
     addItem() {
       if (this.newItem.trim() !== '') {
+        if (!this.itemsArray) {
+          this.itemsArray = []; // Ensure itemsArray is initialized
+        }
+        console.log(this.title + " " + this.itemsArray + " " + this.titlesArray);
         this.itemsArray.push(this.newItem.trim());
         this.newItem = '';
         this.saveList();
       }
-    },
-    togglePopup() {
-      this.showPopup = !this.showPopup;
-    },
-    closePopup() {
-      this.showPopup = false;
     },
     dragStart(index) {
       this.draggedIndex = index;
@@ -135,13 +159,11 @@ export default {
     },
     handleBackspace(index, event) {
       if (window.getSelection().anchorOffset === 0 && index > 0) {
-        event.preventDefault(); // Prevent default backspace behavior
 
         const currentText = event.target.innerText;
         const previousText = this.itemsArray[index - 1];
         const newText = previousText + currentText;
 
-        // Update the itemsArray correctly
         this.itemsArray.splice(index - 1, 1, newText);
         this.itemsArray.splice(index, 1);
 
@@ -156,11 +178,40 @@ export default {
         });
       }
     },
-    handleArrowUp() {
+    handleArrowUp(index, event) {
+      if (event.target.innerText.length === 0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+      }
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const elementRect = event.target.getBoundingClientRect();
 
+      // Check if the caret is in the top row
+      const isTopRow = rect.top === elementRect.top;
+
+      if (isTopRow && index > 0 || event.target.innerText.length === 0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+      }
     },
-    handArrowDown() {
+    handleArrowDown(index, event) {
+      if (event.target.innerText.length === 0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index + 1, 0);
+      }
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const elementRect = event.target.getBoundingClientRect();
 
+      const isBottomRow = Math.abs(rect.bottom - elementRect.bottom) < 1;
+
+      if (isBottomRow && index < this.itemsArray.length || event.target.innerText.length === 0) {
+        event.preventDefault(); // Prevent default arrow key behavior
+        this.focusEditable(index + 1, 0);
+      }
     },
     updateItem(index, event) {
       this.itemsArray.splice(index, 1, event.target.innerText);
@@ -168,7 +219,7 @@ export default {
     },
     removeItem(index) {
       this.itemsArray.splice(index, 1);
-      localStorage.setItem('itemsArray', JSON.stringify(this.itemsArray));
+      this.saveList();
 
       // Check if the array is not empty and the index is valid before focusing
       if (this.itemsArray.length > 0) {
@@ -195,12 +246,60 @@ export default {
     },
     clearStorage() {
       localStorage.clear();
+      this.title = 'Daily List'
+      this.itemsArray = this.titlesArray = [];
+      this.newItem = '';
+      this.loadInitialData();
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    selectOption(option) {
+      // Do something with the selected option
+      console.log('Selected option:', option);
+      this.isDropdownOpen = false; // Close the dropdown after selecting an option
     }
   }
 }
 </script>
 
 <style scoped>
+.dropbtn{
+  margin-bottom: 10px;
+  min-width: 20px;
+  max-width:200px;
+  width:200px;
+} 
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 
 .text-cursor {
   cursor: text;
@@ -241,10 +340,12 @@ export default {
 }
 
 .input-container {
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   display: flex;
   align-items: center;
 }
+
+
 
 .input-field {
   padding: 8px 12px;
