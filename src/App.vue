@@ -12,11 +12,26 @@ export default {
   components: {
     SideBar,
   },
-    provide() {
-    return {
-      colors: colorsData,
-    };
-  }
+  provide() {
+    if (colorsData) {
+      return {
+        colors: colorsData,
+      };
+    } else {
+      return {
+        colors: {
+          primary: '#3498db',
+          secondary: '#2ecc71',
+          downClick: '#e74c3c',
+          clicked: 'e',
+          hover: '#383444',
+          text: 'white',
+          background: '#343541',
+          sidebar: '#000000',
+        },
+      };
+    }
+  },
 };
 </script>
 
