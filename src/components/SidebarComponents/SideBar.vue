@@ -1,93 +1,59 @@
 <template>
-  <div :style="{ width: sidebarWidth + 'px', backgroundColor: colors.sideBar }" class="sidebar">
+  <div :style="{ width: sidebarWidth + 'px', 'background-color': colors.sideBar }" class="sidebar">
     <div @click="toggleWidth" class="collapse-icon" :class="{ 'rotate-180': !toggleBar }">></div>
     <nav class="needPadding">
       <router-link v-if="!toggleBar" to="/Dashboard" class="sidebarItem"
-        :class="{ 'active': $route.path === '/Dashboard' }" @click="setActiveItem('/Dashboard')">
-        Dashboard
+        :class="{ 'active': $route.path === '/Dashboard' }" @click="setActiveItem('/Dashboard')"> Dashboard
       </router-link>
       <router-link v-if="!toggleBar" to="/Lists" class="sidebarItem" :class="{ 'active': $route.path === '/Lists' }"
-        @click="setActiveItem('/Lists')">
-        Lists
-      </router-link>
+        @click="setActiveItem('/Lists')"> Lists </router-link>
       <router-link v-if="!toggleBar" to="/Learn" class="sidebarItem" :class="{ 'active': $route.path === '/Learn' }"
-        @click="setActiveItem('/Learn')">
-        Learn
-      </router-link>
+        @click="setActiveItem('/Learn')"> Learn </router-link>
       <router-link v-if="!toggleBar" to="/Type" class="sidebarItem" :class="{ 'active': $route.path === '/Type' }"
-        @click="setActiveItem('/Type')">
-        Type
+        @click="setActiveItem('/Type')"> Type
       </router-link>
       <router-link v-if="!toggleBar" to="/" class="sidebarItem" :class="{ 'active': $route.path === '/' }"
-        @click="setActiveItem('/')">
-        About Me
-      </router-link>
+        @click="setActiveItem('/')"> About Me </router-link>
       <router-link v-if="!toggleBar" to="/Settings" class="sidebarItem"
-        :class="{ 'active': $route.path === '/Settings' }" @click="setActiveItem('/Settings')">
-        Settings
-      </router-link>
+        :class="{ 'active': $route.path === '/Settings' }" @click="setActiveItem('/Settings')"> Settings </router-link>
       <router-link v-if="!toggleBar" to="/Login" class="sidebarItem" :class="{ 'active': $route.path === '/Login' }"
-        @click="setActiveItem('/Login')">
-        Login
+        @click="setActiveItem('/Login')"> Login
       </router-link>
     </nav>
-  </div>
+  </div> <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar': toggleBar }"> </router-view>
 </template>
-
-<script>
-import { ref, onMounted, onUnmounted, computed, inject } from 'vue';
-
-export default {
-  name: 'SideBar',
-  setup() {
+<script>import { ref, onMounted, onUnmounted, inject } from 'vue'; 
+import colors from '@/assets/colors.json'; export default {
+  name: 'SideBar', setup() {
     const colors = inject('colors');
     const toggleBar = ref(false);
     const sidebarWidth = ref(180);
     const activeItem = ref(null);
-
     const toggleWidth = () => {
       toggleBar.value = !toggleBar.value;
       sidebarWidth.value = toggleBar.value ? 30 : 180;
     };
-
-    const setActiveItem = (item) => {
-      activeItem.value = item;
-    };
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        toggleWidth();
-      }
-    };
-
-    onMounted(() => {
-      // Add event listener when the component is mounted
-      document.addEventListener('keyup', handleEscapeKey);
-    });
-
+    const setActiveItem = (item) => { activeItem.value = item; };
+    const handleEscapeKey = (event) => { if (event.key === 'Escape') { toggleWidth(); } };
+    onMounted(() => { document.addEventListener('keyup', handleEscapeKey); 
+     });
+     
     onUnmounted(() => {
-      // Remove event listener when the component is unmounted
+      // Remove event listener when the component is unmounted 
       document.removeEventListener('keyup', handleEscapeKey);
-    });
-
-    return {
-      toggleBar,
-      sidebarWidth,
-      toggleWidth,
-      activeItem,
-      setActiveItem,
-      colors
+    }); return { 
+      toggleBar, 
+      sidebarWidth, 
+      toggleWidth, 
+      activeItem, 
+      setActiveItem, 
+      colors: colors, 
     };
+  }, beforeRouteUpdate(to, from, next) {
+    // Update the activeItem when the route changes 
+    this.setActiveItem(to.path); next();
   },
-
-  beforeRouteUpdate(to, from, next) {
-    // Update the activeItem when the route changes
-    this.setActiveItem(to.path);
-    next();
-  },
-};
-</script>
-
+}; </script>
 <style>
 .sidebar {
   height: 100%;

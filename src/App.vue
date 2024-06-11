@@ -1,5 +1,5 @@
 <template>
-  <SideBar :colors="colors"/>
+  <SideBar />
   <div class="everythingElse">
   </div>
 </template>
