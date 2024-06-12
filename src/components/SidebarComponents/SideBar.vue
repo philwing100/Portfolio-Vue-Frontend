@@ -2,58 +2,108 @@
   <div :style="{ width: sidebarWidth + 'px', 'background-color': colors.sideBar }" class="sidebar">
     <div @click="toggleWidth" class="collapse-icon" :class="{ 'rotate-180': !toggleBar }">></div>
     <nav class="needPadding">
-      <router-link v-if="!toggleBar" to="/Dashboard" class="sidebarItem"
-        :class="{ 'active': $route.path === '/Dashboard' }" @click="setActiveItem('/Dashboard')"> Dashboard
-      </router-link>
-      <router-link v-if="!toggleBar" to="/Lists" class="sidebarItem" :class="{ 'active': $route.path === '/Lists' }"
-        @click="setActiveItem('/Lists')"> Lists </router-link>
-      <router-link v-if="!toggleBar" to="/Learn" class="sidebarItem" :class="{ 'active': $route.path === '/Learn' }"
-        @click="setActiveItem('/Learn')"> Learn </router-link>
-      <router-link v-if="!toggleBar" to="/Type" class="sidebarItem" :class="{ 'active': $route.path === '/Type' }"
-        @click="setActiveItem('/Type')"> Type
-      </router-link>
-      <router-link v-if="!toggleBar" to="/" class="sidebarItem" :class="{ 'active': $route.path === '/' }"
-        @click="setActiveItem('/')"> About Me </router-link>
-      <router-link v-if="!toggleBar" to="/Settings" class="sidebarItem"
-        :class="{ 'active': $route.path === '/Settings' }" @click="setActiveItem('/Settings')"> Settings </router-link>
-      <router-link v-if="!toggleBar" to="/Login" class="sidebarItem" :class="{ 'active': $route.path === '/Login' }"
-        @click="setActiveItem('/Login')"> Login
+      <router-link v-for="(route, index) in routes" :to="route.path" :key="index"
+        ref="routerLinks"
+        class="sidebarItem"
+        :class="{ 'active': $route.path === route.path }"
+        @click="setActiveItem(route.path)">
+        {{ route.label }}
       </router-link>
     </nav>
-  </div> <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar': toggleBar }"> </router-view>
+  </div>
+  <router-view :class="{ 'paddingWithSidebar': !toggleBar, 'paddingWithoutSidebar': toggleBar }"></router-view>
 </template>
-<script>import { ref, onMounted, onUnmounted, inject } from 'vue'; 
-import colors from '@/assets/colors.json'; export default {
-  name: 'SideBar', setup() {
+
+<script>
+import { ref, onMounted, onUnmounted, inject, nextTick } from 'vue';
+
+export default {
+  name: 'SideBar',
+  setup() {
+    const routes = [
+      { path: '/Dashboard', label: 'Dashboard' },
+      { path: '/Lists', label: 'Lists' },
+      { path: '/Learn', label: 'Learn' },
+      { path: '/Type', label: 'Type' },
+      { path: '/', label: 'About Me' },
+      { path: '/Settings', label: 'Settings' },
+      { path: '/Login', label: 'Login' },
+    ];
+
     const colors = inject('colors');
     const toggleBar = ref(false);
     const sidebarWidth = ref(180);
     const activeItem = ref(null);
+    const routerLinks = ref([]);
+
     const toggleWidth = () => {
       toggleBar.value = !toggleBar.value;
       sidebarWidth.value = toggleBar.value ? 30 : 180;
     };
-    const setActiveItem = (item) => { activeItem.value = item; };
-    const handleEscapeKey = (event) => { if (event.key === 'Escape') { toggleWidth(); } };
-    onMounted(() => { document.addEventListener('keyup', handleEscapeKey); 
-     });
-     
-    onUnmounted(() => {
-      // Remove event listener when the component is unmounted 
-      document.removeEventListener('keyup', handleEscapeKey);
-    }); return { 
-      toggleBar, 
-      sidebarWidth, 
-      toggleWidth, 
-      activeItem, 
-      setActiveItem, 
-      colors: colors, 
+
+    const setActiveItem = (item) => {
+      activeItem.value = item;
     };
-  }, beforeRouteUpdate(to, from, next) {
-    // Update the activeItem when the route changes 
-    this.setActiveItem(to.path); next();
+
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        toggleWidth();
+      }
+    };
+
+    const handleHover = (link) => {
+      link.style.backgroundColor = colors.hover;
+    };
+
+    const handleMouseLeave = (link) => {
+      link.style.backgroundColor = ''; // Reset to default background color
+    };
+
+    onMounted(() => {
+      document.addEventListener('keyup', handleEscapeKey);
+
+      nextTick(() => {
+        routerLinks.value = Array.from(document.querySelectorAll('.sidebarItem'));
+
+        if (colors) {
+          routerLinks.value.forEach((item) => {
+            item.style.color = colors.text;
+          });
+        }
+
+        routerLinks.value.forEach((link) => {
+          link.addEventListener('mouseenter', () => handleHover(link));
+          link.addEventListener('mouseleave', () => handleMouseLeave(link));
+        });
+      });
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('keyup', handleEscapeKey);
+      routerLinks.value.forEach((link) => {
+        link.removeEventListener('mouseenter', () => handleHover(link));
+        link.removeEventListener('mouseleave', () => handleMouseLeave(link));
+      });
+    });
+
+    return {
+      routes,
+      toggleBar,
+      sidebarWidth,
+      toggleWidth,
+      activeItem,
+      setActiveItem,
+      colors,
+      routerLinks
+    };
   },
-}; </script>
+  beforeRouteUpdate(to, from, next) {
+    this.setActiveItem(to.path);
+    next();
+  },
+};
+</script>
+
 <style>
 .sidebar {
   height: 100%;
@@ -77,17 +127,9 @@ import colors from '@/assets/colors.json'; export default {
   font-size: 20px;
   display: block;
   transition: 0.3s ease-out;
-  text-decoration: none;
-  color: white;
-  transition: opacity 0.2s;
-}
-
-.sidebarItem:hover {
-  background-color: lightgrey;
 }
 
 .sidebarItem.active {
-  background-color: #343541;
   border-radius: 12px;
   width: 85%;
   padding-left: 15px;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="top-row" :style="{ 'background-color': colors.sidebar }">
+    <div class="top-row" :style="{ 'background-color': colors.sideBar }">
       <div class="heroText" :style="{ 'background-color': colors.sidebar }">Current Task: Work on Dashboard</div>
       <div class="button-container">
         <div class="bigButton" id="previousDay" :style="{ 'background-color': colors.background }">Previous Day</div>

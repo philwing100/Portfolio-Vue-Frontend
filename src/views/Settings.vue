@@ -1,14 +1,5 @@
 <template>
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings Page</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
+   <div class="container">
         <h1>Settings</h1>
         <div class="settings-section">
             <h2>General</h2>
@@ -39,24 +30,22 @@
             </div>
         </div>
     </div>
-</body>
-</html>
-
+    <colorPicker />
+    
   </template>
   
   <script>
-  
+ import colorPicker from '@/components/SettingsComponents/ColorPicker.vue';
   
   export default {
     name: 'SettingsWorld',
     components: {
-      
+      colorPicker,
     }
   }
   </script>
   
   <style>
-  /* styles.css */
 
 body {
     font-family: Arial, sans-serif;

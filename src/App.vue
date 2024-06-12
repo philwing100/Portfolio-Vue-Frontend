@@ -39,8 +39,6 @@ export default {
 body, html {
   margin: 0;
   padding: 0;
-  color: var(--text-color);
-  background-color: var(--primary-color);
 }
 
 #app {
