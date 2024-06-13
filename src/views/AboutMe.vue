@@ -19,19 +19,6 @@
     </div>
 
     <div class="section">
-      <h2>Projects</h2>
-      <div class="project">
-        <h3>Project 1: E-commerce Website</h3>
-        <p>A full-stack e-commerce website built with Vue.js and Node.js, featuring user authentication, product catalog, shopping cart functionality, and secure payment processing.</p>
-      </div>
-      <div class="project">
-        <h3>Project 2: Task Management App</h3>
-        <p>A task management application developed with Vue.js and Firebase, allowing users to create, update, and prioritize tasks in real-time.</p>
-      </div>
-      <div class="project">
-        <h3>Project 3: Portfolio Website</h3>
-        <p>My personal portfolio website showcasing my skills, projects, and contact information. Built using Vue.js, HTML, and CSS.</p>
-      </div>
     </div>
 
     <div class="section">
