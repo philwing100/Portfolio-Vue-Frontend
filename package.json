@@ -10,7 +10,8 @@
   "dependencies": {
     "axios": "^1.6.7",
     "core-js": "^3.8.3",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
+    "express-generator": "^4.16.1",
     "firebase": "^10.12.1",
     "formidable": "^3.5.1",
     "nodemailer": "^6.9.13",
@@ -24,7 +25,7 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "^5.0.8",
+    "@vue/cli-service": "^3.3.1",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "html-webpack-plugin": "^5.6.0"
