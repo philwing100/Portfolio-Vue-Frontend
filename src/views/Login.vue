@@ -1,25 +1,20 @@
 <template>
-    <h1>Login</h1>
-    <div>
-    <p>Sign in with google to continue</p>
-    <button class="login-with-google-btn"> 
-        Sign in with google (does nothing)
-    </button>
-
-
-</div>
+  <div class="bruh">
+  <LoginComponent/>
+  </div>
 </template>
 
 <script>
-import {auth, provider} from '../main';
-//import {signInWithPopup} from 'firebase/auth';
-
-
+import LoginComponent from '@/components/Login.vue';
 
 export default {
   name: 'LoginWorld',
-  components: {
-    
+  components:{
+    LoginComponent
   }
 }
 </script>
+
+
+<style>
+</style>

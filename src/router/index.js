@@ -6,6 +6,7 @@ import AboutMe from '../views/AboutMe.vue'
 import Learn from '../views/Learn.vue'
 import Type from '../views/Type.vue'
 import Login from '../views/Login.vue'
+import SignUp from '../views/SignUp.vue'
 
 const routes = [
   {
@@ -42,7 +43,12 @@ const routes = [
     path: '/Login',
     name: 'Login',
     component: Login
-  }
+  },
+  {
+    path: '/SignUp',
+    name: 'SignUp',
+    component: SignUp
+  },
 ]
 
 const router = createRouter({

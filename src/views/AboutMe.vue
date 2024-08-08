@@ -11,7 +11,7 @@
       <h2>Skills</h2>
       <ul>
         <li>Proficient in Vue.js, JavaScript, HTML, and CSS</li>
-        <li>Familiarity with back-end technologies such as Node.js</li>
+        <li>Familiarity with back-end technologies such as Node.js and Express.js</li>
         <li>Understanding of MySql database design.</li>
         <li>Knowledgeable in version control systems like Git</li>
         <li>Ability to design responsive and user-friendly interfaces</li>
@@ -24,7 +24,7 @@
     <div class="section">
       <h2>Contact</h2>
       <p>
-        Feel free to reach out to me via email at example@example.com or connect with me on LinkedIn <a href="https://www.linkedin.com/">here</a>. I'm always open to new opportunities and collaborations.
+        Feel free to reach out to me via email philwing100@gmail.com or connect with me on LinkedIn <a href="https://www.linkedin.com/in/ring-phillip">here</a>. I'm always open to new connections and collaboration.
       </p>
     </div>
   </div>
