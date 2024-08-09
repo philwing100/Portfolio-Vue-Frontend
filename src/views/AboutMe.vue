@@ -1,30 +1,30 @@
 <template>
   <div class="about-me">
     <div class="section">
-      <h2>Personality</h2>
+      <h2>Hi I'm Phillip Ring</h2>
       <p>
-        I'm a passionate and innovative software developer who loves diving deep into complex problems and finding elegant solutions. I thrive in collaborative environments and enjoy brainstorming ideas with team members to create impactful software solutions.
+         I crave efficiency and finding new ways to improve. I'm a honors senior year computer science student attending UT Tyler.
       </p>
     </div>
 
     <div class="section">
       <h2>Skills</h2>
       <ul>
-        <li>Proficient in Vue.js, JavaScript, HTML, and CSS</li>
-        <li>Familiarity with back-end technologies such as Node.js and Express.js</li>
-        <li>Understanding of MySql database design.</li>
+        <li>Technologies: Javascript HTML/CSS, MySQL Vue.js, Node, Express.js, BASH </li>
+        <li>Familiarity with other systems such as Git, Vscode, Wireshark</li>
         <li>Knowledgeable in version control systems like Git</li>
-        <li>Ability to design responsive and user-friendly interfaces</li>
       </ul>
     </div>
 
     <div class="section">
+      <h2>Projects</h2>
+
     </div>
 
     <div class="section">
       <h2>Contact</h2>
       <p>
-        Feel free to reach out to me via email philwing100@gmail.com or connect with me on LinkedIn <a href="https://www.linkedin.com/in/ring-phillip">here</a>. I'm always open to new connections and collaboration.
+        Feel free to reach out to me via email philwing100@gmail.com or connect with me on <a href="https://www.linkedin.com/in/ring-phillip">LinkedIn</a>. I'm always open to new connections and collaboration.
       </p>
     </div>
   </div>
@@ -40,6 +40,7 @@ export default {
 .about-me {
   max-width: 800px;
   margin: 0 auto;
+  background-color: white;
 }
 
 .section {
