@@ -135,7 +135,7 @@ export default {
   height: 100%;
   position: fixed;
   z-index: 1;
-  top: 15;
+  top: 0;
   left: 0;
   overflow-x: hidden;
   transition: 0.4s ease-out;
@@ -167,7 +167,7 @@ export default {
 }
 
 .paddingWithoutSidebar {
-  padding-left: 30px;
+  padding-left: 0px;
   transition: 0.4s ease-out;
 }
 
@@ -177,7 +177,6 @@ export default {
 }
 
 .collapse-icon {
-  z-index: 2;
   cursor: pointer;
   display: flex;
   font-size: 20px;
@@ -187,11 +186,13 @@ export default {
 }
 
 .collapse-container {
-  height: 15px;
+  height: 30px;
+  margin-top:15px;
   position: fixed;
   top: 0;
   left: 0;
   justify-content: center;
+  z-index: 2;
 }
 
 .rotate-180 {
