@@ -1,4 +1,5 @@
-<template>
+<template class="page">
+    <AshEffect />
   <div>
     <FullPage :sections="sections" :showIndicator="true" />
   </div>
@@ -6,10 +7,12 @@
 
 <script>
 import FullPage from '../components/AboutMeComponents/FullPage.vue'; 
+import AshEffect from '../components/AboutMeComponents/AshEffect.vue';
 
 export default {
   components: {
-    FullPage
+    FullPage,
+    AshEffect,
   },
   data() {
     return {
@@ -23,3 +26,10 @@ export default {
   }
 };
 </script>
+
+<style>
+.page{
+
+}
+
+</style>

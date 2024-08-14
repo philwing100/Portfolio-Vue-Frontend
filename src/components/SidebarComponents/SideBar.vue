@@ -134,7 +134,7 @@ export default {
 .sidebar {
   height: 100%;
   position: fixed;
-  z-index: 1;
+  z-index: 4;
   top: 0;
   left: 0;
   overflow-x: hidden;
