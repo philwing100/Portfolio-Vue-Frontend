@@ -2,29 +2,31 @@
 
 <template>
   <div class="fullpage-container" @wheel="handleScroll">
-    <div
-      class="section"
-      v-for="(section, index) in sections"
-      :key="section.id"
-      :ref="`section-${index}`"
-      :class="`section-${index}`"
-    >
+    <div class="section" v-for="(section, index) in sections" :key="section.id" :ref="`section-${index}`"
+      :class="`section-${index}`">
+      <div class="sidescroll-container">
+        <transition name="fade" @before-leave="beforeLeave">
+          <SideScrolling v-if="index === 0 && activeSection === 0" />
+        </transition>
+      </div>
       <h2 class="content">{{ section.title }}</h2>
       <p class="content">{{ section.content }}</p>
     </div>
     <div class="scroll-indicator" v-if="showIndicator">
-      <button v-for="(section, index) in sections" :key="index" @click="scrollToSection(index)">
+      <div class="button-container" v-for="(section, index) in sections" :key="index" @click="scrollToSection(index)">
+        <div class="box"></div>
         {{ section.title }}
-      </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import AshEffect from './AshEffect.vue';
+import SideScrolling from './SideScrolling.vue';
 
 export default {
   components: {
+    SideScrolling,
   },
   props: {
     sections: {
@@ -40,6 +42,7 @@ export default {
     return {
       activeSection: 0,
       isScrolling: false,
+      isLeaving: false
     };
   },
   methods: {
@@ -58,7 +61,7 @@ export default {
       if (this.isScrolling) return;
 
       this.isScrolling = true;
-      
+
       const direction = event.deltaY > 0 ? 1 : -1;
       this.activeSection += direction;
 
@@ -68,7 +71,7 @@ export default {
         this.activeSection = this.sections.length - 1;
       }
       setTimeout(() => {
-          this.scrollToSection(this.activeSection);
+        this.scrollToSection(this.activeSection);
       }, 100);
 
     },
@@ -84,6 +87,13 @@ export default {
           section.style.backgroundImage = this.computeGradient(index, this.sections.length);
         }
       });
+    },
+    beforeLeave(el) {
+      // Add a delay before the component is removed
+      setTimeout(() => {
+        // This will trigger the actual removal
+        el.style.opacity = 0;
+      }, 500); // Delay in milliseconds (500ms in this example)
     }
   },
   mounted() {
@@ -96,6 +106,19 @@ export default {
 </script>
 
 <style scoped>
+.box{
+  border: solid black 5px;
+  padding: 5px;
+  background-color:white;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .fullpage-container {
   overflow: hidden;
   height: 100vh;
@@ -107,6 +130,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  flex-direction:column;
 }
 
 .section:nth-child(1) .content {
@@ -122,11 +147,28 @@ export default {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
+  display:inline-block;
   flex-direction: column;
+  margin: 0px;
 }
 
 .scroll-indicator button {
   margin-bottom: 10px;
+}
+
+.button-container{
+  display: flex;
+  flex-direction:row;
+  background:red;
+}
+
+.sidescroll-container {
+  background-color:green;
+  color:white;
+  align-items: center;
+  justify-content: center;
+  display:flex;
+  flex-wrap: nowrap;
+  width: 80%;
 }
 </style>

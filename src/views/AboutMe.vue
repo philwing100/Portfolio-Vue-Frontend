@@ -1,6 +1,6 @@
 <template class="page">
-    <AshEffect />
   <div>
+    <AshEffect />
     <FullPage :sections="sections" :showIndicator="true" />
   </div>
 </template>
