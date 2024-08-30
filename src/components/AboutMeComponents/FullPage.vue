@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 <template>
   <div class="fullpage-container" @wheel="handleScroll">
     <div class="section" v-for="(section, index) in sections" :key="section.id" :ref="`section-${index}`"
@@ -13,9 +11,9 @@
       <p class="content">{{ section.content }}</p>
     </div>
     <div class="scroll-indicator" v-if="showIndicator">
-      <div class="button-container" v-for="(section, index) in sections" :key="index" @click="scrollToSection(index)">
+      <div class="button-container" v-for="(section, index) in sections" :key="index" @click="scrollToSection(index);activeSection=index">
+        <div><div :style="activeSection===0 ? { color: 'white'} : {}" class="pageButtons">{{ section.title }} </div></div>
         <div class="box"></div>
-        {{ section.title }}
       </div>
     </div>
   </div>
@@ -93,7 +91,7 @@ export default {
       setTimeout(() => {
         // This will trigger the actual removal
         el.style.opacity = 0;
-      }, 500); // Delay in milliseconds (500ms in this example)
+      }, 500);
     }
   },
   mounted() {
@@ -106,16 +104,20 @@ export default {
 </script>
 
 <style scoped>
-.box{
+.box {
   border: solid black 5px;
   padding: 5px;
-  background-color:white;
+  background-color: white;
+  margin: 5 px;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease;
 }
-.fade-enter, .fade-leave-to {
+
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
@@ -131,7 +133,7 @@ export default {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  flex-direction:column;
+  flex-direction: column;
 }
 
 .section:nth-child(1) .content {
@@ -142,33 +144,42 @@ export default {
   z-index: 2;
 }
 
+.sidescroll-container {
+  background-color: green;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: nowrap;
+  width: 80%;
+  margin-right: 5px;
+}
+
 .scroll-indicator {
   position: fixed;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  display:inline-block;
   flex-direction: column;
-  margin: 0px;
 }
 
-.scroll-indicator button {
-  margin-bottom: 10px;
+.button-container {
+  flex-direction: row;
+  padding-top: 10px;
+  justify-content: right;
+  padding-right: 5px;
 }
 
-.button-container{
-  display: flex;
-  flex-direction:row;
-  background:red;
+.pageButtons {
+  white-space: nowrap;
+  position: absolute;
+  transition: transform 0.5s ease 0.05s,opacity 0.5s ease 0.05s;
+  opacity: 0;
+  padding-right: 100%;
 }
 
-.sidescroll-container {
-  background-color:green;
-  color:white;
-  align-items: center;
-  justify-content: center;
-  display:flex;
-  flex-wrap: nowrap;
-  width: 80%;
+.pageButtons:hover {
+  transform: translateX(-20%);
+  opacity: 1.0;
 }
 </style>
