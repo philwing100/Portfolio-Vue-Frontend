@@ -9,8 +9,9 @@
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
-        <!-- Pass list name as prop to ListElement component -->
+        <!-- In the future these will be loaded as inputs from the server -->
         <ListElement list-name="Daily List" />
+        <ListElement list-name="All Tasks" />
       </div>
     </div>
     <div class="calendarTemp">Insert Daily Calendar Here</div>

@@ -1,21 +1,23 @@
 <template>
   <div class="template-container">
-    <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="" spellcheck="false">
-      {{ title }}
-    </h2>
-    <button @click="clearStorage">clearStorage</button>
+    <div :style="{ display: 'inline-block', flexDirection: 'row' }">
+      <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="" spellcheck="false">
+        {{ title }}
+      </h2>
+      <CheckedBox label="Due Date?" @checkbox-toggled="handleCheckboxToggled"/>
+          <DateInput  v-if="dueDate" @date-selected="handleDateChange" />
+
+          <CheckedBox label="Recurring task?" @checkbox-toggled="handleRecurringTask"/>
+          <!--Later: Recurring task checked = make ui and functions appear for making the list appear every day-->
+
+      <button v-if="debugMode" @click="clearStorage">clearStorage</button>
+    </div>
     <div>
       <div class="input-container">
-        <input type="text" v-model="newItem" placeholder="Enter an item" @keyup.enter="addItem" class="input-field"
-          spellcheck="false">
-        <button @click="addItem" class="add-button">Add Item</button>
+        <button @click="addItem" class="add-button">Remove</button>
       </div>
-      <div class="dropdown">
-          <button @click="toggleDropdown" class="dropbtn">Dropdown</button>
-          <div v-if="isDropdownOpen" class="dropdown-content">
-            <a v-for="(option, index) in titlesArray" :key="index" @click="selectOption(option)">{{ option }}</a>
-          </div>
-        </div>
+      <div>
+      </div>
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
@@ -31,10 +33,19 @@
         </li>
       </ul>
     </div>
+    <div class="dropdown">
+      <button @click="toggleDropdown" class="dropbtn">Dropdown</button>
+      <div v-if="isDropdownOpen" class="dropdown-content">
+        <a v-for="(option, index) in titlesArray" :key="index" @click="selectOption(option)">{{ option }}</a>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import DateInput from './DateInput.vue';
+import CheckedBox from './CheckBox.vue';
+import './ListElement.css'; 
 export default {
   name: 'ListElement',
   props: {
@@ -50,12 +61,20 @@ export default {
       itemsArray: [],
       titlesArray: [],
       draggedIndex: null,
-      isDropdownOpen: false
+      isDropdownOpen: false,
+      selectedMode: 'Mode 1', 
+      debugMode: false,
+      dueDate: false,
+      recurringTask: true
     };
   },
   created() {
     // Call a method to load initial data
     this.loadInitialData();
+  },
+  components: {
+    DateInput,
+    CheckedBox
   },
   methods: {
     loadInitialData() {
@@ -70,44 +89,57 @@ export default {
       }
 
       const storedTitlesArray = localStorage.getItem('titlesArray');
-      if(storedTitlesArray){
+      if (storedTitlesArray) {
         this.titlesArray = JSON.parse(storedTitlesArray);
       }
+
+      // Ensure there's at least one empty item in the array
+      if (this.itemsArray.length === 0) {
+        this.itemsArray.push(''); // Base case
+      }
+    },
+    handleDateChange(date) {
+      this.selectedDate = date; // Update the parent component's selectedDate
+    },
+    handleCheckboxToggled() {
+      this.dueDate= !this.dueDate;
+    },
+    handleRecurringTask(){
+      this.recurringTask =!this.recurringTask;
     },
     updateTitle() {
       this.saveList();//Save the current list items to the title before changing the title
       const titleElement = this.$refs.titleInput.innerText;
       this.title = titleElement;
-      let flag=true;
-    if(this.titlesArray.length !== 0){
-      for(let i=0;i<this.titlesArray.length;i++){
-      //  console.log(this.titlesArray[i]);
-      //  console.log(this.title);
-        if(this.titlesArray[i]===this.title){
-          flag=false;
+      let flag = true;
+      if (this.titlesArray.length !== 0) {
+        for (let i = 0; i < this.titlesArray.length; i++) {
+          //  console.log(this.titlesArray[i]);
+          //  console.log(this.title);
+          if (this.titlesArray[i] === this.title) {
+            flag = false;
+          }
         }
       }
-    }
-      if(flag){
+      if (flag) {
         this.titlesArray.push(this.title);
         this.saveTitlesArray();
       }
       localStorage.setItem('title', this.title);
       let newItems = localStorage.getItem(this.title)
-      this.itemsArray=JSON.parse(newItems);
+      this.itemsArray = JSON.parse(newItems);
     },
     saveList() {
       localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
     },
-    saveTitlesArray(){
+    saveTitlesArray() {
       localStorage.setItem('titlesArray', JSON.stringify(this.titlesArray));
     },
     addItem() {
       if (this.newItem.trim() !== '') {
         if (!this.itemsArray) {
-          this.itemsArray = []; // Ensure itemsArray is initialized
+          this.itemsArray = [];
         }
-        console.log(this.title + " " + this.itemsArray + " " + this.titlesArray);
         this.itemsArray.push(this.newItem.trim());
         this.newItem = '';
         this.saveList();
@@ -221,6 +253,11 @@ export default {
       this.itemsArray.splice(index, 1);
       this.saveList();
 
+      // Ensure at least one empty item remains
+      if (this.itemsArray.length === 0) {
+        this.itemsArray.push(''); // Add an empty item as a base case
+      }
+
       // Check if the array is not empty and the index is valid before focusing
       if (this.itemsArray.length > 0) {
         const newIndex = index === this.itemsArray.length ? index - 1 : index;
@@ -262,173 +299,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.dropbtn{
-  margin-bottom: 10px;
-  min-width: 20px;
-  max-width:200px;
-  width:200px;
-} 
-
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.text-cursor {
-  cursor: text;
-}
-
-.item-text:focus {
-  outline: none;
-  /* Remove default outline for focused element */
-}
-
-.drag-button {
-  padding: 4px;
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 4px;
-}
-
-/* Styles for dragging */
-.ListItem li {
-  cursor: move;
-}
-
-.template-container {
-  background-color: black;
-  border-radius: 10px;
-  border-color: white;
-  border-width: 1px;
-  border-style: solid;
-  min-height: 400px;
-  max-height: 600px;
-  min-width: 300px;
-  max-width: 400px;
-  padding: 5px 10px;
-  margin: 10px 10px 20px 10px;
-}
-
-.input-container {
-  margin-bottom: 0px;
-  display: flex;
-  align-items: center;
-}
-
-
-
-.input-field {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 8px;
-  font-size: 14px;
-}
-
-.add-button,
-.toggle-popup-button {
-  padding: 8px 16px;
-  background-color: #2d5dc7;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-right: 8px;
-}
-
-.remove-button {
-  padding: 4px 8px;
-  background-color: #343541;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 12px;
-  margin-right: 8px;
-}
-
-.ListContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.ListItem {
-  padding: 0;
-}
-
-.item-container {
-  display: flex;
-  align-items: center;
-}
-
-.item-text {
-  margin-left: 10px;
-  outline: none;
-}
-
-.ListItem li {
-  position: relative;
-  padding-top: 1.45px;
-  padding-bottom: 1.45px;
-  padding-left: 10px;
-}
-
-.ListContainer {
-  max-height: 300px;
-  max-width: 300px;
-  overflow-y: auto;
-  display: flex;
-}
-
-.ListItem {
-  padding: 0;
-}
-
-.ListItem,
-.RemoveButtonContainer {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  list-style-type: none;
-  padding-right: 10px;
-  spellcheck: false;
-}
-
-li:hover {
-  background-color: grey;
-  border-radius: 15px;
-}
-</style>
