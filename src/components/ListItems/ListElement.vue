@@ -4,17 +4,17 @@
       <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="" spellcheck="false">
         {{ title }}
       </h2>
-      <CheckedBox label="Due Date?" @checkbox-toggled="handleCheckboxToggled"/>
-          <DateInput  v-if="dueDate" @date-selected="handleDateChange" />
+      <CheckedBox label="Due Date?" @checkbox-toggled="handleCheckboxToggled" />
+      <DateInput v-if="dueDateCheckbox" @date-selected="handleDateChange" />
 
-          <CheckedBox label="Recurring task?" @checkbox-toggled="handleRecurringTask"/>
-          <!--Later: Recurring task checked = make ui and functions appear for making the list appear every day-->
+      <CheckedBox label="Recurring task?" @checkbox-toggled="handleRecurringTask" />
+      <!--Later: Recurring task checked = make ui and functions appear for making the list appear every day-->
 
       <button v-if="debugMode" @click="clearStorage">clearStorage</button>
     </div>
     <div>
       <div class="input-container">
-        <button @click="addItem" class="add-button">Remove</button>
+        <button @click="removeItem" class="add-button">Remove</button>
       </div>
       <div>
       </div>
@@ -24,11 +24,12 @@
         <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index)">
-            <button class="remove-button" @click="removeItem(index)">X</button>
+            <span v-if="index === selectedItemIndex">✔️</span>
+            <CheckedBox label="" @checkbox-toggled="completeItem(index)" />
             <div class="text-cursor item-text" ref="itemSpan" contenteditable="true"
               @keydown.enter.prevent="handleEnter(index, $event)" @keydown.backspace="handleBackspace(index, $event)"
               @keydown.up="handleArrowUp(index, $event)" @keydown.down="handleArrowDown(index, $event)"
-              @blur="updateItem(index, $event)" spellcheck="false">{{ item }}</div>
+              @blur="updateItem(index, $event)" spellcheck="false">{{ item.textString }}</div>
           </div>
         </li>
       </ul>
@@ -45,7 +46,7 @@
 <script>
 import DateInput from './DateInput.vue';
 import CheckedBox from './CheckBox.vue';
-import './ListElement.css'; 
+import './ListElement.css';
 export default {
   name: 'ListElement',
   props: {
@@ -57,15 +58,30 @@ export default {
   data() {
     return {
       title: this.listName,
-      newItem: '',
       itemsArray: [],
       titlesArray: [],
+      completedItemsArray: [],
+      selectedItemIndex: 0,
       draggedIndex: null,
       isDropdownOpen: false,
-      selectedMode: 'Mode 1', 
-      debugMode: false,
-      dueDate: false,
-      recurringTask: true
+      debugMode: true,
+
+      textString: '',
+      dueDateCheckbox: false,
+      dueDateDate: null,
+      dueDateTime: null,
+      taskTimeEstimate: null,
+      recurringTask: false,
+      recurringTaskEndDate: null,
+      addToCalendarCheckbox: false,
+
+      defaultDueDateCheckbox: false,
+      defaultDueDateDate: null,
+      defaultDueDateTime: null,
+      defaultTaskTimeEstimate: null,
+      defaultRecurringTask: false,
+      defaultRecurringTaskEndDate: null,
+      defaultAddToCalendarCheckbox: false
     };
   },
   created() {
@@ -75,6 +91,9 @@ export default {
   components: {
     DateInput,
     CheckedBox
+  },
+  computed: {
+
   },
   methods: {
     loadInitialData() {
@@ -102,10 +121,13 @@ export default {
       this.selectedDate = date; // Update the parent component's selectedDate
     },
     handleCheckboxToggled() {
-      this.dueDate= !this.dueDate;
+      this.dueDateCheckbox = !this.dueDateCheckbox;
     },
-    handleRecurringTask(){
-      this.recurringTask =!this.recurringTask;
+    handleRecurringTask() {
+      this.recurringTask = !this.recurringTask;
+    },
+    completeItem(index) {
+      //Adds item to the dropdownlist
     },
     updateTitle() {
       this.saveList();//Save the current list items to the title before changing the title
@@ -126,8 +148,8 @@ export default {
         this.saveTitlesArray();
       }
       localStorage.setItem('title', this.title);
-      let newItems = localStorage.getItem(this.title)
-      this.itemsArray = JSON.parse(newItems);
+      let textStrings = localStorage.getItem(this.title)
+      this.itemsArray = JSON.parse(textStrings);
     },
     saveList() {
       localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
@@ -135,14 +157,33 @@ export default {
     saveTitlesArray() {
       localStorage.setItem('titlesArray', JSON.stringify(this.titlesArray));
     },
-    addItem() {
-      if (this.newItem.trim() !== '') {
-        if (!this.itemsArray) {
-          this.itemsArray = [];
-        }
-        this.itemsArray.push(this.newItem.trim());
-        this.newItem = '';
-        this.saveList();
+    loadDefaultItemValues() {
+      //future makes api call to get this user's default values
+    },
+    createNewItem(text) {
+      return {
+        textString: text,
+        dueDateCheckbox: false,
+        dueDateDate: null,
+        dueDateTime: null,
+        taskTimeEstimate: null,
+        recurringTask: false,
+        recurringTaskEndDate: null,
+        addToCalendarCheckbox: false,
+      }
+    },
+    createItemWithExistingValues(text) {
+      return {
+
+        //These could all instead be replaced with 
+        textString: text,
+        dueDateCheckbox: this.dueDateCheckbox,
+        dueDateDate: this.dueDateDate,
+        dueDateTime: this.dueDateTime,
+        taskTimeEstimate: this.taskTimeEstimate,
+        recurringTask: this.recurringTask,
+        recurringTaskEndDate: this.recurringTaskEndDate,
+        addToCalendarCheckbox: this.addToCalendarCheckbox,
       }
     },
     dragStart(index) {
@@ -158,7 +199,21 @@ export default {
       this.draggedIndex = null;
       this.saveList();
     },
+    selectCurrentIndex(index) {
+      this.selectedItemIndex = index;
+    },/*
+    populateCurrentValues(index) {
+      this.textString = this.itemsArray.textString[index];
+      this.dueDateCheckbox = this.itemsArray.textString[index];
+      this.dueDateDate = this.itemsArray[index];
+      this.dueDateTime = this.itemsArray[index];
+      this.taskTimeEstimate = this.itemsArray[index];
+      this.recurringTask = this.itemsArray[index];
+      this.recurringTaskEndDate = this.itemsArray[index];
+      this.addToCalendarCheckbox = this.itemsArray[index];
+    },*/
     focusEditable(index, position = null) {
+      this.selectedItemIndex = index;
       this.$nextTick(() => {
         const element = this.$refs.itemSpan[index];
         if (element) {
@@ -180,8 +235,8 @@ export default {
       const textBeforeCaret = text.substring(0, caretPosition);
       const textAfterCaret = text.substring(caretPosition);
 
-      this.itemsArray.splice(index, 1, textBeforeCaret);
-      this.itemsArray.splice(index + 1, 0, textAfterCaret);
+      this.itemsArray.splice(index, 1, this.createItemWithExistingValues(textBeforeCaret));
+      this.itemsArray.splice(index + 1, 0, this.createItemWithExistingValues(textAfterCaret));
 
       this.$nextTick(() => {
         this.focusEditable(index + 1, 0);
@@ -196,7 +251,7 @@ export default {
         const previousText = this.itemsArray[index - 1];
         const newText = previousText + currentText;
 
-        this.itemsArray.splice(index - 1, 1, newText);
+        this.itemsArray.splice(index - 1, 1, this.createItemWithExistingValues(newText));
         this.itemsArray.splice(index, 1);
 
         this.$nextTick(() => {
@@ -204,14 +259,14 @@ export default {
           if (previousElement) {
             previousElement.focus();
             this.setCaretPosition(previousElement, previousText.length);
-            this.removeItem(index);
+            this.removeItem();
           }
           this.saveList();
         });
       }
     },
     handleArrowUp(index, event) {
-      if (event.target.innerText.length === 0) {
+      if (event.target.innerText.length === 0 && index - 1 >= 0) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index - 1, this.itemsArray[index - 1].length);
       }
@@ -223,13 +278,13 @@ export default {
       // Check if the caret is in the top row
       const isTopRow = rect.top === elementRect.top;
 
-      if (isTopRow && index > 0 || event.target.innerText.length === 0) {
+      if ((isTopRow || event.target.innerText.length === 0) && index - 1 >= 0) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index - 1, this.itemsArray[index - 1].length);
       }
     },
     handleArrowDown(index, event) {
-      if (event.target.innerText.length === 0) {
+      if (event.target.innerText.length === 0 && index + 1 < this.itemsArray.length) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index + 1, 0);
       }
@@ -240,17 +295,17 @@ export default {
 
       const isBottomRow = Math.abs(rect.bottom - elementRect.bottom) < 1;
 
-      if (isBottomRow && index < this.itemsArray.length || event.target.innerText.length === 0) {
+      if ((isBottomRow || event.target.innerText.length === 0) && index + 1 < this.itemsArray.length) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index + 1, 0);
       }
     },
     updateItem(index, event) {
-      this.itemsArray.splice(index, 1, event.target.innerText);
+      this.itemsArray.splice(index, 1, this.createNewItem(event.target.innerText));
       this.saveList();
     },
-    removeItem(index) {
-      this.itemsArray.splice(index, 1);
+    removeItem() {
+      this.itemsArray.splice(this.selectedItemIndex, 1);
       this.saveList();
 
       // Ensure at least one empty item remains
@@ -260,7 +315,7 @@ export default {
 
       // Check if the array is not empty and the index is valid before focusing
       if (this.itemsArray.length > 0) {
-        const newIndex = index === this.itemsArray.length ? index - 1 : index;
+        const newIndex = this.selectedItemIndex === this.itemsArray.length ? this.selectedItemIndex - 1 : this.selectedItemIndex;
         this.$nextTick(() => {
           this.focusEditable(newIndex);
         });
@@ -285,7 +340,7 @@ export default {
       localStorage.clear();
       this.title = 'Daily List'
       this.itemsArray = this.titlesArray = [];
-      this.newItem = '';
+      this.textString = '';
       this.loadInitialData();
     },
     toggleDropdown() {
