@@ -10,7 +10,7 @@ import SignUp from '../views/SignUp.vue'
 
 const routes = [
   {
-    path: '/dashboard',
+    path: '/',
     name: 'dashboard',
     component: DashboardWorld
   },
@@ -25,7 +25,7 @@ const routes = [
     component: SettingsWorld
   },
   {
-    path: '/',
+    path: '/About-me',
     name: 'About Me',
     component: AboutMe
   },

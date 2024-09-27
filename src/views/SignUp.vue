@@ -55,18 +55,14 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styles here */
 .signup-container {
-    /* Your CSS styling */
 }
 
 button {
-    /* Your button styling */
 }
 
 .message {
     margin-top: 10px;
     color: green;
-    /* Add any additional styling for your message */
 }
 </style>

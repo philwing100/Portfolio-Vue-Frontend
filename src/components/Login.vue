@@ -10,7 +10,7 @@
           <input v-model="password" name="password" type="password" />
           <button>Login</button>
         </form>
-        <a class="button google" href="/login/federated/google">Sign in with Google</a>
+      
         <button @click="redirectToSignUp()">Sign up</button>
       </div>
     </div>

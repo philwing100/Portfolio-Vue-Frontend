@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="learn">
-      <h1>Haha quizlet learn</h1>
+      <h1>Under construction Learn</h1>
     </div>
 
   </div>

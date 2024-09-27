@@ -1,4 +1,5 @@
 <template>
+  <H1>Under construction Type</H1>
   <div class="Type">
     <div class="quote">
       <span v-for="(word, index) in words" :key="index" :class="{ 'highlighted': index === currentIndex }">

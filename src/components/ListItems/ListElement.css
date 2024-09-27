@@ -1,166 +1,168 @@
 .dropbtn {
-    margin-bottom: 10px;
-    min-width: 20px;
-    max-width: 200px;
-    width: 200px;
-  }
-  
-  
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    z-index: 1;
-  }
-  
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  
-  .text-cursor {
-    cursor: text;
-  }
-  
-  .item-text:focus {
-    outline: none;
-    /* Remove default outline for focused element */
-  }
-  
-  .drag-button {
-    padding: 4px;
-    background-color: #ccc;
-    color: #333;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 4px;
-  }
-  
-  /* Styles for dragging */
-  .ListItem li {
-    cursor: move;
-  }
-  
-  .template-container {
-    background-color: black;
-    border-radius: 10px;
-    border-color: white;
-    border-width: 1px;
-    border-style: solid;
-    min-height: 400px;
-    max-height: 600px;
-    min-width: 400px;
-    max-width: 500px;
-    padding: 5px 10px;
-  }
-  
-  .input-container {
-    margin-bottom: 0px;
-    display: flex;
-    align-items: center;
-  }
-  
-  
-  
-  .input-field {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 8px;
-    font-size: 14px;
-  }
-  
-  .add-button,
-  .toggle-popup-button {
-    padding: 8px 16px;
-    background-color: #2d5dc7;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-right: 8px;
-  }
-  
-  .remove-button {
-    padding: 4px 8px;
-    background-color: #343541;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 12px;
-    margin-right: 8px;
-  }
-  
-  .ListContainer {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .ListItem {
-    padding: 0;
-  }
-  
-  .item-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .item-text {
-    margin-left: 10px;
-    outline: none;
-    word-break: break-all;
-  }
-  
-  .ListItem li {
-    position: relative;
-    padding-top: 1.45px;
-    padding-bottom: 1.45px;
-  }
-  
-  .ListContainer {
-    max-height: 300px;
-    max-width: 400px;
-    overflow-y: auto;
-    display: flex;
-  }
-  
-  .ListItem {
-    padding: 0;
-  }
-  
-  .ListItem,
-  .RemoveButtonContainer {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    list-style-type: none;
-    padding-right: 10px;
-    spellcheck: false;
-  }
-  
-  li:hover {
-    background-color: grey;
-    border-radius: 15px;
-  }
+  padding: 8px 16px;
+  background-color: #383444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color:#383444;
+  width: 100%;
+  box-shadow: 0 -8px 16px 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
+  z-index: 1;
+  bottom: 100%; 
+  max-height: 200px; 
+  overflow-y: auto; 
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.text-cursor {
+  cursor: text;
+}
+
+.item-text:focus {
+  outline: none;
+}
+
+.drag-button {
+  padding: 4px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+/* Styles for dragging */
+.ListItem li {
+  cursor: move;
+}
+
+.template-container {
+  background-color: black;
+  border-radius: 10px;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  height:90vh;
+  width: 400px;
+  overflow:hidden;
+  color:white;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.add-button,
+.toggle-popup-button {
+  padding: 8px 16px;
+  background-color: #343541;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.ListContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 50px;
+  max-height: 390px;
+  max-width: 400px;
+  overflow-y:auto;
+  flex:1;
+}
+
+.ListItem {
+  padding: 0;
+}
+
+.item-container {
+  display: flex;
+  align-items: center;
+}
+
+.item-text {
+  margin-left: 10px;
+  outline: none;
+  word-break: break-all;
+}
+
+.ListItem li {
+  position: relative;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.ListItem {
+  padding-left:20px;
+}
+
+.ListItem,
+.RemoveButtonContainer {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  list-style-type: none;
+  padding-right: 10px;
+}
+
+li:hover {
+  background-color: grey;
+  border-radius: 15px;
+}
+
+
+.settings{
+  max-width: 15px;
+  max-height: 20px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Adjust based on the number of elements */
+  gap: 10px; /* Space between items */
+  margin-bottom: 10px; /* Space below the grid */
+}
+
+.title{
+  max-width: 200px;
+  font-size:25px;
+  text-decoration: underline;
+}
+
+.input-grid > * {
+  min-width: 0; /* Prevent overflow */
+}
+

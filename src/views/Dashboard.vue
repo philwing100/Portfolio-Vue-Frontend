@@ -5,16 +5,16 @@
       <div class="button-container">
         <div class="bigButton" id="previousDay" :style="{ 'background-color': colors.background }">Previous Day</div>
         <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">Next Day</div>
-      </div>
+      </div>  
     </div>
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="content-container">
         <!-- In the future these will be loaded as inputs from the server -->
-        <ListElement list-name="Daily List" />
+        <ListElement list-name="Daily List" selectedItem=""/>
         <ListElement list-name="All Tasks" />
       </div>
+      <div class="calendarTemp">Insert Daily Calendar Here</div>
     </div>
-    <div class="calendarTemp">Insert Daily Calendar Here</div>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
   grid-row: 1;
   display: flex;
   flex-direction: row;
-  flex-grow: 1;
+  height:10vh;
 }
 
 .button-container {
@@ -63,22 +63,9 @@ export default {
 
 .page-container {
   display: flex;
-  padding-top: 10px;
   flex-direction: row;
   padding-left: 10px;
-}
-
-.listContainer {
-  border-radius: 10px;
-  border-color: white;
-  border-width: 1px;
-  border-style: solid;
-  min-height: 400px;
-  max-height: 600px;
-  min-width: 300px;
-  max-width: 400px;
-  padding: 5px 10px;
-  margin: 10px 10px 20px 10px;
+  height:90vh;
 }
 
 .innerListContainer {}
@@ -92,7 +79,6 @@ export default {
 }
 
 .calendarTemp {
-  grid-row: 2;
   border-radius: 10px;
   border-color: white;
   border-style: solid;

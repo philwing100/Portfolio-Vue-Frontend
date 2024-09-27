@@ -1,51 +1,65 @@
 <template>
+  <!-- Include Font Awesome CDN in your HTML -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   <div class="template-container">
-    <div :style="{ display: 'inline-block', flexDirection: 'row' }">
-      <h2 @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent="" spellcheck="false">
+    <div class="input-grid">
+      <div class='title' @blur="updateTitle" contenteditable="true" ref="titleInput" @keydown.enter.prevent=""
+        spellcheck="false">
         {{ title }}
-      </h2>
+      </div>
+      <i class="fa-solid fa-gear add-button settings" @click="taskListSettingsPopUp"></i>
       <CheckedBox label="Due Date?" @checkbox-toggled="handleCheckboxToggled" />
-      <DateInput v-if="dueDateCheckbox" @date-selected="handleDateChange" />
-
+      <DateInput v-if="dueDateCheckbox" @date-selected="handleDateChange" :initialDate="dueDateDate" />
+      <TimeInput v-if="dueDateCheckbox" @time-changed="handleTimeChange" :initialDateTime="dueDateTime" />
       <CheckedBox label="Recurring task?" @checkbox-toggled="handleRecurringTask" />
-      <!--Later: Recurring task checked = make ui and functions appear for making the list appear every day-->
-
+      <MinuteInput :initialMinutes="taskTimeEstimate" :key="taskTimeEstimate"
+        @time-selected="handleUpdateTimeEstimate" />
+      <div v-if="recurringTask">Recurring task frequency (days of the week popup)</div>
+      <div v-if="recurringTask">Recurring task end date</div>
+      <!--<div v-if="pageIsNotDashboard">List type display</div>-->
+      <CheckedBox label="Visible on Calendar?" @calendar-checkbox-toggled="handleCalendarVisible" />
       <button v-if="debugMode" @click="clearStorage">clearStorage</button>
     </div>
     <div>
-      <div class="input-container">
-        <button @click="removeItem" class="add-button">Remove</button>
-      </div>
-      <div>
-      </div>
+      <button @click="removeItem" class="add-button">Remove Task</button>
     </div>
+
     <div class="ListContainer">
       <ul class="ListItem">
         <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
+          :style="index === selectedItemIndex ? 'border: 3px solid blue; border-radius:5px; transition: border-color 0.1s ease;' : 'border: 3px solid transparent;'"
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index)">
-            <span v-if="index === selectedItemIndex">✔️</span>
-            <CheckedBox label="" @checkbox-toggled="completeItem(index)" />
+            <CheckBoxOneWay label="" @checkbox-toggled="completeItem(index)" />
             <div class="text-cursor item-text" ref="itemSpan" contenteditable="true"
               @keydown.enter.prevent="handleEnter(index, $event)" @keydown.backspace="handleBackspace(index, $event)"
               @keydown.up="handleArrowUp(index, $event)" @keydown.down="handleArrowDown(index, $event)"
-              @blur="updateItem(index, $event)" spellcheck="false">{{ item.textString }}</div>
+              spellcheck="false">{{ item.textString }}</div>
           </div>
         </li>
       </ul>
     </div>
+
     <div class="dropdown">
-      <button @click="toggleDropdown" class="dropbtn">Dropdown</button>
+      <button @click="toggleDropdown" @keydown.enter.prevent="toggleDropdown" class="dropbtn">Completed Tasks</button>
       <div v-if="isDropdownOpen" class="dropdown-content">
-        <a v-for="(option, index) in titlesArray" :key="index" @click="selectOption(option)">{{ option }}</a>
+        <a v-for="(item, index) in completedItemsArray" :key="index" @click="selectOption(index)">{{ item.textString
+          }}</a>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
+/* eslint-disable*/
+
 import DateInput from './DateInput.vue';
 import CheckedBox from './CheckBox.vue';
+import CheckBoxOneWay from './CheckboxOneWay.vue';
+import TimeInput from './TimeInput.vue';
+import MinuteInput from './MinuteInput.vue';
 import './ListElement.css';
 export default {
   name: 'ListElement',
@@ -61,39 +75,62 @@ export default {
       itemsArray: [],
       titlesArray: [],
       completedItemsArray: [],
+      recurringTasksArray: [],
       selectedItemIndex: 0,
       draggedIndex: null,
       isDropdownOpen: false,
-      debugMode: true,
+      debugMode: false,
 
       textString: '',
       dueDateCheckbox: false,
       dueDateDate: null,
       dueDateTime: null,
-      taskTimeEstimate: null,
+      timeEstimate: null,
       recurringTask: false,
       recurringTaskEndDate: null,
       addToCalendarCheckbox: false,
+      completedDateTime: null,
+      timeUntilComplete: null,
+
 
       defaultDueDateCheckbox: false,
       defaultDueDateDate: null,
       defaultDueDateTime: null,
-      defaultTaskTimeEstimate: null,
+      defaultTaskTimeEstimate: 0,
       defaultRecurringTask: false,
       defaultRecurringTaskEndDate: null,
-      defaultAddToCalendarCheckbox: false
+      defaultAddToCalendarCheckbox: false,
+      defaultCompletedDateTime: null,
     };
   },
   created() {
     // Call a method to load initial data
+    this.clearStorage();
     this.loadInitialData();
   },
   components: {
     DateInput,
-    CheckedBox
+    CheckedBox,
+    CheckBoxOneWay,
+    TimeInput,
+    MinuteInput,
   },
   computed: {
 
+  },
+  watch: {
+    initialMinutes(newValue) {
+      console.log("initialMinutes changed to: ", newValue); // Check if this is called
+      if (newValue > 0) {
+        handleUpdateTimeEstimate(newValue);
+      }
+    },
+    initialDate(newDate) {
+      handleDateChange(newDate); // Update the selected date when prop changes
+    },
+    initialDateTime(newDateTime) {
+      handleTimeChange(newDateTime); // Update the selected date when prop changes
+    },
   },
   methods: {
     loadInitialData() {
@@ -112,22 +149,50 @@ export default {
         this.titlesArray = JSON.parse(storedTitlesArray);
       }
 
-      // Ensure there's at least one empty item in the array
-      if (this.itemsArray.length === 0) {
-        this.itemsArray.push(''); // Base case
+      // Ensure itemsArray has at least one valid item
+      if (!this.itemsArray || this.itemsArray.length === 0) {
+        this.itemsArray.push(this.createNewItem('')); // Initialize with an empty item
       }
     },
     handleDateChange(date) {
-      this.selectedDate = date; // Update the parent component's selectedDate
+      this.dueDateDate = date; // Update the parent component's selectedDate
+      this.itemsArray[this.selectedItemIndex].dueDateDate = date;
     },
     handleCheckboxToggled() {
       this.dueDateCheckbox = !this.dueDateCheckbox;
+      this.itemsArray[this.selectedItemIndex].dueDateCheckbox = this.dueDateCheckbox; // Update the checkbox state in the items array
     },
     handleRecurringTask() {
       this.recurringTask = !this.recurringTask;
+      this.itemsArray[this.selectedItemIndex].recurringTask = this.recurringTask; // Update the recurring task state in the items array
+    },
+
+    handleTimeChange(time) {
+      this.dueDateTime = time;
+      this.itemsArray[this.selectedItemIndex].dueDateTime = time; // Update the time in the items array
+    },
+
+    handleUpdateTimeEstimate(newMinutes) {
+      this.taskTimeEstimate = newMinutes;
+      this.itemsArray[this.selectedItemIndex].taskTimeEstimate = newMinutes;
+      console.log('time updated: ' + this.taskTimeEstimate + " for index " + this.selectedItemIndex);
+    },
+    handleCalendarVisible() {
+      //needs implementation
+    },
+    swapItemValues(index) {
+      const item = this.itemsArray[index];
+      this.dueDateDate = item.dueDateDate;
+      this.dueDateTime = item.dueDateTime;
+      this.dueDateCheckbox = item.dueDateCheckbox;
+      this.recurringTask = item.recurringTask;
+      this.taskTimeEstimate = item.taskTimeEstimate;
     },
     completeItem(index) {
-      //Adds item to the dropdownlist
+      if (this.itemsArray[index].textString != '') {
+        this.completedItemsArray.push(this.itemsArray[index]);
+      }
+      this.removeItemByIndex(index);
     },
     updateTitle() {
       this.saveList();//Save the current list items to the title before changing the title
@@ -153,6 +218,7 @@ export default {
     },
     saveList() {
       localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
+      //localStorage.setItem(this.title) needs to retrieve previous items
     },
     saveTitlesArray() {
       localStorage.setItem('titlesArray', JSON.stringify(this.titlesArray));
@@ -161,16 +227,17 @@ export default {
       //future makes api call to get this user's default values
     },
     createNewItem(text) {
+      console.log('newitem created');
       return {
         textString: text,
         dueDateCheckbox: false,
         dueDateDate: null,
         dueDateTime: null,
-        taskTimeEstimate: null,
+        taskTimeEstimate: 0, 
         recurringTask: false,
         recurringTaskEndDate: null,
         addToCalendarCheckbox: false,
-      }
+      };
     },
     createItemWithExistingValues(text) {
       return {
@@ -198,9 +265,6 @@ export default {
       this.itemsArray.splice(index, 0, draggedItem);
       this.draggedIndex = null;
       this.saveList();
-    },
-    selectCurrentIndex(index) {
-      this.selectedItemIndex = index;
     },/*
     populateCurrentValues(index) {
       this.textString = this.itemsArray.textString[index];
@@ -213,6 +277,10 @@ export default {
       this.addToCalendarCheckbox = this.itemsArray[index];
     },*/
     focusEditable(index, position = null) {
+     // if (this.selectedItemIndex != index) {
+     console.log('focusing on index:' + index);
+        this.swapItemValues(index);
+   //   }
       this.selectedItemIndex = index;
       this.$nextTick(() => {
         const element = this.$refs.itemSpan[index];
@@ -220,10 +288,7 @@ export default {
           element.focus();
           if (position !== null) {
             this.setCaretPosition(element, position);
-          }/* else {
-            // Ensure the caret is placed at the end if position is not specified
-            this.setCaretPosition(element, element.innerText.length);
-          }*/
+          }
         }
       });
     },
@@ -240,15 +305,15 @@ export default {
 
       this.$nextTick(() => {
         this.focusEditable(index + 1, 0);
+        console.log('focusing from enter');
       });
-
       this.saveList();
     },
     handleBackspace(index, event) {
       if (window.getSelection().anchorOffset === 0 && index > 0) {
 
         const currentText = event.target.innerText;
-        const previousText = this.itemsArray[index - 1];
+        const previousText = this.itemsArray[index - 1].textString;
         const newText = previousText + currentText;
 
         this.itemsArray.splice(index - 1, 1, this.createItemWithExistingValues(newText));
@@ -269,6 +334,7 @@ export default {
       if (event.target.innerText.length === 0 && index - 1 >= 0) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+        console.log('focusing on arrow up and length = 0');
       }
       const selection = window.getSelection();
       const range = selection.getRangeAt(0);
@@ -281,12 +347,14 @@ export default {
       if ((isTopRow || event.target.innerText.length === 0) && index - 1 >= 0) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index - 1, this.itemsArray[index - 1].length);
+        console.log('focusing on arrow up and length = 0 + its top row');
       }
     },
     handleArrowDown(index, event) {
       if (event.target.innerText.length === 0 && index + 1 < this.itemsArray.length) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index + 1, 0);
+        console.log('focusing on arrow down and length = 0');
       }
       const selection = window.getSelection();
       const range = selection.getRangeAt(0);
@@ -298,11 +366,8 @@ export default {
       if ((isBottomRow || event.target.innerText.length === 0) && index + 1 < this.itemsArray.length) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index + 1, 0);
+        console.log('focusing on arrow down and length = 0 and is bottom row');
       }
-    },
-    updateItem(index, event) {
-      this.itemsArray.splice(index, 1, this.createNewItem(event.target.innerText));
-      this.saveList();
     },
     removeItem() {
       this.itemsArray.splice(this.selectedItemIndex, 1);
@@ -310,7 +375,7 @@ export default {
 
       // Ensure at least one empty item remains
       if (this.itemsArray.length === 0) {
-        this.itemsArray.push(''); // Add an empty item as a base case
+        this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
       }
 
       // Check if the array is not empty and the index is valid before focusing
@@ -318,9 +383,33 @@ export default {
         const newIndex = this.selectedItemIndex === this.itemsArray.length ? this.selectedItemIndex - 1 : this.selectedItemIndex;
         this.$nextTick(() => {
           this.focusEditable(newIndex);
+          console.log('focusing on remove normal');
         });
       }
     },
+    removeItemByIndex(index) {
+      this.saveList();
+
+      // Ensure at least one empty item remains
+      if (this.itemsArray.length === 0) {
+        this.itemsArray.push(this.createNewItem(''));
+      }
+
+      if (this.itemsArray.length > 0) {
+        let newIndex = index >= this.itemsArray.length ? this.itemsArray.length - 1 : index;
+        if (newIndex < 0) newIndex = 0;
+
+        this.$nextTick(() => {
+          this.focusEditable(newIndex);
+          console.log('focusing on remove by index');
+        });
+        this.itemsArray.splice(index, 1);
+        if (this.itemsArray.length === 0) {
+          this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
+        }
+      }
+    },
+
     setCaretPosition(element, position) {
       const range = document.createRange();
       const sel = window.getSelection();
@@ -346,10 +435,10 @@ export default {
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
-    selectOption(option) {
-      // Do something with the selected option
-      console.log('Selected option:', option);
-      this.isDropdownOpen = false; // Close the dropdown after selecting an option
+    selectOption(index) {
+      this.itemsArray.push(this.completedItemsArray[index]);
+      this.completedItemsArray.splice(index, 1);
+      this.saveList();
     }
   }
 }
