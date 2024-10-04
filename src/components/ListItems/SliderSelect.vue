@@ -11,37 +11,69 @@
 
 <script>
 export default {
+  name: 'YesNoSlider',
+  props: {
+    label: {
+      type: String,
+      default: 'Yes/No' // Default label text
+    },
+    value: {
+      type: Boolean,
+      default: false // Default checked state
+    }
+  },
   data() {
     return {
-      modes: ['Mode 1', 'Mode 2', 'Mode 3'],
-      currentModeIndex: 0,
-      sliderPosition: 0,
+      isChecked: this.value // Initialize with the prop value
     };
   },
+  watch: {
+    value(newValue) {
+      this.isChecked = newValue; // Update local state when parent prop changes
+    },
+    isChecked(newVal) {
+      // Ensure slider tab moves whenever isChecked changes (direct or via task load)
+      this.updateSliderTabPosition(newVal);
+    }
+  },
   computed: {
-    currentMode() {
-      return this.modes[this.currentModeIndex];
+    sliderTabStyle() {
+      return {
+        transform: this.isChecked ? 'translateX(40px)' : 'translateX(0px)',
+        transition: 'transform 0.3s ease'
+      };
     }
   },
   methods: {
-    handleKeydown(event) {
-      if (event.key === 'ArrowRight') {
-        this.currentModeIndex = (this.currentModeIndex + 1) % this.modes.length;
-      } else if (event.key === 'ArrowLeft') {
-        this.currentModeIndex = (this.currentModeIndex - 1 + this.modes.length) % this.modes.length;
-      }
-      this.updateSliderPosition();
-      this.$emit('mode-changed', this.currentMode); // Emit the current mode to the parent
+    emitSliderChange() {
+      this.$emit('checkbox-toggled', this.isChecked); // Emit the slider state to the parent
+      this.$emit('input', this.isChecked); // Emit input event for v-model binding
     },
-    updateSliderPosition() {
-      this.sliderPosition = this.currentModeIndex * 100;
+    toggleSlider() {
+      this.isChecked = !this.isChecked;
+      this.emitSliderChange(); // Emit the change
+    },
+    moveSlider(direction) {
+      // Handle arrow key navigation: true for right (Yes), false for left (No)
+      if (direction && !this.isChecked) {
+        this.isChecked = true;
+      } else if (!direction && this.isChecked) {
+        this.isChecked = false;
+      }
+      this.emitSliderChange(); // Emit the change
+    },
+    updateSliderTabPosition(isChecked) {
+      // Additional method to handle external updates to the slider's checked state
+      this.isChecked = isChecked;
     }
   },
   mounted() {
-    this.$refs.container.focus(); // Automatically focus on the component
+    this.isChecked = this.value; // Set initial state based on prop value
   }
 };
+
 </script>
+
 <style scoped>
 .button-container {
   display: inline-block;

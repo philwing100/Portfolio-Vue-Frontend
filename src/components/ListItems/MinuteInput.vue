@@ -8,7 +8,7 @@
       @focus="showTooltip"
       @blur="hideTooltip"
       class="minute-input-field"
-      placeholder="Minute Estimate"
+      placeholder="Duration"
     />
   </div>
 </template>

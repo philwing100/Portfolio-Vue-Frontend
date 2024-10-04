@@ -44,14 +44,14 @@ export default {
       isCalendarVisible: false,
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth(),
-      selectedDate: this.initialDate,
+      selectedDate: null,
       hoveredDate: null,
     };
   },
   computed: {
     formattedDate() {
       // Display the selected date directly without modification
-      return this.hoveredDate || this.formatDate(this.incrementDate(this.selectedDate));
+      return this.hoveredDate || this.formatDate((this.incrementDate(this.selectedDate)));
     },
     monthNames() {
       return [
@@ -86,6 +86,11 @@ export default {
 
       return dates;
     },
+    logDefaultDate() {
+      // Computed property to log the current selected date (for debugging purposes)
+      console.log('Default Date:', this.selectedDate);
+      return this.selectedDate;
+    }
   },
   methods: {
     formatDate(date) {
@@ -125,9 +130,9 @@ export default {
         this.currentMonth++;
       }
     },
-        incrementDate(dateString) {
+    incrementDate(dateString) {
       const date = new Date(dateString);
-      date.setDate(date.getDate()+1); // Increment the date by 1
+      date.setDate(date.getDate() + 1); // Increment the date by 1
       return date.toISOString().split('T')[0]; // Return the incremented date as a string in YYYY-MM-DD format
     },
   },
@@ -140,7 +145,10 @@ export default {
     },
   },
   mounted() {
-    this.selectedDate = this.initialDate; // Set the initial selected date
+    const date = new Date();
+      date.setDate(date.getDate()); 
+      this.selectedDate = date.toISOString().split('T')[0];
+    console.log('Component mounted with default date:', this.selectedDate); // Log the default date when component is mounted
   },
 };
 </script>
@@ -164,13 +172,11 @@ export default {
   position: absolute;
   top: 40px;
   left: -10%;
-  width: 90%;
-  max-width: 300px;
   background-color: #2b2b2b;
   border: 1px solid #4a4a4a;
   border-radius: 4px;
   padding-left: 2px;
-  padding-right: 25%;
+  padding-right: 2px;
   z-index: 1;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }

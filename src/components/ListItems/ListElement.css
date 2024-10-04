@@ -23,7 +23,7 @@
   box-shadow: 0 -8px 16px 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
   z-index: 1;
   bottom: 100%; 
-  max-height: 200px; 
+  max-height: 400px; 
   overflow-y: auto; 
 }
 
@@ -33,10 +33,12 @@
   text-decoration: none;
   display: block;
   font-size: 14px;
+  text-decoration: line-through;
 }
 
 .dropdown-content a:hover {
-  background-color: #f1f1f1;
+  background-color: grey;
+  text-decoration: none;
 }
 
 .dropdown:hover .dropdown-content {
@@ -95,9 +97,9 @@
 .ListContainer {
   display: flex;
   flex-direction: column;
-  min-height: 50px;
-  max-height: 390px;
-  max-width: 400px;
+  min-height: 60%;
+  max-height: 64%;
+  max-width: 100%;
   overflow-y:auto;
   flex:1;
 }
@@ -112,7 +114,7 @@
 }
 
 .item-text {
-  margin-left: 10px;
+  margin-left: 6%;
   outline: none;
   word-break: break-all;
 }
@@ -143,23 +145,27 @@ li:hover {
   border-radius: 15px;
 }
 
-
-.settings{
-  max-width: 15px;
-  max-height: 20px;
-}
-
 .input-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Adjust based on the number of elements */
+  grid-template-columns: repeat(3, 1fr); /* Change to 3 columns */
   gap: 10px; /* Space between items */
-  margin-bottom: 10px; /* Space below the grid */
+  align-items: center; /* Vertically center items */
+  justify-items: center; /* Horizontally center items */
+  user-select: none; 
+}
+
+.boolean-slider {
+  display: contents; /* Allows children to participate in the grid layout */
+}
+
+.settings {
+  max-width: 100%; /* Make settings fully responsive */
+  max-height: 20px; /* Adjust as necessary */
 }
 
 .title{
-  max-width: 200px;
+  max-width: 100%;
   font-size:25px;
-  text-decoration: underline;
 }
 
 .input-grid > * {

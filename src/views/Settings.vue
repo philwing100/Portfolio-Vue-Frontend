@@ -1,37 +1,5 @@
 <template>
-   <div class="container">
-        <h1>Settings</h1>
-        <div class="settings-section">
-            <h2>General</h2>
-            <div class="setting">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username">
-            </div>
-            <div class="setting">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
-            </div>
-        </div>
-        <div class="settings-section">
-            <h2>Appearance</h2>
-            <div class="setting">
-                <label for="theme">Theme</label>
-                <select id="theme" name="theme">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
-        </div>
-        <div class="settings-section">
-            <h2>Notifications</h2>
-            <div class="setting">
-                <label for="email-notifications">Email Notifications</label>
-                <input type="checkbox" id="email-notifications" name="email-notifications">
-            </div>
-        </div>
-    </div>
-    <colorPicker />
-    
+   <h1> Settings page under construction</h1>
   </template>
 
   
@@ -77,7 +45,7 @@
   export default {
     name: 'SettingsWorld',
     components: {
-      colorPicker,
+      //colorPicker,
     }
   }
   </script>

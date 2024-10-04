@@ -1,6 +1,6 @@
 <template>
     <div id="scroll-container">
-        <div id="scroll-text">This is scrolling text.</div>
+        <div id="scroll-text">Scrolling text test.</div>
     </div>
 </template>
 
@@ -8,7 +8,6 @@
 export default {
 
 }
-
 
 </script>
 

@@ -1,0 +1,69 @@
+/* Ensure body and html fill the entire viewport */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Top row styling */
+.top-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh; /* Fixed height of 10% of the viewport */
+  padding: 0 20px;
+}
+
+.heroText {
+  font-size: 24px;
+  color: white;
+}
+
+.button-container {
+  display: flex;
+  gap: 20px;
+}
+
+.bigButton {
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #555;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.bigButton:hover {
+  background-color: #777;
+}
+
+/* Page container styling */
+.page-container {
+  display: flex;
+  height: calc(100vh - 10vh); /* Take the full viewport height minus the top row height */
+  overflow: hidden;
+}
+
+/* Lists container (1/4 + 1/4 of the page) */
+.lists-container {
+  display: flex;
+  flex: 2;
+  flex-direction: row;
+  width: 50%;
+  background-color: #f4f4f4;
+  border-right: 1px solid #ccc;
+  box-sizing: border-box;
+  height: 100%; /* Ensure it stretches to fill the remaining height */
+}
+
+/* Each ListElement should take 1/4 of the page width */
+.lists-container > * {
+  flex: 1;
+}
+
+/* Ensure no horizontal scroll */
+body {
+  overflow-x: hidden;
+}

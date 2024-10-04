@@ -158,7 +158,7 @@ export default {
   border: 1px solid #4a4a4a;
   border-radius: 4px;
   padding: 8px;
-  width: 90%;
+  width: 80%;
   cursor: text;
 }
 
