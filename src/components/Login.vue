@@ -24,7 +24,7 @@ export default {
   methods: {
     redirectToGoogleSignIn() {
       // Redirecting to the Google login URL using the imported base URL
-      window.location.href = `${baseURL}/login/google`; 
+      window.location.href = `${baseURL}/auth/google`; 
     },
     async logout() {
       try {

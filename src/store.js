@@ -1,43 +1,38 @@
 import { createStore } from 'vuex';
-import axios from './axios'; // Make sure to import your axios instance
+import { instance as axios } from './axios'; // Import the axios instance
 
 const store = createStore({
   state: {
-    user: null, // Store user data
-    isAuthenticated: false, // Authentication status
+    user: null,
+    isAuthenticated: false,
   },
   mutations: {
     SET_USER(state, user) {
+      console.log('User authenticated:', user);
       state.user = user;
       state.isAuthenticated = !!user;
     },
     LOGOUT(state) {
+      console.log('User logged out');
       state.user = null;
       state.isAuthenticated = false;
     },
   },
   actions: {
     async checkAuth({ commit }) {
-      console.log("checking auth");
       try {
-        const response = await axios.get('/check-auth', { withCredentials: true });
-        commit('SET_USER', response.data.user); // Set user data from response
+        console.log('Checking authentication with axios instance:', axios);
+        const response = await axios.get('/auth/check-auth'); // Axios will use the baseURL from axios.js
+        commit('SET_USER', response.data.user);
       } catch (error) {
-        commit('LOGOUT'); // If error occurs, user is not authenticated
-      }
-    },
-    async login({ commit }, credentials) {
-      try {
-        await axios.post('/login', credentials, { withCredentials: true });
-        await this.dispatch('checkAuth'); // Re-check auth status after login
-      } catch (error) {
-        console.error('Login error:', error);
+        console.error('Not authenticated:', error);
+        commit('LOGOUT');
       }
     },
     async logout({ commit }) {
       try {
-        await axios.post('/logout', {}, { withCredentials: true });
-        commit('LOGOUT'); // Commit mutation to log the user out
+        await axios.post('/auth/logout');
+        commit('LOGOUT');
       } catch (error) {
         console.error('Logout error:', error);
       }
