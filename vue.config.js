@@ -12,6 +12,5 @@ module.exports = defineConfig({
   },
 });
 
-//For some reason this stuff doesn't work and I don't know why but its very goofy. All api calls need to be to the exact link
 
 

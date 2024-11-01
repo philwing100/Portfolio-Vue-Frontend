@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import axios from 'axios';
+import axios from './axios'; // Make sure to import your axios instance
 
 const store = createStore({
   state: {
@@ -18,16 +18,17 @@ const store = createStore({
   },
   actions: {
     async checkAuth({ commit }) {
+      console.log("checking auth");
       try {
-        const response = await axios.get('http://localhost:3000/api/check-auth');
-        commit('SET_USER', response.data.user);
+        const response = await axios.get('/check-auth', { withCredentials: true });
+        commit('SET_USER', response.data.user); // Set user data from response
       } catch (error) {
-        commit('LOGOUT');
+        commit('LOGOUT'); // If error occurs, user is not authenticated
       }
     },
-    async login({ commit }, credentials) {//!1Abcdefgh
+    async login({ commit }, credentials) {
       try {
-        await axios.post('http://localhost:3000/api/login', credentials);
+        await axios.post('/login', credentials, { withCredentials: true });
         await this.dispatch('checkAuth'); // Re-check auth status after login
       } catch (error) {
         console.error('Login error:', error);
@@ -35,8 +36,8 @@ const store = createStore({
     },
     async logout({ commit }) {
       try {
-        await axios.post('http://localhost:3000/api/logout');
-        commit('LOGOUT');
+        await axios.post('/logout', {}, { withCredentials: true });
+        commit('LOGOUT'); // Commit mutation to log the user out
       } catch (error) {
         console.error('Logout error:', error);
       }

@@ -174,7 +174,7 @@ export default {
   text-overflow: ellipsis;
 }
 
-.event:hover {
+.event:hover {  
   background-color: #388e3c;
 }
 

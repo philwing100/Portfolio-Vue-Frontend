@@ -1,59 +1,38 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import DashboardWorld from '../views/Dashboard.vue'
-import ListsWorld from '../views/Lists.vue'
-import SettingsWorld from '../views/Settings.vue'
-import AboutMe from '../views/AboutMe.vue'
-import Learn from '../views/Learn.vue'
-import Type from '../views/Type.vue'
-import Login from '../views/Login.vue'
-import SignUp from '../views/SignUp.vue'
+// src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import store from '@/store'; // Vuex store for authentication state
 
+// Import route groups
+import dashboardRoutes from './dashboardRoutes';
+import accountRoutes from './accountRoutes';
+import generalRoutes from './generalRoutes';
+
+// Combine routes
 const routes = [
-  {
-    path: '/',
-    name: 'dashboard',
-    component: DashboardWorld
-  },
-  {
-    path: '/Lists',
-    name: 'Lists',
-    component: ListsWorld
-  },
-  {
-    path: '/Settings',
-    name: 'Settings',
-    component: SettingsWorld
-  },
-  {
-    path: '/About-me',
-    name: 'About Me',
-    component: AboutMe
-  },
-  {
-    path: '/Learn',
-    name: 'Learn',
-    component: Learn
-  },
-  {
-    path: '/Type',
-    name: 'Type',
-    component: Type
-  },
-  {
-    path: '/Login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/SignUp',
-    name: 'SignUp',
-    component: SignUp
-  },
-]
+  ...dashboardRoutes,
+  ...accountRoutes,
+  ...generalRoutes
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+// Navigation guard for protected routes
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = store.state.isAuthenticated; // Get auth status from Vuex
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // Route requires auth and user is not authenticated
+    if (!isAuthenticated) {
+      next({ name: 'Login' }); // Redirect to login page
+    } else {
+      next(); // Proceed to route
+    }
+  } else {
+    next(); // Proceed to route
+  }
+});
+
+export default router;
