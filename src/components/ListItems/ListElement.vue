@@ -4,8 +4,8 @@
 
   <div class="template-container">
     <div class="input-grid">
-      <div class='title' @blur="updateTitle" :contenteditable="parentPage !== 'dashboard'" ref="titleInput"
-        @keydown.enter.prevent="" spellcheck="false">
+      <div class='title' :contenteditable="parentPage !== 'dashboard'" ref="titleInput" @keydown.enter.prevent=""
+        spellcheck="false">
         {{ title }}
       </div>
 
@@ -15,20 +15,20 @@
 
       <i class="fa-solid fa-gear add-button settings" @click="taskListSettingsPopUp"></i>
       <div class="boolean-slider">
-        <BooleanSlider v-model="scheduledCheckbox" label="Scheduled Time?" @checkbox-toggled="handlescheduledToggled"
-          :value="scheduledCheckbox" />
-        <DateInput v-if="scheduledCheckbox" @date-selected="handleDateChange" :initialDate="scheduledDate" />
-        <TimeInput v-if="scheduledCheckbox" @time-changed="handleTimeChange" :initialDateTime="scheduledTime" />
-        <MinuteInput v-if="scheduledCheckbox" :initialMinutes="taskTimeEstimate" :key="taskTimeEstimate"
-          @time-selected="handleUpdateTimeEstimate" />
+        <BooleanSlider v-model="itemsArray[selectedItemIndex].scheduledCheckbox" label="Scheduled Time?" />
+        <DateInput v-if="itemsArray[selectedItemIndex].scheduledCheckbox"
+          v-model="itemsArray[selectedItemIndex].scheduledDate" />
+        <TimeInput v-if="itemsArray[selectedItemIndex].scheduledCheckbox"
+          v-model="itemsArray[selectedItemIndex].scheduledTime" />
+        <MinuteInput v-if="itemsArray[selectedItemIndex].scheduledCheckbox"
+          v-model="itemsArray[selectedItemIndex].taskTimeEstimate" />
       </div>
-      <BooleanSlider label="Recurring Task" @checkbox-toggled="handleRecurringTask" :value="recurringTask" />
-      <div v-if="recurringTask">Recurring task frequency (days of the week popup)</div>
-      <div v-if="recurringTask">Recurring task end date</div>
+      <BooleanSlider v-model="itemsArray[selectedItemIndex].recurringTask" label="Recurring Task" />
+      <div v-if="itemsArray[selectedItemIndex].recurringTask">Recurring task frequency (days of the week popup)</div>
+      <div v-if="itemsArray[selectedItemIndex].recurringTask">Recurring task end date</div>
       <!--<div v-if="pageIsNotDashboard">List type display</div>-->
-      <BooleanSlider v-model="dueDateCheckbox" label="Due Day?" @checkbox-toggled="handleDueCheckbox"
-        :value="dueDateCheckbox" />
-      <DateInput v-if="dueDateCheckbox" @date-selected="handleDueDateChange" :initialDate="dueDate" />
+      <BooleanSlider v-model="itemsArray[selectedItemIndex].dueDateCheckbox" label="Due Day?" />
+      <DateInput v-if="itemsArray[selectedItemIndex].dueDateCheckbox" v-model="itemsArray[selectedItemIndex].dueDate" />
       <button v-if="debugMode" @click="clearStorage">clearStorage</button>
     </div>
     <div class="ListContainer">
@@ -68,7 +68,10 @@ import BooleanSlider from './BooleanSlider.vue';
 import CheckBoxOneWay from './CheckboxOneWay.vue';
 import TimeInput from './TimeInput.vue';
 import MinuteInput from './MinuteInput.vue';
+import { createList } from '../../api.js';
 import './ListElement.css';
+
+
 export default {
   name: 'ListElement',
   props: {
@@ -79,11 +82,12 @@ export default {
   },
   data() {
     return {
-      title: this.listName,
+      //All of these need defaults or some kind of computed properties as defaults maybe
+      title: "Title", //this.listName,
       listType: null,
+      listDescription: "",
       parentPage: 'dashboard',
       itemsArray: [],
-      titlesArray: [],
       completedItemsArray: [],
       recurringTasksArray: [],
       selectedItemIndex: 0,
@@ -94,13 +98,13 @@ export default {
       textString: '',
       listOrigin: '',
       scheduledCheckbox: false,
-      scheduledDate: null,
-      scheduledTime: null,
+      scheduledDate: "",
+      scheduledTime: "",
       timeEstimate: 30,
       recurringTask: false,
-      recurringTaskEndDate: null,
+      recurringTaskEndDate: 0,
       dueDateCheckbox: false,
-      dueDate: null,
+      dueDate: 0,
 
       defaultscheduledCheckbox: false,
       defaultscheduledDate: null,
@@ -113,8 +117,6 @@ export default {
     };
   },
   created() {
-    // Call a method to load initial data
-    //this.clearStorage();
     this.loadInitialData();
   },
   components: {
@@ -127,99 +129,26 @@ export default {
   computed: {
 
   },
-  watch: {
-    initialMinutes(newValue) {
-      if (newValue > 0) {
-        handleUpdateTimeEstimate(newValue);
-      }
-    },
-    initialDate(newDate) {
-      handleDateChange(newDate); // Update the selected date when prop changes
-    },
-    initialDateTime(newDateTime) {
-      handleTimeChange(newDateTime); // Update the selected date when prop changes
-    },
-    scheduledToggled(scheduledCheckbox) {
-      handlescheduledToggled();
-    },
-    dueDateCheckToggled() {
-      handleDueCheckbox();
-    },
-    dueDateChange(dueDate) {
-      handleDueDateChange(dueDate);
-    }
-
-  },
   methods: {
-    loadInitialData() {
-      const storedTitle = localStorage.getItem('title');
-      if (storedTitle) {
-        console.log(title);
-        this.title = storedTitle;
-      }
-
-      const storedItemsArray = localStorage.getItem(this.title);
-      if (storedItemsArray) {
-        this.itemsArray = JSON.parse(storedItemsArray);
-      }
-
-      const storedTitlesArray = localStorage.getItem('titlesArray');
-      if (storedTitlesArray) {
-        this.titlesArray = JSON.parse(storedTitlesArray);
-      }
-
-      // Ensure itemsArray has at least one valid item
-      if (!this.itemsArray || this.itemsArray.length === 0) {
-        this.itemsArray.push(this.createNewItem('')); // Initialize with an empty item
-      }
-    },
-    handleDateChange(date) {
-      this.scheduledDate = date; // Update the parent component's selectedDate
-      this.itemsArray[this.selectedItemIndex].scheduledDate = date;
-    },
-    handlescheduledToggled() {
-      this.scheduledCheckbox = !this.scheduledCheckbox;
-      this.itemsArray[this.selectedItemIndex].scheduledCheckbox = this.scheduledCheckbox; // Update the checkbox state in the items array
-    },
-    handleRecurringTask() {
-      this.recurringTask = !this.recurringTask;
-      this.itemsArray[this.selectedItemIndex].recurringTask = this.recurringTask; // Update the recurring task state in the items array
-    },
-
-    handleTimeChange(time) {
-      this.scheduledTime = time;
-      this.itemsArray[this.selectedItemIndex].scheduledTime = time; // Update the time in the items array
-    },
-
-    handleUpdateTimeEstimate(newMinutes) {
-      this.taskTimeEstimate = newMinutes;
-      this.itemsArray[this.selectedItemIndex].taskTimeEstimate = newMinutes;
-    },
-    handleDueCheckbox() {
-      this.dueDateCheckbox = !this.dueDateCheckbox;
-      console.log(this.dueDateCheckbox);
-      this.itemsArray[this.selectedItemIndex].dueDateCheckbox = this.dueDateCheckbox;
-    },
     saveEditableText(index, event) {
-      this.itemsArray[index].textString = event.target.innerText;
-      this.saveList(); // Persist changes immediately
-    },
-    handleDueDateChange(dueDate) {
-      this.dueDate = dueDate;
-      this.itemsArray[this.selectedItemIndex].dueDate = dueDate; // Update the time in the items array
-    },
-    swapItemValues(index) {
-      const item = this.itemsArray[index];
+      let newText = event.target.innerText;
 
-      // Ensure all the required fields are swapped properly
-      this.scheduledDate = item.scheduledDate ?? this.defaultscheduledDate;
-      this.scheduledTime = item.scheduledTime ?? this.defaultscheduledTime;
-      this.scheduledCheckbox = item.scheduledCheckbox ?? this.defaultscheduledCheckbox;
-      //console.log(this.scheduledCheckbox);
-      this.recurringTask = item.recurringTask ?? this.defaultRecurringTask;
-      this.taskTimeEstimate = item.taskTimeEstimate ?? this.defaultTaskTimeEstimate;
-      this.dueDateCheckbox = item.dueDateCheckbox ?? this.defaultDueDateCheckbox;
-      this.dueDate = item.dueDate ?? this.defaultDueDate;
+
+      //Limit text length to 500 chars as validation
+      if (newText.length > 500) {
+        newText = newText.substring(0, 500);
+        console.log("over 2 chars");
+      }
+      event.target.innerText = newText;
+      this.itemsArray[index].textString = newText;
+
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.setStart(event.target.childNodes[0], this.itemsArray[index].textString.length);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+
       this.saveList();
     },
     completeItem(index) {
@@ -228,49 +157,50 @@ export default {
       }
       this.removeItemByIndex(index);
     },
-    updateTitle() {
-      //Deprecated method.
-
-      this.saveList();//Save the current list items to the title before changing the title
-      const titleElement = this.$refs.titleInput.innerText;
-      this.title = titleElement;
-      let flag = true;
-      this.createNewItem();
-      if (this.titlesArray.length !== 0) {
-        for (let i = 0; i < this.titlesArray.length; i++) {
-          if (this.titlesArray[i] === this.title) {
-            flag = false;
-          }
-        }
-      }
-      if (flag) {
-        this.titlesArray.push(this.title);
-        this.saveTitlesArray();
-      }
-      localStorage.setItem('title', this.title);
-      let textStrings = localStorage.getItem(this.title)
-      this.itemsArray = JSON.parse(textStrings);
-    },
     saveList() {
-      //localStorage.setItem(this.title, JSON.stringify(this.itemsArray));
-      //localStorage.setItem(this.title) needs to retrieve previous items
-      this.emitTaskUpdates();
+      //Need to add some debounce time 750 ms to only call the api once every 3/4s second and not spam the backend.
     },
-    emitTaskUpdates() {
-      this.$emit('update-tasks', {
-        currentTasks: this.itemsArray,
-        completedTasks: this.completedItemsArray,
-      });
+    newList() {
+      const listData = {
+        list_title: this.title,
+        list_description: this.listDescription,
+        list_items: JSON.stringify([
+          {
+            item_description: "Example item",
+            item_duration: 30,
+            recurring_item: false,
+          },
+        ]),
+      }; // Close listData object
+
+      createList(listData)
+        .then((response) => {
+          console.log('Created list:', response);
+        })
+        .catch((error) => {
+          console.error('Failed to create list:', error);
+        });
     },
-    saveTitlesArray() {
-      localStorage.setItem('titlesArray', JSON.stringify(this.titlesArray));
+    deleteList() {
+
+    },
+    loadInitialData() {
+      //Ensure there is always at least one empty item.
+      if (!this.itemsArray || this.itemsArray.length === 0) {
+        this.itemsArray.push(this.createNewItem(''));
+      }
+
+      this.newList();
+      //Call api get and load initial list
+
     },
     loadDefaultItemValues() {
-      //future makes api call to get this user's default values
+      //future makes api call to get this user's default values 
+      
     },
     createNewItem(text) {
       return {
-        textString: text,
+        textString: "",
         scheduledCheckbox: false,
         scheduledDate: null,
         scheduledTime: null,
@@ -285,13 +215,13 @@ export default {
     createItemWithExistingValues(text) {
       return {
 
-        //These could all instead be replaced with 
+        //Will be replaced eventually
         textString: text,
         scheduledCheckbox: this.scheduledCheckbox,
         scheduledDate: this.scheduledDate,
         scheduledTime: this.scheduledTime,
         taskTimeEstimate: this.taskTimeEstimate,
-        recurringTask: this.recurringTask,
+        recurringTask: false,
         recurringTaskEndDate: this.recurringTaskEndDate,
         addToCalendarCheckbox: this.addToCalendarCheckbox,
         dueDateCheckbox: this.dueDateCheckbox,
@@ -311,7 +241,6 @@ export default {
     },
     drop(index) {
       const draggedItem = this.itemsArray[this.draggedIndex];
-      this.swapItemValues(index);
       this.itemsArray.splice(this.draggedIndex, 1);
       this.itemsArray.splice(index, 0, draggedItem);
       this.draggedIndex = null;
@@ -329,7 +258,6 @@ export default {
       this.addToCalendarCheckbox = this.itemsArray[index];
     },*/
     focusEditable(index, position = null) {
-      this.swapItemValues(index); // Now swap the new values
       this.selectedItemIndex = index;
 
       this.$nextTick(() => {
@@ -360,20 +288,26 @@ export default {
     },
     handleBackspace(index, event) {
       if (window.getSelection().anchorOffset === 0 && index > 0) {
+        event.preventDefault();
 
         const currentText = event.target.innerText;
         const previousText = this.itemsArray[index - 1].textString;
-        const newText = previousText + currentText;
+        const combinedText = previousText + currentText;
 
-        this.itemsArray.splice(index - 1, 1, this.createItemWithExistingValues(newText));
+        // Update the previous item with the combined text
+        this.itemsArray.splice(index - 1, 1, this.createItemWithExistingValues(combinedText));
+
+        // Remove the current item from itemsArray
         this.itemsArray.splice(index, 1);
 
+        // Update selectedItemIndex to focus on the previous item
+        this.selectedItemIndex = index - 1;
+
         this.$nextTick(() => {
-          const previousElement = this.$refs.itemSpan[index - 1];
+          // Set focus to the previous item and place the caret at the end of the combined text
+          const previousElement = this.$refs.itemSpan[this.selectedItemIndex];
           if (previousElement) {
-            previousElement.focus();
-            this.setCaretPosition(previousElement, previousText.length);
-            this.removeItem();
+            this.focusEditable(this.selectedItemIndex, previousText.length);
           }
           this.saveList();
         });
@@ -418,7 +352,6 @@ export default {
     removeItem() {
       this.itemsArray.splice(this.selectedItemIndex, 1);
 
-      // Ensure at least one empty item remains
       if (this.itemsArray.length === 0) {
         this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
       }
@@ -470,8 +403,7 @@ export default {
     },
     clearStorage() {
       localStorage.clear();
-      this.title = 'Daily List'
-      this.itemsArray = this.titlesArray = [];
+      this.itemsArray = [];
       this.textString = '';
       this.loadInitialData();
     },

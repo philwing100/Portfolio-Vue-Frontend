@@ -32,7 +32,7 @@
 <script>
 export default {
   props: {
-    initialTime: {
+    modelValue: {
       type: String,
       default: null,
     },
@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       isDropdownVisible: false,
-      selectedTime: this.initialTime || this.getNearestTime(),
+      selectedTime: this.modelValue || this.getNearestTime(),
       formattedTime: '',
       highlightedIndex: 0, // Track the currently highlighted index
     };
@@ -50,7 +50,7 @@ export default {
       const times = [];
       for (let i = 0; i < 24; i++) {
         for (let j = 0; j < 60; j += 30) {
-          const hour = i === 0 ? 12 : i > 12 ? i - 12 : i; // Format 24-hour to 12-hour
+          const hour = i === 0 ? 12 : i > 12 ? i - 12 : i;
           const period = i < 12 ? 'am' : 'pm';
           const formattedTime = `${hour}:${String(j).padStart(2, '0')}${period}`;
           times.push(formattedTime);
@@ -77,7 +77,6 @@ export default {
       const minute = parseInt(minutePart);
       const period = minutePart.slice(-2);
       const formattedHour = period === 'am' ? (hour === '12' ? 0 : parseInt(hour)) : (hour === '12' ? 12 : parseInt(hour) + 12);
-      
       const now = new Date();
       return new Date(now.getFullYear(), now.getMonth(), now.getDate(), formattedHour, minute) > now;
     },
@@ -87,33 +86,33 @@ export default {
       this.$nextTick(() => {
         const dropdown = this.$el.querySelector('.time-dropdown');
         if (dropdown) {
-          dropdown.scrollTop = this.highlightedIndex * dropdown.children[0].offsetHeight; // Scroll to the highlighted index
+          dropdown.scrollTop = this.highlightedIndex * dropdown.children[0].offsetHeight;
         }
       });
     },
     onInputChange(event) {
-      this.formattedTime = event.target.value; // Allow user to type a time
+      this.formattedTime = event.target.value;
     },
     handleBlur() {
       if (this.isValidTime(this.formattedTime)) {
-        this.selectedTime = this.formattedTime; // Update selected time if valid
+        this.selectedTime = this.formattedTime;
       } else {
-        this.formattedTime = this.selectedTime; // Revert to last valid time
+        this.formattedTime = this.selectedTime;
       }
-      this.isDropdownVisible = false; // Hide dropdown on blur
-      this.$emit('time-selected', this.selectedTime); // Emit the selected time
+      this.isDropdownVisible = false;
+      this.updateParent(); // Update parent with the selected time
     },
     isValidTime(timeString) {
-      const timeRegex = /^(0?[1-9]|1[0-2]):([0-5][0-9])(am|pm)$/; // Regex for validating time format
+      const timeRegex = /^(0?[1-9]|1[0-2]):([0-5][0-9])(am|pm)$/;
       return timeRegex.test(timeString);
     },
     selectTime(time) {
-      this.selectedTime = time; // Set the selected time
-      this.formattedTime = time; // Update input with selected time
-      this.isDropdownVisible = false; // Hide dropdown after selection
-      this.$emit('time-selected', this.selectedTime); // Emit the selected time
+      this.selectedTime = time;
+      this.formattedTime = time;
+      this.isDropdownVisible = false;
+      this.updateParent(); // Update parent when a time is selected
       this.$nextTick(() => {
-        this.$refs.timeInput.focus(); // Refocus the input after selection
+        this.$refs.timeInput.focus();
       });
     },
     navigateDown() {
@@ -132,17 +131,18 @@ export default {
         this.selectTime(time);
       }
     },
+    updateParent() {
+      this.$emit('update:modelValue', this.selectedTime); // Emit to update v-model in parent
+    },
   },
   watch: {
-    initialTime(newTime) {
-      if (this.isValidTime(newTime)) {
-        this.selectedTime = newTime;
-        this.formattedTime = newTime;
-      }
+    modelValue(newValue) {
+      this.selectedTime = newValue;
+      this.formattedTime = newValue;
     },
   },
   mounted() {
-    this.formattedTime = this.selectedTime; // Initialize with the nearest valid time
+    this.formattedTime = this.selectedTime;
   },
 };
 </script>

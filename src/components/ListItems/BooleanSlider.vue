@@ -1,5 +1,10 @@
 <template>
-  <div class="slider-container" tabindex="0" @keydown.left.prevent="moveSlider(false)" @keydown.right.prevent="moveSlider(true)">
+  <div
+    class="slider-container"
+    tabindex="0"
+    @keydown.left.prevent="moveSlider(false)"
+    @keydown.right.prevent="moveSlider(true)"
+  >
     <label class="slider-label">{{ label }}</label>
     <div class="slider" @click="toggleSlider" :aria-checked="isChecked" role="switch">
       <div class="slider-tab" :class="{ 'slider-checked': isChecked }">{{ isChecked ? 'Yes' : 'No' }}</div>
@@ -15,32 +20,32 @@ export default {
       type: String,
       default: 'Yes/No',
     },
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
   },
   data() {
     return {
-      isChecked: this.value,
+      isChecked: this.modelValue,
     };
   },
   watch: {
-    value(newValue) {
+    modelValue(newValue) {
       this.isChecked = newValue; // Update local state when parent prop changes
     },
   },
   methods: {
     emitSliderChange() {
-      this.$emit('input', this.isChecked); // Emit input event for v-model binding
-      this.$emit('checkbox-toggled', this.isChecked);
+      this.$emit('update:modelValue', this.isChecked); // Emit for v-model binding
+      console.log("toggling");
     },
     toggleSlider() {
       this.isChecked = !this.isChecked;
       this.emitSliderChange(); // Emit the change
-      console.log('toggled');
     },
     moveSlider(direction) {
+      // True for right arrow (Yes), false for left arrow (No)
       if (direction && !this.isChecked) {
         this.isChecked = true;
       } else if (!direction && this.isChecked) {
@@ -50,11 +55,10 @@ export default {
     },
   },
   mounted() {
-    this.isChecked = this.value; // Set initial state based on prop value
-  },
+    this.isChecked = this.modelValue; // Set initial state based on prop value
+  }
 };
 </script>
-
 
 <style scoped>
 .slider-container {
@@ -62,7 +66,7 @@ export default {
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  outline: none; /* Remove the default browser outline */
+  outline: none;
 }
 
 .slider-label {

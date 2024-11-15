@@ -1,10 +1,12 @@
 import { createStore } from 'vuex';
-import { instance as axios } from './axios'; // Import the axios instance
+import { instance as axios } from './axios';
+import Cookies from 'js-cookie'; // Import js-cookie for cookie management
 
 const store = createStore({
   state: {
     user: null,
     isAuthenticated: false,
+    sessionId: null, // Store the session ID here
   },
   mutations: {
     SET_USER(state, user) {
@@ -16,14 +18,23 @@ const store = createStore({
       console.log('User logged out');
       state.user = null;
       state.isAuthenticated = false;
+      state.sessionId = null;
+    },
+    SET_SESSION_ID(state, sessionId) {
+      state.sessionId = sessionId;
     },
   },
   actions: {
     async checkAuth({ commit }) {
       try {
-        console.log('Checking authentication with axios instance:', axios);
-        const response = await axios.get('/auth/check-auth'); // Axios will use the baseURL from axios.js
+        const response = await axios.get('/auth/check-auth');
         commit('SET_USER', response.data.user);
+        // Retrieve and commit the session ID from the cookie if available
+        const sessionId = Cookies.get('sessionId');
+        console.log(sessionId);
+        if (sessionId) {
+          commit('SET_SESSION_ID', sessionId);
+        }
       } catch (error) {
         console.error('Not authenticated:', error);
         commit('LOGOUT');

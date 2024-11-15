@@ -26,11 +26,11 @@ export default {
   setup() {
     const routes = [
       { path: '/', label: 'Dashboard' },
-      { path: '/Lists', label: 'Lists' },
-      { path: '/Learn', label: 'Learn' },
-      { path: '/Type', label: 'Type' },
-      { path: '/About-me', label: 'About Me' },
-      { path: '/Settings', label: 'Settings' },
+     // { path: '/Lists', label: 'Lists' },
+     // { path: '/Learn', label: 'Learn' },
+     // { path: '/Type', label: 'Type' },
+     // { path: '/About-me', label: 'About Me' },
+    //  { path: '/Settings', label: 'Settings' },
       { path: '/Login', label: 'Login' },
     ];
 

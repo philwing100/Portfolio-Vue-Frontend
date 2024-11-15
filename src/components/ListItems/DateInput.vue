@@ -1,12 +1,6 @@
 <template>
   <div class="date-picker">
-    <input
-      type="text"
-      v-model="formattedDate"
-      @focus="showCalendar"
-      class="date-input"
-      readonly
-    />
+    <input type="text" v-model="formattedDate" @focus="showCalendar" class="date-input" readonly />
     <div v-if="isCalendarVisible" class="calendar">
       <div class="calendar-header">
         <button @click="prevMonth">&lt;</button>
@@ -15,28 +9,21 @@
       </div>
       <div class="calendar-grid">
         <div class="day" v-for="(day, index) in weekDays" :key="index">{{ day }}</div>
-        <div
-          v-for="date in displayedDates"
-          :key="date.dateString"
-          class="day"
-          :class="{ 'hover': date.isHover, 'selected': date.isSelected }"
-          @mouseover="hoverDate(date.dateString)"
-          @mouseleave="clearHover"
-          @click="selectDate(date.dateString)"
-        >
+        <div v-for="date in displayedDates" :key="date.dateString" class="day"
+          :class="{ 'hover': date.isHover, 'selected': date.isSelected }" @mouseover="hoverDate(date.dateString)"
+          @mouseleave="clearHover" @click="selectDate(date.dateString)">
           {{ date.day }}
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {
-    initialDate: {
+    modelValue: {
       type: String,
-      default: () => new Date().toISOString().split('T')[0], // Default to today
+      default: null,
     },
   },
   data() {
@@ -44,14 +31,13 @@ export default {
       isCalendarVisible: false,
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth(),
-      selectedDate: null,
+      selectedDate: this.modelValue,
       hoveredDate: null,
     };
   },
   computed: {
     formattedDate() {
-      // Display the selected date directly without modification
-      return this.hoveredDate || this.formatDate((this.incrementDate(this.selectedDate)));
+      return this.hoveredDate || this.formatDate(this.incrementDate(this.selectedDate));
     },
     monthNames() {
       return [
@@ -74,7 +60,12 @@ export default {
 
       // Fill in the days of the month
       for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-        const dateString = new Date(this.currentYear, this.currentMonth, day).toISOString().split('T')[0];
+        const date = new Date(this.currentYear, this.currentMonth, day);
+
+        // Format date as YYYY-MM-DD in local time, without timezone offset
+        const dateString = date.getFullYear() +
+          '-' + String(date.getMonth() + 1).padStart(2, '0') +
+          '-' + String(date.getDate()).padStart(2, '0');
 
         dates.push({
           day,
@@ -86,33 +77,28 @@ export default {
 
       return dates;
     },
-    logDefaultDate() {
-      // Computed property to log the current selected date (for debugging purposes)
-      console.log('Default Date:', this.selectedDate);
-      return this.selectedDate;
-    }
   },
   methods: {
     formatDate(date) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      return new Date(date).toLocaleDateString(undefined, options);
+      return date ? new Date(date).toLocaleDateString(undefined, options) : '';
     },
     showCalendar() {
       this.isCalendarVisible = true;
     },
     hoverDate(dateString) {
-      this.hoveredDate = dateString; // Set the hovered date
+      this.hoveredDate = dateString;
     },
     clearHover() {
-      this.hoveredDate = null; // Clear the hover state
+      this.hoveredDate = null;
     },
     selectDate(dateString) {
-      this.selectedDate = dateString; // Set the selected date
-      this.hoveredDate = null; // Clear hover state
-      this.isCalendarVisible = false; // Hide calendar after selection
+      this.selectedDate = dateString;
+      this.hoveredDate = null;
+      this.isCalendarVisible = false;
 
-      this.$emit('date-selected', this.selectedDate); // Emit the selected date to the parent
-      this.$emit('update:initialDate', this.selectedDate); // Sync with the parent
+      // Emit the update to synchronize with the parent component's v-model
+      this.$emit('update:modelValue', this.selectedDate);
     },
     prevMonth() {
       if (this.currentMonth === 0) {
@@ -130,28 +116,38 @@ export default {
         this.currentMonth++;
       }
     },
+    getCurrentDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+
+      // Return formatted date as YYYY-MM-DD in local time without timezone adjustments
+      return `${year}-${month}-${day}`;
+    },
     incrementDate(dateString) {
-      const date = new Date(dateString);
+      let date;
+
+      // Check if dateString is null or undefined, use current date if so
+      if (!dateString) {
+        date = new Date(this.getCurrentDate()); // Convert the current date string to a Date object
+      } else {
+        date = new Date(dateString); // Convert the provided dateString to a Date object
+      }
+
       date.setDate(date.getDate() + 1); // Increment the date by 1
       return date.toISOString().split('T')[0]; // Return the incremented date as a string in YYYY-MM-DD format
-    },
+    }
   },
   watch: {
-    initialDate(newValue) {
-      this.selectedDate = newValue;
-      const date = new Date(newValue);
-      this.currentYear = date.getFullYear();
-      this.currentMonth = date.getMonth();
+    modelValue(newValue) {
+      this.selectedDate = newValue; // Update internal date when parent model changes
     },
-  },
-  mounted() {
-    const date = new Date();
-      date.setDate(date.getDate()); 
-      this.selectedDate = date.toISOString().split('T')[0];
-    console.log('Component mounted with default date:', this.selectedDate); // Log the default date when component is mounted
   },
 };
 </script>
+
+
 
 <style scoped>
 .date-picker {
