@@ -36,7 +36,7 @@ const store = createStore({
           commit('SET_SESSION_ID', sessionId);
         }
       } catch (error) {
-        console.error('Not authenticated:', error);
+        console.warn('Not authenticated:', error,...arguments);
         commit('LOGOUT');
       }
     },
@@ -45,7 +45,7 @@ const store = createStore({
         await axios.post('/auth/logout');
         commit('LOGOUT');
       } catch (error) {
-        console.error('Logout error:', error);
+        console.warn('Logout error:', error,...arguments);
       }
     },
   },
