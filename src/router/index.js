@@ -29,7 +29,7 @@ const router = createRouter({
 });
 
 // Navigation guard for protected routes
-router.beforeEach(functiom beforeEach(to, from, next) {
+router.beforeEach(function beforeEach(to, from, next) {
   const isAuthenticated = store.state.isAuthenticated; // Get auth status from Vuex
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
