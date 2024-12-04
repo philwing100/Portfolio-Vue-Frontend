@@ -21,7 +21,7 @@ export async function createList(listData) {
     );
     return response.data;
   } catch (error) {
-    console.error('Error creating list:', error);
+    console.warn('Error creating list:', error,...arguments);
     throw error;
   }
 }
@@ -42,7 +42,7 @@ export async function deleteList(listId) {
     });
     return response.data;
   } catch (error) {
-    console.error('Error deleting list:', error);
+    console.warn('Error deleting list:', error,...arguments);
     throw error;
   }
 }

@@ -30,12 +30,7 @@ export default {
   methods: {
     validateInput(event) {
       const num = Number(event.target.value);
-
-      if (isNaN(num) || num <= 0) {
-        this.minutes = ''; // Reset to empty if invalid
-      } else {
-        this.minutes = num; // Set valid number as minutes
-      }
+      this.minutes = (num > 0 ? num : '');
 
       // Emit update:modelValue to enable two-way binding
       this.$emit('update:modelValue', String(this.minutes));
