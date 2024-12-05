@@ -52,7 +52,7 @@
     <div class="dropdown">
       <button @click="toggleDropdown" @keydown.enter.prevent="toggleDropdown" class="dropbtn">Completed Tasks</button>
       <div v-if="isDropdownOpen" class="dropdown-content">
-        <a v-for="(item, index) in completedItemsArray" :key="index" @click="selectOption(index)">{{ item.textString
+        <a v-for="(item, index) in itemsArray" :key="index" @click="selectOption(index)">{{ item.textString
           }}</a>
       </div>
     </div>
@@ -96,7 +96,6 @@ export default {
       debugMode: false,
 
       textString: '',
-      listOrigin: '',
       scheduledCheckbox: false,
       scheduledDate: "",
       scheduledTime: "",
@@ -105,15 +104,6 @@ export default {
       recurringTaskEndDate: 0,
       dueDateCheckbox: false,
       dueDate: 0,
-
-      defaultscheduledCheckbox: false,
-      defaultscheduledDate: null,
-      defaultscheduledTime: null,
-      defaultTaskTimeEstimate: 30,
-      defaultRecurringTask: false,
-      defaultRecurringTaskEndDate: null,
-      defaultDueDateCheckbox: false,
-      defaultDueDate: null
     };
   },
   created() {
@@ -210,6 +200,7 @@ export default {
         addToCalendarCheckbox: false,
         dueDateCheckbox: false,
         dueDate: null,
+        completed: false,
       };
     },
     createItemWithExistingValues(text) {
@@ -225,6 +216,7 @@ export default {
         addToCalendarCheckbox: this.addToCalendarCheckbox,
         dueDateCheckbox: this.dueDateCheckbox,
         dueDate: this.dueDate,
+        completed: false,
       }
     },
     dragStart(index) {
