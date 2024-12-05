@@ -15,6 +15,7 @@
         <ListElement listName="Daily List"/>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -46,6 +47,7 @@ export default {
   },
   methods: {
     handleTaskUpdates(updatedTasks, listName) {
+
     },
     handleTaskClicked(taskData) {
 

@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     saveEditableText(index, event) {
-      let newText = event.target.innerText;
+      /*let newText = event.target.innerText;
 
 
       //Limit text length to 500 chars as validation
@@ -149,10 +149,10 @@ export default {
       sel.removeAllRanges();
       sel.addRange(range);
 
-      this.saveList();
+      this.saveList();*/
     },
     completeItem(index) {
-      if (this.itemsArray[index].textString != '') {
+      if (this.itemsArray[index].textString != null && this.itemsArray[index].textString != '') {
         this.completedItemsArray.push(this.itemsArray[index]);
       }
       this.removeItemByIndex(index);
@@ -196,7 +196,7 @@ export default {
     },
     loadDefaultItemValues() {
       //future makes api call to get this user's default values 
-      
+
     },
     createNewItem(text) {
       return {
@@ -214,7 +214,6 @@ export default {
     },
     createItemWithExistingValues(text) {
       return {
-
         //Will be replaced eventually
         textString: text,
         scheduledCheckbox: this.scheduledCheckbox,
@@ -378,12 +377,12 @@ export default {
 
         this.$nextTick(() => {
           this.focusEditable(newIndex);
+          this.itemsArray.splice(index, 1);
+          if (this.itemsArray.length === 0) {
+            this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
+            this.saveList();
+          }
         });
-        this.itemsArray.splice(index, 1);
-        if (this.itemsArray.length === 0) {
-          this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
-        }
-        this.saveList();
       }
     },
     setCaretPosition(element, position) {

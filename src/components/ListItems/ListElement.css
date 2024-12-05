@@ -10,7 +10,7 @@
 }
 
 .dropdown {
-  position: relative;
+  position: relative; 
   display: inline-block;
   width: 100%;
 }
@@ -97,8 +97,7 @@
 .ListContainer {
   display: flex;
   flex-direction: column;
-  min-height: 60%;
-  max-height: 64%;
+  max-height:80%;
   max-width: 100%;
   overflow-y:auto;
   flex:1;
