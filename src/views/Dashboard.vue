@@ -3,7 +3,8 @@
     <!-- Top row: Hero text and navigation buttons -->
     <div class="top-row" :style="{ 'background-color': colors.sideBar }">
       <div class="button-container">
-        <div class="bigButton" id="previousDay" @click="decrementDay" :style="{ 'background-color': colors.background }">Previous Day</div>
+        <div class="bigButton" id="previousDay" @click="decrementDay"
+          :style="{ 'background-color': colors.background }">Previous Day</div>
         <!--<DateInput  @date-selected="handleDueDateChange" :initialDate="currentDate"/>-->
         <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">Next Day</div>
       </div>
@@ -11,11 +12,17 @@
 
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="lists-container">
-        <ListElement listName="Backburner"/>
-        <ListElement listName="Daily List"/>
+        <ListElement
+          listName="Backburner"
+          v-model="backburner"
+        />
+        <ListElement
+          listName="Daily List"
+          v-model="dailyList"
+        />
+        <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" />
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -38,29 +45,32 @@ export default {
   data() {
     return {
       colors: colors,
-      completedAllTasks: [],   // Completed tasks from All Tasks
-      pendingAllTasks: [],     // Pending tasks from All Tasks
-      completedDailyList: [],  // Completed tasks from Daily List
-      pendingDailyList: [],    // Pending tasks from Daily List
+      dailyList: [],
+      backburner: [],
       currentDate: 0,
     };
   },
+  watch: {
+  backburner(newVal) {
+    //console.log('Backburner list updated:', newVal);
+  },
+  dailyList(newVal) {
+    //console.log('Daily list updated:', newVal);
+  }
+},
   methods: {
-    handleTaskUpdates(updatedTasks, listName) {
-
-    },
-    handleTaskClicked(taskData) {
-
-    },
     handleDateChange(date) {
-      this.scheduledDate = date; // Update the parent component's selectedDate
+      this.scheduledDate = date; 
       this.itemsArray[this.selectedItemIndex].scheduledDate = date;
     },
-    decrementDay(){
+    decrementDay() {
       console.log("0");
     },
-    incrementDay(){
+    incrementDay() {
 
+    },
+    onEventClicked({ event, listType, index }) {
+      console.log(`Event clicked:`, event);
     },
   }
 };

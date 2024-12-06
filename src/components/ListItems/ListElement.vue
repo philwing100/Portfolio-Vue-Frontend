@@ -1,12 +1,11 @@
 <template>
-  <!-- Include Font Awesome CDN in your HTML -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <div class="template-container">
     <div class="input-grid">
       <div class='title' :contenteditable="parentPage !== 'dashboard'" ref="titleInput" @keydown.enter.prevent=""
         spellcheck="false">
-        {{ title }}
+        {{ listName }}
       </div>
 
       <div>
@@ -23,7 +22,7 @@
         <MinuteInput v-if="itemsArray[selectedItemIndex].scheduledCheckbox"
           v-model="itemsArray[selectedItemIndex].taskTimeEstimate" />
       </div>
-      <BooleanSlider v-model="itemsArray[selectedItemIndex].recurringTask" label="Recurring Task" />
+      <!--<BooleanSlider v-model="itemsArray[selectedItemIndex].recurringTask" label="Recurring Task" />-->
       <div v-if="itemsArray[selectedItemIndex].recurringTask">Recurring task frequency (days of the week popup)</div>
       <div v-if="itemsArray[selectedItemIndex].recurringTask">Recurring task end date</div>
       <!--<div v-if="pageIsNotDashboard">List type display</div>-->
@@ -75,6 +74,11 @@ import './ListElement.css';
 export default {
   name: 'ListElement',
   props: {
+    modelValue: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
     listName: {
       type: String,
       required: false
@@ -84,6 +88,8 @@ export default {
     return {
       //All of these need defaults or some kind of computed properties as defaults maybe
       title: "Title", //this.listName,
+      itemsArray: [], // Initialize from parent data
+      selectedItemIndex: 0,
       listType: null,
       listDescription: "",
       parentPage: 'dashboard',
@@ -106,8 +112,25 @@ export default {
       dueDate: 0,
     };
   },
+  watch: {
+    modelValue(newValue) {
+      this.itemsArray = [...newValue];
+    },
+    // Emit changes to itemsArray back to the parent
+    /*  itemsArray: {
+        handler(newItems) {
+          this.$emit('update:modelValue', newItems);
+        },
+        immediate: true,
+        deep: true, // Watch deeply for changes in array content
+      },*/
+  },
   created() {
     this.loadInitialData();
+
+  },
+  mounted() {
+
   },
   components: {
     DateInput,
@@ -121,25 +144,19 @@ export default {
   },
   methods: {
     saveEditableText(index, event) {
-      /*let newText = event.target.innerText;
+      // Get the text content from the contenteditable element
+      let newText = event.target.innerText.trim();
 
-
-      //Limit text length to 500 chars as validation
+      // Optional: Limit the text length to 500 characters
       if (newText.length > 500) {
         newText = newText.substring(0, 500);
-        console.log("over 2 chars");
       }
-      event.target.innerText = newText;
+
+      // Update the text in the itemsArray
       this.itemsArray[index].textString = newText;
 
-      const range = document.createRange();
-      const sel = window.getSelection();
-      range.setStart(event.target.childNodes[0], this.itemsArray[index].textString.length);
-      range.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(range);
-
-      this.saveList();*/
+      // Call saveList to emit the updated itemsArray
+      this.saveList();
     },
     completeItem(index) {
       if (this.itemsArray[index].textString != null && this.itemsArray[index].textString != '') {
@@ -148,7 +165,9 @@ export default {
       this.removeItemByIndex(index);
     },
     saveList() {
-      //Need to add some debounce time 750 ms to only call the api once every 3/4s second and not spam the backend.
+      //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
+      //LATER Should also do the async call to save to the backend
+      this.$emit("update:modelValue", this.itemsArray);
     },
     newList() {
       const listData = {
@@ -179,8 +198,12 @@ export default {
       if (!this.itemsArray || this.itemsArray.length === 0) {
         this.itemsArray.push(this.createNewItem(''));
       }
+      this.itemsArray.push(this.createTestItem("Bruh"));
+      this.itemsArray.push(this.createTestItem("Bruh1"));
+      this.itemsArray.push(this.createTestItem("Bruh2"));
 
-      this.newList();
+      this.saveList();
+      //this.newList();
       //Call api get and load initial list
 
     },
@@ -188,19 +211,32 @@ export default {
       //future makes api call to get this user's default values 
 
     },
+    createTestItem(text) {
+      return {
+        textString: text || '',
+        scheduledCheckbox: true,
+        scheduledDate: '2024-12-06',
+        scheduledTime: "9:00 PM",
+        taskTimeEstimate: "30",
+        recurringTask: false,
+        recurringTaskEndDate: null,
+        dueDateCheckbox: false,
+        dueDate: null,
+        complete: false,
+      };
+    },
     createNewItem(text) {
       return {
-        textString: "",
+        textString: text || '',
         scheduledCheckbox: false,
         scheduledDate: null,
         scheduledTime: null,
         taskTimeEstimate: 0,
         recurringTask: false,
         recurringTaskEndDate: null,
-        addToCalendarCheckbox: false,
         dueDateCheckbox: false,
         dueDate: null,
-        completed: false,
+        complete: false,
       };
     },
     createItemWithExistingValues(text) {
@@ -216,7 +252,7 @@ export default {
         addToCalendarCheckbox: this.addToCalendarCheckbox,
         dueDateCheckbox: this.dueDateCheckbox,
         dueDate: this.dueDate,
-        completed: false,
+        complete: false,
       }
     },
     dragStart(index) {
@@ -260,6 +296,8 @@ export default {
           }
         }
       });
+      const focusedItem = this.itemsArray[index];
+      this.saveList();
     },
     handleEnter(index, event) {
       const text = event.target.innerText;

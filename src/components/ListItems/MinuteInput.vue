@@ -30,7 +30,7 @@ export default {
   methods: {
     validateInput(event) {
       const num = Number(event.target.value);
-      this.minutes = (num > 0 ? num : '');
+      this.minutes = (1440>num > 0 ? num : '');
 
       // Emit update:modelValue to enable two-way binding
       this.$emit('update:modelValue', String(this.minutes));
