@@ -33,12 +33,12 @@
   text-decoration: none;
   display: block;
   font-size: 14px;
-  text-decoration: line-through;
+  text-decoration: none;
 }
 
 .dropdown-content a:hover {
   background-color: grey;
-  text-decoration: none;
+  text-decoration: line-through;
 }
 
 .dropdown:hover .dropdown-content {

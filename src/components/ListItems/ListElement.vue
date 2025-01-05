@@ -7,7 +7,6 @@
         spellcheck="false">
         {{ listName }}
       </div>
-
       <div>
         <button @click="removeItem" class="add-button">Remove Task</button>
       </div>
@@ -32,7 +31,7 @@
     </div>
     <div class="ListContainer">
       <ul class="ListItem">
-        <li v-for="(item, index) in itemsArray" :key="index" draggable="true" @dragstart="dragStart(index)"
+        <li v-for="(item, index) in incompleteItems" :key="index" draggable="true" @dragstart="dragStart(index)"
           :style="index === selectedItemIndex ? 'border: 3px solid blue; border-radius:5px; transition: border-color 0.1s ease;' : 'border: 3px solid transparent;'"
           @dragover="dragOver" @drop="drop(index)">
           <div class="item-container" @click="focusEditable(index);">
@@ -51,13 +50,12 @@
     <div class="dropdown">
       <button @click="toggleDropdown" @keydown.enter.prevent="toggleDropdown" class="dropbtn">Completed Tasks</button>
       <div v-if="isDropdownOpen" class="dropdown-content">
-        <a v-for="(item, index) in itemsArray" :key="index" @click="selectOption(index)">{{ item.textString
-          }}</a>
+        <a v-for="(item, index) in completeItems" :key="index" @click="incompleteItem(index)">{{ item.textString
+          }}</a> 
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 /* eslint-disable*/
@@ -69,7 +67,6 @@ import TimeInput from './TimeInput.vue';
 import MinuteInput from './MinuteInput.vue';
 import { createList } from '../../api.js';
 import './ListElement.css';
-
 
 export default {
   name: 'ListElement',
@@ -140,11 +137,19 @@ export default {
     MinuteInput,
   },
   computed: {
+    //Need a computed property that returns the objects which are and arent completed
+    completeItems(){
+      return this.itemsArray.filter((item) => item.complete);
+    },
+    incompleteItems(){
+      return this.itemsArray.filter((item) => !item.complete);
+    }
 
   },
   methods: {
     saveEditableText(index, event) {
       // Get the text content from the contenteditable element
+      /*
       let newText = event.target.innerText.trim();
 
       // Optional: Limit the text length to 500 characters
@@ -155,14 +160,18 @@ export default {
       // Update the text in the itemsArray
       this.itemsArray[index].textString = newText;
 
-      // Call saveList to emit the updated itemsArray
+      // Call saveList to emit the updated itemsArray*/
       this.saveList();
     },
     completeItem(index) {
-      if (this.itemsArray[index].textString != null && this.itemsArray[index].textString != '') {
-        this.completedItemsArray.push(this.itemsArray[index]);
+      if (this.incompleteItems[index].textString != null && this.incompleteItems[index].textString != '') {
+        this.itemsArray[index].complete = true;
+        this.itemsArray.splice(this.itemsArray.length, 0, this.itemsArray[index])
+        this.itemsArray.splice(index,1);
+      }else{
+        this.removeItemByIndex(index);
       }
-      this.removeItemByIndex(index);
+      this.saveList();
     },
     saveList() {
       //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
@@ -362,7 +371,7 @@ export default {
       }
     },
     handleArrowDown(index, event) {
-      if (event.target.innerText.length === 0 && index + 1 < this.itemsArray.length) {
+      if (event.target.innerText.length === 0 && index + 1 < this.incompleteItems.length) {
         event.preventDefault(); // Prevent default arrow key behavior
         this.focusEditable(index + 1, 0);
       }
@@ -439,9 +448,12 @@ export default {
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
-    selectOption(index) {
-      this.itemsArray.push(this.completedItemsArray[index]);
-      this.completedItemsArray.splice(index, 1);
+    incompleteItem(index) {
+      //Needs to be rewritten to put objects back 
+      console.log("Index: "+ index + " incomplete items:  " + this.incompleteItems.length + " whole index size: "+ this.itemsArray.length);
+      this.itemsArray.splice(this.incompleteItems.length, 0, this.itemsArray[this.incompleteItems.length+index]);
+      this.itemsArray[index+this.incompleteItems.length+1].complete = false;
+      this.itemsArray.splice(this.incompleteItems.length + index -1, 1);
       this.saveList();
     }
   }
