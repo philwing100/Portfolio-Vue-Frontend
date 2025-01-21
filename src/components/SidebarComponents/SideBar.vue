@@ -29,7 +29,7 @@ export default {
      // { path: '/Lists', label: 'Lists' },
      // { path: '/Learn', label: 'Learn' },
      // { path: '/Type', label: 'Type' },
-     // { path: '/About-me', label: 'About Me' },
+      { path: '/About-me', label: 'About Me' },
     //  { path: '/Settings', label: 'Settings' },
       { path: '/Login', label: 'Login' },
     ];

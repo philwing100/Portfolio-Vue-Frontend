@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <div class="template-container">
-    <div class="input-grid">
+    <div v-if="!multiplayer" class="input-grid">
       <div class='title' :contenteditable="parentPage !== 'dashboard'" ref="titleInput" @keydown.enter.prevent=""
         spellcheck="false">
         {{ listName }}
@@ -79,6 +79,10 @@ export default {
     listName: {
       type: String,
       required: false
+    },
+    multiplayer: {
+      type: Boolean,
+      required: false 
     }
   },
   data() {
@@ -129,6 +133,10 @@ export default {
   mounted() {
 
   },
+  unmounted(){
+    this.itemsArray.length = 0;
+    this.emitList();
+  },
   components: {
     DateInput,
     BooleanSlider,
@@ -176,6 +184,11 @@ export default {
     saveList() {
       //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
       //LATER Should also do the async call to save to the backend
+
+
+      this.emitList();
+    },
+    emitList(){
       this.$emit("update:modelValue", this.itemsArray);
     },
     newList() {
@@ -184,7 +197,7 @@ export default {
         list_description: this.listDescription,
         list_items: JSON.stringify([
           {
-            item_description: "Example item",
+            item_description: "Exampleee item",
             item_duration: 30,
             recurring_item: false,
           },
@@ -212,7 +225,7 @@ export default {
       this.itemsArray.push(this.createTestItem("Bruh2"));
 
       this.saveList();
-      //this.newList();
+      this.newList();
       //Call api get and load initial list
 
     },

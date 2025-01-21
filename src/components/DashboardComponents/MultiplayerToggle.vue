@@ -8,7 +8,7 @@
     <label class="slider-label">{{ label }}</label>
     <div class="slider" @click="toggleSlider" :aria-checked="isChecked" role="switch">
       <!--Needs to switch between an icon of one person and multiple -->
-      <div class="slider-tab" :class="{ 'slider-checked': isChecked }">{{ isChecked ? 'Yes' : 'No' }}</div>
+      <div class="slider-tab" :class="{ 'slider-checked': isChecked }">{{ isChecked ? Yes : No }}</div>
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default {
   props: {
     label: {
       type: String,
-      default: 'Yes/No',
+      default: '',
     },
     modelValue: {
       type: Boolean,
@@ -38,8 +38,7 @@ export default {
   methods: {
     emitSliderChange() {
       this.$emit('update:modelValue', this.isChecked); // Emit for v-model binding
-      console.log("toggling");
-    },
+    },  
     toggleSlider() {
       this.isChecked = !this.isChecked;
       this.emitSliderChange(); // Emit the change

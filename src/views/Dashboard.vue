@@ -3,21 +3,19 @@
     <!-- Top row: Hero text and navigation buttons -->
     <div class="top-row" :style="{ 'background-color': colors.sideBar }">
       <div class="button-container">
-        <MultiplayerToggle />
+       <!-- <MultiplayerToggle v-model="isChecked" label="Multiplayer"/>-->
         <!--Need to put these in a v-if is bound to the emits of multiplayer toggle-->
-        <div>
           <div class="bigButton" id="previousDay" @click="decrementDay"
-            :style="{ 'background-color': colors.background }">Previous Day</div>
-          <!--<DateInput  @date-selected="handleDueDateChange" :initialDate="currentDate"/>-->
-          <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">Next Day</div>
-        </div>
+            :style="{ 'background-color': colors.background }">&lt;&lt;</div>
+          <DateInput :style="{margin:'0px' }" @date-selected="handleDueDateChange" :initialDate="currentDate"/>
+          <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">>></div>
       </div>
     </div>
 
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="lists-container">
         <ListElement listName="Backburner" v-model="backburner" />
-        <ListElement listName="Daily List" v-model="dailyList" />
+        <ListElement listName="Daily List" v-model="dailyList" :multiplayer="isChecked"/>
         <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" />
       </div>
     </div>
@@ -48,6 +46,7 @@ export default {
       dailyList: [],
       backburner: [],
       currentDate: 0,
+      isChecked: false,
     };
   },
   watch: {

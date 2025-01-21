@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import {getTodayDate} from '../../date.js';
 export default {
   name: "DailyCalendar",
   props: {
@@ -38,13 +39,11 @@ export default {
 
   computed: {
     combinedEvents() {
-      const today = this.getTodayDate();
+      const today = getTodayDate();
       const events = [
         ...this.list1.map((event) => ({ ...event, listType: "list1" })),
         ...this.list2.map((event) => ({ ...event, listType: "list2" })),
       ];
-
-      console.log('Computed Combined Events:', events.filter((event) => event.scheduledDate === today));
 
       return events.filter((event) => event.scheduledDate === today);
     },
@@ -70,6 +69,8 @@ export default {
     },
 
     getEventStyle(event) {
+      console.log(event);
+      console.log(event.scheduledTime);
       const startHour = this.parseTime(event.scheduledTime);
       let endHour = startHour + event.taskTimeEstimate / 60;
 
@@ -98,16 +99,10 @@ export default {
       this.$emit("event-clicked", { event, listType: event.listType, index });
     },
 
-    getTodayDate() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = (today.getMonth() + 1).toString().padStart(2, "0");
-      const day = today.getDate().toString().padStart(2, "0");
-      return `${year}-${month}-${day}`; // Format: YYYY-MM-DD
-    },
-
     // Updated parseTime method to handle various formats like '2:00pm', '09:59am', '9:59am'
     parseTime(time) {
+      if(time==null)
+        time=Date.now().toString();
       const regex = /(\d{1,2}):(\d{2})(am|pm)/i;
       const match = time.trim().match(regex);
       if (!match) return 0; // Default if time format is invalid

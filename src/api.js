@@ -2,22 +2,28 @@
 import { instance as axios } from './axios'; // Import your configured Axios axios
 import store from './store'; // Import the Vuex store to access sessionId and other state
 
+function verify(){
+  
+}
+
 // API call to create a new list
 export async function createList(listData) {
   const { sessionId } = store.state;
-
-  console.log(axios);
-
+  console.log("sessionId: "+sessionId);
+  //console.log(axios);
 
   if (!sessionId) {
     throw new Error('No session ID found. User may not be authenticated.');
   }
 
+
+
   try {
     const response = await axios.post(
       '/lists/',
-      listData,
-      { headers: { 'Authorization': `Bearer ${sessionId}` } }
+      { headers: { 'Authorization': `Bearer ${sessionId}` },
+      body: JSON.stringify(listData),
+     },
     );
     return response.data;
   } catch (error) {

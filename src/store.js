@@ -10,12 +10,11 @@ const store = createStore({
   },
   mutations: {
     SET_USER(state, user) {
-      console.log('User authenticated:', user);
       state.user = user;
       state.isAuthenticated = !!user;
     },
     LOGOUT(state) {
-      console.log('User logged out');
+      //console.log('User logged out');
       state.user = null;
       state.isAuthenticated = false;
       state.sessionId = null;

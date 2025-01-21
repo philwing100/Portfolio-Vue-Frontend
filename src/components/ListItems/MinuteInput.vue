@@ -68,9 +68,9 @@ export default {
 }
 
 .minute-input-field {
-  background-color: #1e1e1e;
+  background-color: #343541;
   color: #cfcfcf;
-  border: 1px solid #4a4a4a;
+  border: 1px solid white;
   border-radius: 4px;
   padding: 8px;
   width: 90%;

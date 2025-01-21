@@ -1,4 +1,5 @@
 import DashboardWorld from '../views/Dashboard.vue';
+import AboutMe from '@/views/AboutMe.vue';
 
 export default [
   {
@@ -6,4 +7,9 @@ export default [
     name: 'dashboard',
     component: DashboardWorld,
   },
+    {
+      path: '/about-me',
+      name: 'AboutMe',
+      component: AboutMe
+    },
 ];
