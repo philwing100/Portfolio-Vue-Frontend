@@ -37,8 +37,7 @@ export default {
   },
   methods: {
     emitSliderChange() {
-      this.$emit('update:modelValue', this.isChecked); // Emit for v-model binding
-      console.log("toggling");
+      this.$emit('update:modelValue', this.isChecked); // Emit for v-model bindingS
     },
     toggleSlider() {
       this.isChecked = !this.isChecked;

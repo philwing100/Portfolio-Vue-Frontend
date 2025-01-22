@@ -67,6 +67,7 @@ import TimeInput from './TimeInput.vue';
 import MinuteInput from './MinuteInput.vue';
 import { createList } from '../../api.js';
 import './ListElement.css';
+import { getTodayDate } from '../../date.js';
 
 export default {
   name: 'ListElement',
@@ -83,6 +84,10 @@ export default {
     multiplayer: {
       type: Boolean,
       required: false 
+    },
+    initialDate: {
+      type: String,
+      required: false,
     }
   },
   data() {
@@ -125,6 +130,11 @@ export default {
         immediate: true,
         deep: true, // Watch deeply for changes in array content
       },*/
+      initialDate(){
+        if(this.listName!='Backburner'){
+          
+        }
+      }
   },
   created() {
     this.loadInitialData();
@@ -251,7 +261,7 @@ export default {
       return {
         textString: text || '',
         scheduledCheckbox: false,
-        scheduledDate: null,
+        scheduledDate: this.initialDate,
         scheduledTime: null,
         taskTimeEstimate: 0,
         recurringTask: false,
@@ -266,7 +276,7 @@ export default {
         //Will be replaced eventually
         textString: text,
         scheduledCheckbox: this.scheduledCheckbox,
-        scheduledDate: this.scheduledDate,
+        scheduledDate: this.initialDate,
         scheduledTime: this.scheduledTime,
         taskTimeEstimate: this.taskTimeEstimate,
         recurringTask: false,

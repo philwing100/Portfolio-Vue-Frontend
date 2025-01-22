@@ -7,15 +7,16 @@
         <!--Need to put these in a v-if is bound to the emits of multiplayer toggle-->
           <div class="bigButton" id="previousDay" @click="decrementDay"
             :style="{ 'background-color': colors.background }">&lt;&lt;</div>
-          <DateInput :style="{margin:'0px' }" @date-selected="handleDueDateChange" :initialDate="currentDate"/>
-          <div class="bigButton" id="nextDay" :style="{ 'background-color': colors.background }">>></div>
+          <DateInput :style="{margin:'0px',color:'white' }" @date-selected="handleDateChange" v-model="currentDate"/>
+          <div class="bigButton" id="nextDay" @click="incrementDay"
+          :style="{ 'background-color': colors.background }">>></div>
       </div>
     </div>
 
     <div class="page-container" :style="{ 'background-color': colors.background }">
       <div class="lists-container">
         <ListElement listName="Backburner" v-model="backburner" />
-        <ListElement listName="Daily List" v-model="dailyList" :multiplayer="isChecked"/>
+        <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate"/>
         <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" />
       </div>
     </div>
@@ -31,6 +32,7 @@ import DailyCalendar from '@/components/CalendarComponents/DailyCalendar.vue';
 import DateInput from '@/components/ListItems/DateInput.vue';
 import './cssViews/Dashboard.css';
 import MultiplayerToggle from '@/components/DashboardComponents/MultiplayerToggle.vue';
+import { getTodayDate, incrementDate, decrementDate } from '../date.js'
 
 export default {
   name: 'DashboardWorld',
@@ -45,7 +47,7 @@ export default {
       colors: colors,
       dailyList: [],
       backburner: [],
-      currentDate: 0,
+      currentDate: getTodayDate(),
       isChecked: false,
     };
   },
@@ -63,10 +65,12 @@ export default {
       this.itemsArray[this.selectedItemIndex].scheduledDate = date;
     },
     decrementDay() {
-      console.log("0");
+      this.currentDate = decrementDate(this.currentDate);
+      console.log(this.currentDate);
     },
     incrementDay() {
-
+      this.currentDate = incrementDate(this.currentDate);
+      console.log(this.currentDate);
     },
     onEventClicked({ event, listType, index }) {
       console.log(`Event clicked:`, event);
