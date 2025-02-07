@@ -21,9 +21,10 @@
           company: 'zdSCADA',
           date: 'Sep 2024 - Dec 2024',
           bulletPoints: [
-            'Developed C# .NET Backend, Vue.js Frontend, and SQL Server Database.',
+            'Developed and maintained a C# .NET backend, Vue.js frontend, and SQL Server database to support application functionality.',
             'Played an active role in sprint planning and agile development.',
-            'Used Azure Devops to manage branches, user stories, pull requests, and merging to master.'
+            'Used Azure Devops to manage branches, user stories, pull requests, and merges.',
+            'Improved website stability by implementing backend API endpoints and resolving frontend UI bugs.'
           ]
         },
         {

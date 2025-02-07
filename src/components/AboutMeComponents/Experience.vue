@@ -74,6 +74,7 @@
   .job-description li {
     font-size: 1rem;
     margin-bottom: 5px;
+    margin-right:40px;
   }
   </style>
   

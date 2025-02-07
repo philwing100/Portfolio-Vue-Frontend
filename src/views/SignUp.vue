@@ -16,6 +16,11 @@
 <script>
 import axios from 'axios';
 
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://portfolio-backend-pi-liart.vercel.app";
+
 export default {
     data() {
         return {
@@ -30,7 +35,7 @@ export default {
             if(this.password === this.password1){
                 //console.log(this.password === this.password1);
                 try {
-                    const response = await axios.post('http://localhost:3000/api/signup', {
+                    const response = await axios.post(API_URL + '/api/signup', {
                         email: this.email,
                         password: this.password
                     });
