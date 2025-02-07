@@ -10,7 +10,7 @@
       <div>
         <button @click="removeItem" class="add-button">Remove Task</button>
       </div>
-
+      
       <i class="fa-solid fa-gear add-button settings" @click="taskListSettingsPopUp"></i>
       <div class="boolean-slider">
         <BooleanSlider v-model="itemsArray[selectedItemIndex].scheduledCheckbox" label="Scheduled Time?" />
@@ -65,9 +65,10 @@ import BooleanSlider from './BooleanSlider.vue';
 import CheckBoxOneWay from './CheckboxOneWay.vue';
 import TimeInput from './TimeInput.vue';
 import MinuteInput from './MinuteInput.vue';
-import { createList } from '../../api.js';
+import { createList, getList } from '../../api.js';
 import './ListElement.css';
-import { getTodayDate } from '../../date.js';
+import { getTodayDate, normalizeDate } from '../../date.js';
+import { mapState } from 'vuex';
 
 export default {
   name: 'ListElement',
@@ -93,7 +94,6 @@ export default {
   data() {
     return {
       //All of these need defaults or some kind of computed properties as defaults maybe
-      title: "Title", //this.listName,
       itemsArray: [], // Initialize from parent data
       selectedItemIndex: 0,
       listType: null,
@@ -106,6 +106,7 @@ export default {
       draggedIndex: null,
       isDropdownOpen: false,
       debugMode: false,
+      lastCall: 0,
 
       textString: '',
       scheduledCheckbox: false,
@@ -132,19 +133,17 @@ export default {
       },*/
       initialDate(){
         if(this.listName!='Backburner'){
-          
+          this.fetchList();
         }
       }
   },
   created() {
-    this.loadInitialData();
-
+    this.itemsArray.push(this.createNewItem(''));
   },
   mounted() {
-
+    this.loadInitialData();
   },
   unmounted(){
-    this.itemsArray.length = 0;
     this.emitList();
   },
   components: {
@@ -155,7 +154,7 @@ export default {
     MinuteInput,
   },
   computed: {
-    //Need a computed property that returns the objects which are and arent completed
+    //Need a computed property that eturns the objects which are and arent completed
     completeItems(){
       return this.itemsArray.filter((item) => item.complete);
     },
@@ -167,14 +166,14 @@ export default {
   methods: {
     saveEditableText(index, event) {
       // Get the text content from the contenteditable element
-      /*
+      
       let newText = event.target.innerText.trim();
-
+      /*
       // Optional: Limit the text length to 500 characters
       if (newText.length > 500) {
         newText = newText.substring(0, 500);
       }
-
+      */
       // Update the text in the itemsArray
       this.itemsArray[index].textString = newText;
 
@@ -191,28 +190,15 @@ export default {
       }
       this.saveList();
     },
-    saveList() {
+    async saveList() {
       //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
-      //LATER Should also do the async call to save to the backend
 
-
-      this.emitList();
-    },
-    emitList(){
-      this.$emit("update:modelValue", this.itemsArray);
-    },
-    newList() {
       const listData = {
-        list_title: this.title,
+        list_title: this.listName + " " + this.initialDate,
         list_description: this.listDescription,
-        list_items: JSON.stringify([
-          {
-            item_description: "Exampleee item",
-            item_duration: 30,
-            recurring_item: false,
-          },
-        ]),
-      }; // Close listData object
+        list_items: JSON.stringify(this.itemsArray)
+      };
+      console.log(listData);
 
       createList(listData)
         .then((response) => {
@@ -221,21 +207,58 @@ export default {
         .catch((error) => {
           console.error('Failed to create list:', error);
         });
-    },
-    deleteList() {
 
+      this.emitList();
+    },
+    emitList(){
+      this.$emit("update:modelValue", this.itemsArray);
+    },
+
+    async fetchList() {
+      await this.$store.dispatch('checkAuth');
+        getList(this.listName + " " + this.initialDate)
+        .then((response) => {
+          this.itemsArray.length = 1;
+          if(response?.message != "No list items to return"){
+            //then load the response into the json data fields
+            console.log(response.data[0]);
+            console.dir(response, { depth: null }); 
+            for(const item of response.data[0]){
+              this.loadItemFromGet(item);
+            }
+            console.log(Object.keys(response.data[1]));
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to get list:', error);
+        });
+    },
+    loadItemFromGet(item){
+      let newItem = {
+        textString: item.textString,
+        scheduledCheckbox: item.scheduledCheckbox ? true : false,
+        scheduledDate: normalizeDate(item.scheduledDate),
+        scheduledTime: item.scheduledTime,
+        taskTimeEstimate: item.taskTimeEstimate.toString(),
+        recurringTask: item.recurringTask,
+        recurringTaskEndDate: item.recurringTaskEndDate,
+        dueDateCheckbox: item.dueDateCheckbox,
+        dueDate: item.dueDate,
+        complete: item.complete,
+      };
+      this.itemsArray.push(newItem);
     },
     loadInitialData() {
       //Ensure there is always at least one empty item.
       if (!this.itemsArray || this.itemsArray.length === 0) {
         this.itemsArray.push(this.createNewItem(''));
       }
-      this.itemsArray.push(this.createTestItem("Bruh"));
+      /*this.itemsArray.push(this.createTestItem("Bruh"));
       this.itemsArray.push(this.createTestItem("Bruh1"));
-      this.itemsArray.push(this.createTestItem("Bruh2"));
+      this.itemsArray.push(this.createTestItem("Bruh2"));*/
 
-      this.saveList();
-      this.newList();
+      //this.saveList();
+      this.fetchList();
       //Call api get and load initial list
 
     },

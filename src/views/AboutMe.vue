@@ -9,6 +9,7 @@
 import FullPage from '../components/AboutMeComponents/FullPage.vue'; 
 import AshEffect from '../components/AboutMeComponents/AshEffect.vue';
 
+
 export default {
   components: {
     FullPage,
@@ -17,10 +18,10 @@ export default {
   data() {
     return {
       sections: [
-        { id: 1, title: 'About', content: 'I crave efficiency and finding new ways to improve. I\'m an honors senior year computer science student attending UT Tyler.' },
-        { id: 2, title: 'Skills', content: 'Technologies: Javascript, HTML/CSS, MySQL, Vue.js, Node, Express.js, BASH. Familiarity with other systems such as Git, Vscode, Wireshark. Knowledgeable in version control systems like Git.' },
-        { id: 3, title: 'Projects', content: 'Details about projects.' },
-        { id: 4, title: 'Contact', content: 'Feel free to reach out to me via email at philwing100@gmail.com or connect with me on <a href="https://www.linkedin.com/in/ring-phillip">LinkedIn</a>. I\'m always open to new connections and collaboration.' }
+        { id: 1, title: 'Hi I\'m Phillip', content: 'I\'m a senior year computer science student attending UT Tyler with passion for continuous learning.' },
+        { id: 2, title: 'Skills', content: 'Languages: C#, JavaScript, HTML/CSS, SQL, Java, Vue.js, BASH, Node, Express.js \n\nTechnologies: Git/Github, Azure DevOps, Vscode, Wireshark, SSMS, Linux' },
+        { id: 3, title: 'Featured Projects', content: '' },
+        { id: 4, title: '', content: '' }
       ]
     };
   }

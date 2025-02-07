@@ -35,4 +35,17 @@ export function getTodayDate() {
     date.setDate(date.getDate() - 1); // Increment the date by 1
     return date.toISOString().split('T')[0]; // Return the incremented date as a string in YYYY-MM-DD format
   }
+
+  export function normalizeDate(datetimeString) {
+    // Create a Date object from the MySQL DATETIME string
+    const date = new Date(datetimeString);
+  
+    // Extract year, month, and day and format them as YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Month is 0-indexed, so +1
+    const day = String(date.getDate()).padStart(2, '0');
+  
+    // Return the formatted date
+    return `${year}-${month}-${day}`;
+  }
   

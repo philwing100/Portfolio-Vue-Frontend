@@ -34,12 +34,16 @@ export default {
       required: true,
       default: () => [],
     },
+    date:{
+      type: String,
+      required: true,
+    },
   },
   emits: ["update:list1", "update:list2", "event-clicked"],
 
   computed: {
     combinedEvents() {
-      const today = getTodayDate();
+      const today = this.date;
       const events = [
         ...this.list1.map((event) => ({ ...event, listType: "list1" })),
         ...this.list2.map((event) => ({ ...event, listType: "list2" })),
@@ -87,10 +91,12 @@ export default {
         height = minHeight;
       }
 
+
       return {
         top: `${topPosition}px`,
         height: `${height}px`,
         backgroundColor: "#4caf50", // Default color
+        textDecoration: event.complete ? "line-through" : "none",
       };
 
     },

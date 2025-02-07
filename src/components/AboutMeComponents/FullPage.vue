@@ -1,18 +1,51 @@
+<!-- eslint-disable -->
 <template>
   <div class="fullpage-container" @wheel="handleScroll">
     <div class="section" v-for="(section, index) in sections" :key="section.id" :ref="`section-${index}`"
       :class="`section-${index}`">
-      <div class="sidescroll-container">
-        <transition name="fade" @before-leave="beforeLeave">
-          <SideScrolling v-if="index === 0 && activeSection === 0" />
-        </transition>
-      </div>
+      <ProfilePicture v-if="index === 0 && activeSection === 0"/>
+
+
+      <transition name="fade" @before-leave="beforeLeave">
+        <SideScrolling v-if="index === 1 && activeSection === 1" />
+      </transition>
       <h2 class="content">{{ section.title }}</h2>
-      <p class="content">{{ section.content }}</p>
+      <p class="content" v-html="section.content.replace(/\n/g, '<br>')"></p>
+
+      <Projects v-if="index === 2 && activeSection === 2" />
+      <ConnectWithMe v-if="(index === 0 && activeSection === 0)" :isBlack="true" />
+      <ConnectWithMe v-if="(index === 3 && activeSection === 3)" :isBlack="false" />
+      <Experience  v-if="(index === 3 && activeSection === 3)" :experiences="[
+        {
+          title: 'Software Developer Intern',
+          company: 'zdSCADA',
+          date: 'Sep 2024 - Dec 2024',
+          bulletPoints: [
+            'Developed C# .NET Backend, Vue.js Frontend, and SQL Server Database.',
+            'Played an active role in sprint planning and agile development.',
+            'Used Azure Devops to manage branches, user stories, pull requests, and merging to master.'
+          ]
+        },
+        {
+          title: 'A/V Tech',
+          company: 'UT Tyler',
+          date: 'Aug 2022 - Sep 2024',
+          bulletPoints: [
+            'Demonstrated proficiency in providing technical support to all malfunctioning devices.',
+            'Decreased A/V event setup time by 30% from previous.',
+            'Ensured smooth technology operations for events of up to 200 people.'
+          ]
+        }
+      ]" />
+
+
     </div>
     <div class="scroll-indicator" v-if="showIndicator">
-      <div class="button-container" v-for="(section, index) in sections" :key="index" @click="scrollToSection(index);activeSection=index">
-        <div><div :style="activeSection===0 ? { color: 'white'} : {}" class="pageButtons">{{ section.title }} </div></div>
+      <div class="button-container" v-for="(section, index) in sections" :key="index"
+        @click="scrollToSection(index); activeSection = index">
+        <div>
+          <div :style="activeSection === 0 ? { color: 'white' } : {}" class="pageButtons">{{ section.title }} </div>
+        </div>
         <div class="box"></div>
       </div>
     </div>
@@ -21,10 +54,18 @@
 
 <script>
 import SideScrolling from './SideScrolling.vue';
+import Projects from './Projects.vue';
+import ConnectWithMe from './ConnectWithMe.vue';
+import ProfilePicture from './ProfilePicture.vue'
+import Experience from './Experience.vue'
 
 export default {
   components: {
     SideScrolling,
+    Projects,
+    ConnectWithMe,
+    ProfilePicture,
+    Experience
   },
   props: {
     sections: {
@@ -48,6 +89,7 @@ export default {
       const section = this.$refs[`section-${index}`][0];
       if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
+        console.log("Active " + this.activeSection);
 
         // Set a delay after the animation to prevent accepting new inputs too soon
         setTimeout(() => {
@@ -71,6 +113,7 @@ export default {
       setTimeout(() => {
         this.scrollToSection(this.activeSection);
       }, 100);
+      console.log(this.activeSection);
 
     },
     computeGradient(index, totalSections) {
@@ -145,7 +188,6 @@ export default {
 }
 
 .sidescroll-container {
-  background-color: green;
   color: white;
   align-items: center;
   justify-content: center;
@@ -173,7 +215,7 @@ export default {
 .pageButtons {
   white-space: nowrap;
   position: absolute;
-  transition: transform 0.5s ease 0.05s,opacity 0.5s ease 0.05s;
+  transition: transform 0.5s ease 0.05s, opacity 0.5s ease 0.05s;
   opacity: 0;
   padding-right: 100%;
 }

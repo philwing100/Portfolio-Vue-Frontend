@@ -17,7 +17,7 @@
       <div class="lists-container">
         <ListElement listName="Backburner" v-model="backburner" />
         <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate"/>
-        <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" />
+        <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" :date="currentDate"/>
       </div>
     </div>
   </div>
@@ -33,6 +33,7 @@ import DateInput from '@/components/ListItems/DateInput.vue';
 import './cssViews/Dashboard.css';
 import MultiplayerToggle from '@/components/DashboardComponents/MultiplayerToggle.vue';
 import { getTodayDate, incrementDate, decrementDate } from '../date.js'
+import { mapState } from 'vuex'; // Importing Vuex to access state
 
 export default {
   name: 'DashboardWorld',
@@ -51,6 +52,9 @@ export default {
       isChecked: false,
     };
   },
+  computed: {
+    ...mapState(['isAuthenticated', 'user']),
+  },
   watch: {
     backburner(newVal) {
       //console.log('Backburner list updated:', newVal);
@@ -66,15 +70,16 @@ export default {
     },
     decrementDay() {
       this.currentDate = decrementDate(this.currentDate);
-      console.log(this.currentDate);
     },
     incrementDay() {
       this.currentDate = incrementDate(this.currentDate);
-      console.log(this.currentDate);
     },
     onEventClicked({ event, listType, index }) {
       console.log(`Event clicked:`, event);
     },
+  },
+  mounted(){
+    
   }
 };
 </script>
