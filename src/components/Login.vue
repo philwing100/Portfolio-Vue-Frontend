@@ -2,12 +2,17 @@
   <div>
     <div v-if="!isAuthenticated" class="login-container">
       <h1>Login</h1>
-      <button class="button google" @click="redirectToGoogleSignIn">Sign in with Google</button>
+      <div class="add-button login-container" :style="{ 
+          maxWidth: '300px',           
+          margin: '0 auto',
+           }" @click="redirectToGoogleSignIn">Sign in with Google</div>
     </div>
 
     <div v-if="isAuthenticated" class="logged-in-container">
       <h1>Welcome, {{ user.email }}</h1>
-      <button @click="logout">Logout</button>
+      <div class="add-button" :style="{ 
+        maxWidth: '300px',
+        margin: '0 auto' }" @click="logout">Logout</div>
     </div>
   </div>
 </template>
@@ -15,6 +20,7 @@
 <script>
 import { mapState } from 'vuex'; // Importing Vuex to access state
 import { baseURL } from '../axios'; // Importing the base URL from axios
+import './ListItems/ListElement.css';
 
 export default {
   name: 'LoginComponent',
@@ -47,5 +53,8 @@ export default {
 .login-container, .logged-in-container {
   text-align: center; 
   margin-top: 20px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
 }
 </style>

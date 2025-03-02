@@ -155,9 +155,9 @@ export default {
 }
 
 .date-input {
-  background-color: #1e1e1e;
-  color: #cfcfcf;
-  border: 1px solid #4a4a4a;
+  background-color: #343541;
+  color: white;
+  border: 1px solid white;
   border-radius: 4px;
   padding: 8px;
   width: 90%;
