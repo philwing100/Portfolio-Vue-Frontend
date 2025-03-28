@@ -10,7 +10,7 @@
       <div>
         <button @click="removeItem" class="add-button">Remove Task</button>
       </div>
-      
+
       <i class="fa-solid fa-gear add-button settings" @click="taskListSettingsPopUp"></i>
       <div class="boolean-slider">
         <BooleanSlider v-model="itemsArray[selectedItemIndex].scheduledCheckbox" label="Scheduled Time?" />
@@ -51,7 +51,7 @@
       <button @click="toggleDropdown" @keydown.enter.prevent="toggleDropdown" class="dropbtn">Completed Tasks</button>
       <div v-if="isDropdownOpen" class="dropdown-content">
         <a v-for="(item, index) in completeItems" :key="index" @click="incompleteItem(index)">{{ item.textString
-          }}</a> 
+        }}</a>
       </div>
     </div>
   </div>
@@ -84,7 +84,7 @@ export default {
     },
     multiplayer: {
       type: Boolean,
-      required: false 
+      required: false
     },
     initialDate: {
       type: String,
@@ -117,6 +117,7 @@ export default {
       recurringTaskEndDate: 0,
       dueDateCheckbox: false,
       dueDate: 0,
+      debounce: 1000,
     };
   },
   watch: {
@@ -131,11 +132,11 @@ export default {
         immediate: true,
         deep: true, // Watch deeply for changes in array content
       },*/
-      initialDate(){
-        if(this.listName!='Backburner'){
-          this.fetchList();
-        }
+    initialDate() {
+      if (this.listName != 'Backburner') {
+        this.fetchList();
       }
+    }
   },
   created() {
     this.itemsArray.push(this.createNewItem(''));
@@ -143,7 +144,7 @@ export default {
   mounted() {
     this.loadInitialData();
   },
-  unmounted(){
+  unmounted() {
     this.emitList();
   },
   components: {
@@ -155,10 +156,10 @@ export default {
   },
   computed: {
     //Need a computed property that eturns the objects which are and arent completed
-    completeItems(){
+    completeItems() {
       return this.itemsArray.filter((item) => item.complete);
     },
-    incompleteItems(){
+    incompleteItems() {
       return this.itemsArray.filter((item) => !item.complete);
     }
 
@@ -166,7 +167,7 @@ export default {
   methods: {
     saveEditableText(index, event) {
       // Get the text content from the contenteditable element
-      
+
       let newText = event.target.innerText.trim();
       /*
       // Optional: Limit the text length to 500 characters
@@ -184,22 +185,37 @@ export default {
       if (this.incompleteItems[index].textString != null && this.incompleteItems[index].textString != '') {
         this.itemsArray[index].complete = true;
         this.itemsArray.splice(this.itemsArray.length, 0, this.itemsArray[index])
-        this.itemsArray.splice(index,1);
-      }else{
+        this.itemsArray.splice(index, 1);
+      } else {
         this.removeItemByIndex(index);
       }
       this.saveList();
     },
+    throttle(func, limit) {
+      let lastCall = 0; // Stores the timestamp of the last execution
+
+      return function (...args) {
+        const now = Date.now();
+        if (now - lastCall >= limit) {
+          lastCall = now;
+          func.apply(this, args); // Execute the function
+        }
+      };
+    },
     async saveList() {
       //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
-
       const listData = {
         list_title: this.listName + " " + this.initialDate,
         list_description: this.listDescription,
-        list_items: JSON.stringify(this.itemsArray)
+        list_items: JSON.stringify(
+          this.itemsArray.length > 0 && (this.itemsArray[0].textString === "" || this.itemsArray[0].textString === null)
+            ? this.itemsArray.slice(1) // Remove first element if textString is empty or null
+            : this.itemsArray // Otherwise, keep the full array
+        )
       };
       console.log(listData);
 
+      //this.throttle(createList(listData),)
       createList(listData)
         .then((response) => {
           console.log('Created list:', response);
@@ -208,22 +224,22 @@ export default {
           console.error('Failed to create list:', error);
         });
 
-      this.emitList();
+      this.emitList()
     },
-    emitList(){
+    emitList() {
       this.$emit("update:modelValue", this.itemsArray);
     },
 
     async fetchList() {
       await this.$store.dispatch('checkAuth');
-        getList(this.listName + " " + this.initialDate)
+      getList(this.listName + " " + this.initialDate)
         .then((response) => {
           this.itemsArray.length = 1;
-          if(response?.message != "No list items to return"){
+          if (response?.message != "No list items to return") {
             //then load the response into the json data fields
             console.log(response.data[0]);
-            console.dir(response, { depth: null }); 
-            for(const item of response.data[0]){
+            console.dir(response, { depth: null });
+            for (const item of response.data[0]) {
               this.loadItemFromGet(item);
             }
             console.log(Object.keys(response.data[1]));
@@ -233,7 +249,7 @@ export default {
           console.error('Failed to get list:', error);
         });
     },
-    loadItemFromGet(item){
+    loadItemFromGet(item) {
       let newItem = {
         textString: item.textString,
         scheduledCheckbox: item.scheduledCheckbox ? true : false,
@@ -496,10 +512,10 @@ export default {
     },
     incompleteItem(index) {
       //Needs to be rewritten to put objects back 
-      console.log("Index: "+ index + " incomplete items:  " + this.incompleteItems.length + " whole index size: "+ this.itemsArray.length);
-      this.itemsArray.splice(this.incompleteItems.length, 0, this.itemsArray[this.incompleteItems.length+index]);
-      this.itemsArray[index+this.incompleteItems.length+1].complete = false;
-      this.itemsArray.splice(this.incompleteItems.length + index -1, 1);
+      console.log("Index: " + index + " incomplete items:  " + this.incompleteItems.length + " whole index size: " + this.itemsArray.length);
+      this.itemsArray.splice(this.incompleteItems.length, 0, this.itemsArray[this.incompleteItems.length + index]);
+      this.itemsArray[index + this.incompleteItems.length + 1].complete = false;
+      this.itemsArray.splice(this.incompleteItems.length + index - 1, 1);
       this.saveList();
     }
   }

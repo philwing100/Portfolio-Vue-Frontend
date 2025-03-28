@@ -18,7 +18,7 @@ function validateToken() {
 // API call to create a new list
 export async function createList(listData) {
   validateToken();
-
+  
   try {
     const response = await axios.post(
       '/lists/',
