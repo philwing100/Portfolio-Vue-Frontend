@@ -1,19 +1,19 @@
 import { instance as axios } from './axios'; // Import your configured Axios instance
 import store from './store'; // Import the Vuex store to access sessionId and other state
 
-// Retrieve the token once, outside of each API function
-const { token } = store.state;
 
 // Validate token function (defined once and reused)
 function validateToken() {
+  const { token } = store.state;
   if (!token) {
     console.log(token);
     throw new Error('No token ID found. User may not be authenticated.');
+  }else{
+    axios.defaults.headers.common['authorization'] = `${token}`;
   }
 }
 
 // Set the default Authorization header for all requests
-axios.defaults.headers.common['authorization'] = `${token}`;
 
 // API call to create a new list
 export async function createList(listData) {
