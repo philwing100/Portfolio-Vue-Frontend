@@ -1,12 +1,12 @@
 import { createStore } from 'vuex';
 import { instance as axios } from './axios';
-import Cookies from 'js-cookie'; // Import js-cookie for cookie management
+import { baseURL } from './axios';
 
 const store = createStore({
   state: {
     user: null,
     isAuthenticated: false,
-    sessionId: null, // Store the session ID here
+    token: localStorage.getItem('token') || null,  // Load token from localStorage
   },
   mutations: {
     SET_USER(state, user) {
@@ -14,37 +14,59 @@ const store = createStore({
       state.isAuthenticated = !!user;
     },
     LOGOUT(state) {
-      //console.log('User logged out');
       state.user = null;
       state.isAuthenticated = false;
-      state.sessionId = null;
+      state.token = null;
+      localStorage.removeItem('token');  // Remove token from localStorage
     },
-    SET_SESSION_ID(state, sessionId) {
-      state.sessionId = sessionId;
+    SET_TOKEN(state, token) {
+      state.token = token;
+      localStorage.setItem('token', token);  // Store token in localStorage
     },
   },
   actions: {
     async checkAuth({ commit }) {
-      try {
-        const response = await axios.get('/auth/check-auth');
-        commit('SET_USER', response.data.user);
-        // Retrieve and commit the session ID from the cookie if available
-        const sessionId = Cookies.get('sessionId');
-        console.log(sessionId);
-        if (sessionId) {
-          commit('SET_SESSION_ID', sessionId);
+      const token = localStorage.getItem('token');
+      console.log('token: '+ token);
+      if (token) {
+        try {
+          const response = await axios.get('/auth/check-auth', {
+            headers: { authorization: `${token}` }  // Send JWT in header
+          });
+          
+          // Commit the user and token from response
+          commit('SET_USER', response.data.user);
+          commit('SET_TOKEN', token);
+        } catch (error) {
+          console.warn('Not authenticated:', error);
+          commit('LOGOUT');
         }
-      } catch (error) {
-        console.warn('Not authenticated:', error,...arguments);
+      } else {
         commit('LOGOUT');
       }
     },
+
+    async handleGoogleLogin({ commit }) {
+      const urlParams = new URLSearchParams(window.location.search);  // Capture URL parameters
+      const token = urlParams.get('token');  // Get the JWT token from the URL
+      
+      console.log(token);
+
+      if (token) {
+        commit('SET_TOKEN', token);  // Save the token in Vuex state and localStorage
+        //window.location.href = `http://localhost:8080`;
+      } else {
+        console.warn('Token not found in the URL after Google login');
+      }
+    },
+    
+
     async logout({ commit }) {
       try {
         await axios.post('/auth/logout');
         commit('LOGOUT');
       } catch (error) {
-        console.warn('Logout error:', error,...arguments);
+        console.warn('Logout error:', error);
       }
     },
   },

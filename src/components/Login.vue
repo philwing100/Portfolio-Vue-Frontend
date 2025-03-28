@@ -5,7 +5,7 @@
       <div class="add-button login-container" :style="{ 
           maxWidth: '300px',           
           margin: '0 auto',
-           }" @click="redirectToGoogleSignIn">Sign in with Google</div>
+           }" @click="redirectToGoogleSignIn">Sign in with Google</div> 
     </div>
 
     <div v-if="isAuthenticated" class="logged-in-container">
@@ -20,7 +20,6 @@
 <script>
 import { mapState } from 'vuex'; // Importing Vuex to access state
 import { baseURL } from '../axios'; // Importing the base URL from axios
-import './ListItems/ListElement.css';
 
 export default {
   name: 'LoginComponent',
@@ -29,22 +28,21 @@ export default {
   },
   methods: {
     redirectToGoogleSignIn() {
-      // Redirecting to the Google login URL using the imported base URL
-      window.location.href = `${baseURL}/auth/google`; 
+      // Redirecting to Google login
+      window.location.href = `${baseURL}/auth/google`;
     },
     async logout() {
       try {
         await this.$store.dispatch('logout'); // Dispatching the logout action to Vuex
-        // Optionally, redirect to login page after logging out
-        this.$router.push('/login');
+        this.$router.push('/login'); // Redirect to login page after logging out
       } catch (error) {
         console.error('Logout error:', error); // Logging any errors that occur during logout
       }
     },
   },
   mounted() {
-    // Check if the user is authenticated when the component is mounted
-    this.$store.dispatch('checkAuth');
+    // Call handleGoogleLogin when the component is mounted
+    this.$store.dispatch('handleGoogleLogin');
   },
 };
 </script>

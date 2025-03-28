@@ -1,70 +1,89 @@
-// src/api.js
-import { instance as axios } from './axios'; // Import your configured Axios axios
+import { instance as axios } from './axios'; // Import your configured Axios instance
 import store from './store'; // Import the Vuex store to access sessionId and other state
+
+// Retrieve the token once, outside of each API function
+const { token } = store.state;
+
+// Validate token function (defined once and reused)
+function validateToken() {
+  if (!token) {
+    console.log(token);
+    throw new Error('No token ID found. User may not be authenticated.');
+  }
+}
+
+// Set the default Authorization header for all requests
+axios.defaults.headers.common['authorization'] = `${token}`;
 
 // API call to create a new list
 export async function createList(listData) {
-  const { sessionId } = store.state;
-  console.log("sessionId: "+sessionId);
-
-  if (!sessionId) {
-    throw new Error('No session ID found. User may not be authenticated.');
-  }
+  validateToken();
 
   try {
     const response = await axios.post(
       '/lists/',
-      { action: 'createList',
-        headers: { 'Authorization': `${sessionId}` },
-      data: JSON.stringify(listData),
-     },
+      {
+        action: 'createList',
+        data: JSON.stringify(listData),
+      }
     );
     return response.data;
   } catch (error) {
-    console.warn('Error creating list:', error,...arguments);
+    console.warn('Error creating list:', error, ...arguments);
     throw error;
   }
 }
 
+// API call to get a list by its title
 export async function getList(listTitle) {
-  const { sessionId } = store.state;
-
-
-  if (!sessionId) {
-    throw new Error('No session ID found. User may not be authenticated.');
-  }
+  // Validate token before making the API call
+  validateToken();
 
   try {
     const response = await axios.post(
       '/lists/',
-      { action: 'getList',
-        headers: { 'Authorization': `${sessionId}`} ,
-       params: { list_title: listTitle }}
+      {
+        action: 'getList',
+        params: { list_title: listTitle },
+      }
     );
     return response.data;
   } catch (error) {
-    console.warn('Error creating list:', error,...arguments);
+    console.warn('Error fetching list:', error, ...arguments);
     throw error;
   }
 }
 
+// Generic GET request with token validation
+export async function axiosGet(url, params = {}) {
+  // Validate token before making the API call
+  validateToken();
 
-
-
-export async function axiosGet(url, params = {}, sessionId) {
-  return axios.get(url, {
-    params, // Query parameters
-    headers: {
-      'Authorization': `Bearer ${sessionId}`
-    }
-  });
+  try {
+    const response = await axios.get(url, {
+      params, // Query parameters
+    });
+    return response.data;
+  } catch (error) {
+    console.warn('Error with GET request:', error, ...arguments);
+    throw error;
+  }
 }
 
-export async function axiosPost(url, data = {}, sessionId) {
-  return axios.post(url, data, {
-    headers: {
-      'Authorization': `Bearer ${sessionId}`,
-      'Content-Type': 'application/json'
-    }
-  });
+// Generic POST request with token validation
+export async function axiosPost(url, data = {}) {
+  // Validate token before making the API call
+  validateToken();
+
+  try {
+    const response = await axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.warn('Error with POST request:', error, ...arguments);
+    throw error;
+  }
 }
