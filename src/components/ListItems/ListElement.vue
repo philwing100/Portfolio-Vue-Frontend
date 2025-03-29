@@ -102,6 +102,7 @@ export default {
       itemsArray: [],
       completedItemsArray: [],
       recurringTasksArray: [],
+      completedItemsCount: 0,
       selectedItemIndex: 0,
       draggedIndex: null,
       isDropdownOpen: false,
@@ -167,18 +168,18 @@ export default {
   methods: {
     saveEditableText(index, event) {
       // Get the text content from the contenteditable element
-      let newText = event.target.innerText.trim();
+      /*let newText = event.target.innerText.trim();
       /*
       // Optional: Limit the text length to 500 characters
       if (newText.length > 500) {
         newText = newText.substring(0, 500);
       }
         
-      */
+      
       // Update the text in the itemsArray
       if(newText>2){
       this.itemsArray[index].textString = newText;
-      }
+      }*/
       // Call saveList to emit the updated itemsArray*/
       this.saveList();
     },
@@ -356,7 +357,7 @@ export default {
       this.addToCalendarCheckbox = this.itemsArray[index];
     },*/
     focusEditable(index, position = null) {
-      //this.selectedItemIndex = this.itemsArray.length >= index ? this.itemsArray.length -1 : index;
+      this.selectedItemIndex = this.incompleteItems.length <= index ? this.incompleteItems.length -1 : index;
       console.log('focus');
       this.$nextTick(() => {
         const element = this.$refs.itemSpan[index];
