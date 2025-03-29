@@ -73,8 +73,8 @@ export default {
     },
 
     getEventStyle(event) {
-      console.log(event);
-      console.log(event.scheduledTime);
+     // console.log(event);
+     // console.log(event.scheduledTime);
       const startHour = this.parseTime(event.scheduledTime);
       let endHour = startHour + event.taskTimeEstimate / 60;
 

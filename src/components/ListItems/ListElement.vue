@@ -8,7 +8,7 @@
         {{ listName }}
       </div>
       <div>
-        <button @click="removeItem" class="add-button">Remove Task</button>
+        <button @click="removeItemByIndex(selectedItemIndex)" class="add-button">Remove Task</button>
       </div>
 
       <i class="fa-solid fa-gear add-button settings" @click="taskListSettingsPopUp"></i>
@@ -114,9 +114,9 @@ export default {
       scheduledTime: "",
       timeEstimate: 30,
       recurringTask: false,
-      recurringTaskEndDate: 0,
+      recurringTaskEndDate: null,
       dueDateCheckbox: false,
-      dueDate: 0,
+      dueDate: null,
       debounce: 1000,
     };
   },
@@ -167,17 +167,18 @@ export default {
   methods: {
     saveEditableText(index, event) {
       // Get the text content from the contenteditable element
-
       let newText = event.target.innerText.trim();
       /*
       // Optional: Limit the text length to 500 characters
       if (newText.length > 500) {
         newText = newText.substring(0, 500);
       }
+        
       */
       // Update the text in the itemsArray
+      if(newText>2){
       this.itemsArray[index].textString = newText;
-
+      }
       // Call saveList to emit the updated itemsArray*/
       this.saveList();
     },
@@ -242,7 +243,6 @@ export default {
             for (const item of response.data[0]) {
               this.loadItemFromGet(item);
             }
-            console.log(Object.keys(response.data[1]));
           }
         })
         .catch((error) => {
@@ -255,7 +255,7 @@ export default {
         scheduledCheckbox: item.scheduledCheckbox ? true : false,
         scheduledDate: normalizeDate(item.scheduledDate),
         scheduledTime: item.scheduledTime,
-        taskTimeEstimate: item.taskTimeEstimate.toString(),
+        taskTimeEstimate: item.taskTimeEstimate,
         recurringTask: item.recurringTask,
         recurringTaskEndDate: item.recurringTaskEndDate,
         dueDateCheckbox: item.dueDateCheckbox,
@@ -356,8 +356,8 @@ export default {
       this.addToCalendarCheckbox = this.itemsArray[index];
     },*/
     focusEditable(index, position = null) {
-      this.selectedItemIndex = index;
-
+      //this.selectedItemIndex = this.itemsArray.length >= index ? this.itemsArray.length -1 : index;
+      console.log('focus');
       this.$nextTick(() => {
         const element = this.$refs.itemSpan[index];
         if (element) {
@@ -449,22 +449,6 @@ export default {
         this.focusEditable(index + 1, 0);
       }
     },
-    removeItem() {
-      this.itemsArray.splice(this.selectedItemIndex, 1);
-
-      if (this.itemsArray.length === 0) {
-        this.itemsArray.push(this.createNewItem('')); // Add an empty item as a base case
-      }
-
-      // Check if the array is not empty and the index is valid before focusing
-      if (this.itemsArray.length > 0) {
-        const newIndex = this.selectedItemIndex === this.itemsArray.length ? this.selectedItemIndex - 1 : this.selectedItemIndex;
-        this.$nextTick(() => {
-          this.focusEditable(newIndex);
-        });
-      }
-      this.saveList();
-    },
     removeItemByIndex(index) {
       // Ensure at least one empty item remains
       if (this.itemsArray.length === 0) {
@@ -489,13 +473,16 @@ export default {
     setCaretPosition(element, position) {
       const range = document.createRange();
       const sel = window.getSelection();
+      console.log(position);
       if (element.firstChild) {
+        console.log("firstChild");
         range.setStart(element.firstChild, position);
       } else {
         // Create a text node if the element is empty
-        const textNode = document.createTextNode('');
+        console.log("other case");
+        const textNode = document.createTextNode(' ');
+        range.setStart(textNode, 1);
         element.appendChild(textNode);
-        range.setStart(textNode, 0);
       }
       range.collapse(true);
       sel.removeAllRanges();
