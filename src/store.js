@@ -27,13 +27,13 @@ const store = createStore({
   actions: {
     async checkAuth({ commit }) {
       const token = localStorage.getItem('token');
-      console.log('token: '+ token);
+      console.log('token: ' + token);
       if (token) {
         try {
           const response = await axios.get('/auth/check-auth', {
             headers: { authorization: `${token}` }  // Send JWT in header
           });
-          
+
           // Commit the user and token from response
           commit('SET_USER', response.data.user);
           commit('SET_TOKEN', token);
@@ -49,17 +49,17 @@ const store = createStore({
     async handleGoogleLogin({ commit }) {
       const urlParams = new URLSearchParams(window.location.search);  // Capture URL parameters
       const token = urlParams.get('token');  // Get the JWT token from the URL
-      
+
       console.log(token);
 
       if (token) {
         commit('SET_TOKEN', token);  // Save the token in Vuex state and localStorage
-        //window.location.href = `http://localhost:8080`;
+        window.location.href = window.location.origin;
       } else {
         console.warn('Token not found in the URL after Google login');
       }
     },
-    
+
 
     async logout({ commit }) {
       try {
