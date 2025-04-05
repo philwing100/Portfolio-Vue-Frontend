@@ -167,20 +167,13 @@ export default {
   },
   methods: {
     saveEditableText(index, event) {
-      // Get the text content from the contenteditable element
-      /*let newText = event.target.innerText.trim();
-      /*
-      // Optional: Limit the text length to 500 characters
-      if (newText.length > 500) {
-        newText = newText.substring(0, 500);
-      }
+      let newText = event.target.innerText.trim();
         
-      
-      // Update the text in the itemsArray
-      if(newText>2){
+      //something to limit text size
+      if(newText.length>2){
       this.itemsArray[index].textString = newText;
-      }*/
-      // Call saveList to emit the updated itemsArray*/
+      }
+
       this.saveList();
     },
     completeItem(index) {
