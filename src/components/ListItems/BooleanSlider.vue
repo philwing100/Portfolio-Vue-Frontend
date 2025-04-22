@@ -7,7 +7,7 @@
   >
     <label class="slider-label">{{ label }}</label>
     <div class="slider" @click="toggleSlider" :aria-checked="isChecked" role="switch">
-      <div class="slider-tab" :class="{ 'slider-checked': isChecked }">{{ isChecked ? 'Yes' : 'No' }}</div>
+      <div class="slider-tab" :class="{ 'slider-checked': isChecked }">{{ isChecked ? '' : '' }}</div>
     </div>
   </div>
 </template>

@@ -69,6 +69,19 @@ import { createList, getList } from '../../api.js';
 import './ListElement.css';
 import { getTodayDate, normalizeDate } from '../../date.js';
 import { mapState } from 'vuex';
+import { debounce } from 'lodash';
+
+// Define once, not inline every time!
+const debouncedCreateList = debounce((listData) => {
+  createList(listData)
+    .then((response) => {
+      console.log('Created list:', response);
+    })
+    .catch((error) => {
+      console.error('Failed to create list:', error);
+    });
+}, 750);
+
 
 export default {
   name: 'ListElement',
@@ -119,6 +132,7 @@ export default {
       dueDateCheckbox: false,
       dueDate: null,
       debounce: 1000,
+      caretPosition: 0
     };
   },
   watch: {
@@ -167,14 +181,21 @@ export default {
   },
   methods: {
     saveEditableText(index, event) {
-      let newText = event.target.innerText.trim();
-        
-      //something to limit text size
-      if(newText.length>2){
-      this.itemsArray[index].textString = newText;
+      const el = event.target;
+      const newText = el.innerText.trim();
+
+      const current = this.itemsArray[index].textString;
+      if (newText !== current) {
+        this.itemsArray[index].textString = newText;
+        this.saveList();
       }
 
-      this.saveList();
+      // Optionally restore caret after DOM update
+      // setTimeout needed to wait until re-render
+      const caret = this.getCaretPosition();
+      this.$nextTick(() => {
+        this.setCaretPosition(el, caret);
+      });
     },
     completeItem(index) {
       if (this.incompleteItems[index].textString != null && this.incompleteItems[index].textString != '') {
@@ -185,6 +206,10 @@ export default {
         this.removeItemByIndex(index);
       }
       this.saveList();
+    },
+    getCaretPosition() {
+      const selection = window.getSelection();
+      return selection && selection.anchorOffset || 0;
     },
     throttle(func, limit) {
       let lastCall = 0; // Stores the timestamp of the last execution
@@ -199,7 +224,7 @@ export default {
     },
     async saveList() {
       //LATER Need to add some debounce time maybe 750 ms to only call the api once every 3/4s second and not spam the backend.
-      const listData = {
+      let listData = {
         list_title: this.listName + " " + this.initialDate,
         list_description: this.listDescription,
         list_items: JSON.stringify(
@@ -208,17 +233,10 @@ export default {
             : this.itemsArray // Otherwise, keep the full array
         )
       };
-      console.log(listData);
+      console.log(listData.list_items);
 
       //this.throttle(createList(listData),)
-      createList(listData)
-        .then((response) => {
-          console.log('Created list:', response);
-        })
-        .catch((error) => {
-          console.error('Failed to create list:', error);
-        });
-
+      debouncedCreateList(listData);
       this.emitList()
     },
     emitList() {
@@ -227,12 +245,15 @@ export default {
 
     async fetchList() {
       await this.$store.dispatch('checkAuth');
+      this.itemsArray.length = 1;
+      this.selectedItemIndex = 0;
+      this.itemsArray.push(this.createNewItem(''));
+      this.itemsArray.splice(0, 1);
       getList(this.listName + " " + this.initialDate)
         .then((response) => {
-          this.itemsArray.length = 1;
           if (response?.message != "No list items to return") {
             //then load the response into the json data fields
-            console.log(response.data[0]);
+            console.log("FETCH LIST: " + response.data[0]);
             console.dir(response, { depth: null });
             for (const item of response.data[0]) {
               this.loadItemFromGet(item);
@@ -267,7 +288,6 @@ export default {
       this.itemsArray.push(this.createTestItem("Bruh1"));
       this.itemsArray.push(this.createTestItem("Bruh2"));*/
 
-      //this.saveList();
       this.fetchList();
       //Call api get and load initial list
 
@@ -350,7 +370,7 @@ export default {
       this.addToCalendarCheckbox = this.itemsArray[index];
     },*/
     focusEditable(index, position = null) {
-      this.selectedItemIndex = this.incompleteItems.length <= index ? this.incompleteItems.length -1 : index;
+      this.selectedItemIndex = this.incompleteItems.length <= index ? this.incompleteItems.length - 1 : index;
       console.log('focus');
       this.$nextTick(() => {
         const element = this.$refs.itemSpan[index];
@@ -446,6 +466,7 @@ export default {
     removeItemByIndex(index) {
       // Ensure at least one empty item remains
       if (this.itemsArray.length === 0) {
+        console.log('pushing');
         this.itemsArray.push(this.createNewItem(''));
       }
 

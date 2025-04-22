@@ -1,10 +1,9 @@
 <template>
+    <div>
   <AddButton></AddButton>
   <TestButton label="Open Habit Modal" :onClick="openHabitModal" />
   
   <HabitModal :isOpen="showHabitModal" @close="showHabitModal = false">
-    <p>Extra content inside Habit Modal</p>
-    <slot>GARBANZO</slot>
   </HabitModal>
 
   <TestButton label="Open Generic Modal" :onClick="openGenericModal" />
@@ -14,8 +13,7 @@
     <p>This is a test modal.</p>
   </GenericModal>
 
-  
-  <!--  -->
+</div>
 </template>
 
 <script>
