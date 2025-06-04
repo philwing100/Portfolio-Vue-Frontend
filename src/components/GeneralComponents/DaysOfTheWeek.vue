@@ -23,7 +23,7 @@
     data() {
       return {
         daysOfWeek: [
-          { short: "M", value: 1 },
+          { short: "M", value: 1 }, 
           { short: "T", value: 2 },
           { short: "W", value: 4 },
           { short: "TH", value: 8 },

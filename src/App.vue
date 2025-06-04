@@ -31,18 +31,22 @@ export default {
         },
       };
     }
-      
+
   },
 };
 </script>
 
 <style>
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
 }
 
 #app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   font-family: 'Roboto', sans-serif, Avenir, Helvetica, Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

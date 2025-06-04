@@ -161,6 +161,7 @@ export default {
   width: 85%;
   padding-left: 15px;
   padding-right: 5px;
+  background-color: #383444;
 }
 
 .needPadding {

@@ -95,7 +95,7 @@ export default {
       return {
         top: `${topPosition}px`,
         height: `${height}px`,
-        backgroundColor: "#4caf50", // Default color
+        backgroundColor: "blue", // Default color
         textDecoration: event.complete ? "line-through" : "none",
       };
 
@@ -145,7 +145,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles remain the same */
 .daily-calendar {
   position: relative;
   height: 100%;
@@ -156,6 +155,7 @@ export default {
   position: relative;
   height: 100%;
   overflow-y: auto;
+  background: #383444;
 }
 
 .time-slots {
@@ -169,12 +169,13 @@ export default {
   left: 0;
   width: 100%;
   height: 60px;
-  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid white;
   text-align: left;
   padding-left: 10px;
   box-sizing: border-box;
   font-size: 12px;
-  color: #888;
+  color: white;
+  background-color: #383444;
 }
 
 .events {
@@ -186,7 +187,6 @@ export default {
   position: absolute;
   left: 20%;
   width: 60%;
-  background-color: blue;
   color: white;
   border-radius: 4px;
   padding-left: 10px;

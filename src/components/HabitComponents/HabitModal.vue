@@ -1,33 +1,29 @@
+//HabitModal.vue
 <template>
     <GenericModal :isOpen="isOpen" @close="$emit('close')">
         <template v-slot:header>
         </template>
 
         <template v-slot:body>
-            <TextField v-model="inputTitle" label="Title" :maxLength="200" />
-            <TextField v-model="inputText" label="Notes" :maxLength="200" />
-            <BooleanSlider v-model="DailyBool" label="Daily Habit?" />
-
-            <DaysOfTheWeek v-if="!DailyBool" v-model="selectedDays" />
+            <TextField v-model="editableHabit.title" label="Title" />
+            <TextField v-model="editableHabit.notes" label="Notes" />
+            <BooleanSlider v-model="editableHabit.daily" label="Daily Habit?" />
+            <DaysOfTheWeek v-if="!editableHabit.daily" v-model="editableHabit.days" />
 
             <!-- Tags Dropdown -->
             <label>Tags:</label>
-            <Dropdown :options="availableTags" v-model="selectedTag" />
+            <Dropdown :options="availableTags" v-model="editableHabit.tag" />
 
             <div class="type-toggle">
-                <button class="toggle-circle" :class="{ active: habit.type === 1 }" @click="habit.type = 1">
-                    +
-                </button>
-                <button class="toggle-circle" :class="{ active: habit.type === 0 }" @click="habit.type = 0">
-                    –
-                </button>
+                <button :class="{ active: editableHabit.type === 1 }" @click="editableHabit.type = 1">+</button>
+                <button :class="{ active: editableHabit.type === 0 }" @click="editableHabit.type = 0">–</button>
             </div>
 
 
             <!-- Streak Display -->
             <div class="streak-display">
-                <p>Current Streak: {{ currentStreak }}</p>
-                <p>Highest Streak: {{ highestStreak }}</p>
+                <p>Current Streak: {{ editableHabit.currentStreak }}</p>
+                <p>Highest Streak: {{ editableHabit.highestStreak }}</p>
             </div>
 
             <slot></slot>
@@ -58,35 +54,35 @@ export default {
     },
     props: {
         isOpen: Boolean,
-        habit: Object, // passed from parent (editable habit)
+        habit: Object,
     },
-
     data() {
         return {
-            inputTitle: "",
-            inputText: "",
-            DailyBool: false,
-            selectedDays: 0,
-            availableTags: ["Health", "Productivity", "Mindset", "Fitness"],
-            selectedTag: "",
-            habitType: "positive", // or "negative"
-            currentStreak: 0,
-            highestStreak: 0,
+            editableHabit: {}, // local copy of habit
+            availableTags: ["Health", "Productivity", "Mindset", "Fitness", "Other", "Daily"],
         };
     },
+    watch: {
+        habit: {
+            handler(newVal) {
+                this.editableHabit = JSON.parse(JSON.stringify(newVal));
+            },
+            immediate: true,
+            deep: true,
+        },
+        'editableHabit.daily'(newVal) {
+            if (newVal) {
+                this.editableHabit.days = 0b1111111;
+            }
+        }
+    },
+
     methods: {
         saveHabit() {
-            console.log("Saving habit:", {
-                title: this.inputTitle,
-                notes: this.inputText,
-                daily: this.DailyBool,
-                days: this.selectedDays,
-                tag: this.selectedTag,
-                type: this.habitType,
-            });
+            this.$emit("update", this.editableHabit); // emit updated habit to parent
             this.$emit("close");
-        },
-    },
+        }
+    }
 };
 </script>
 
