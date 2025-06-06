@@ -12,7 +12,7 @@ export default [
     component: Learn
   },*/
   {
-    path: '/habits',
+    path: '/Streaks',
     name: 'HabitsPage',
     component: Habits
   },

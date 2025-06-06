@@ -26,7 +26,7 @@ export default {
   setup() {
     const routes = [
       { path: '/', label: 'Dashboard' },
-      { path: '/Habits', label: 'Habits' },
+      { path: '/Streaks', label: 'Streaks' },
      // { path: '/Lists', label: 'Lists' },
      // { path: '/Learn', label: 'Learn' },
      // { path: '/Type', label: 'Type' },

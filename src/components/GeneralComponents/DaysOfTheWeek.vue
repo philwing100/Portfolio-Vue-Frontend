@@ -19,6 +19,10 @@
         type: Number,
         default: 0, // Default to no days selected
       },
+         disabled: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
       return {

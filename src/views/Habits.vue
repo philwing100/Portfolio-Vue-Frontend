@@ -8,7 +8,7 @@
 
   <div class="habits-page">
     <div class="top-row">
-      Habits (Backend not yet implemented)
+      Streaks (Backend not yet implemented)
   </div>
     <div class="habit-grid">
       <Habit v-for="habit in habits" :key="habit.id" :habit="habit" @update="updateHabit" @edit="openHabitModal" />
@@ -31,6 +31,7 @@ import TestButton from "@/components/GeneralComponents/TestButton.vue";
 import GenericModal from "@/components/GeneralComponents/GenericModal.vue";
 import HabitModal from "@/components/HabitComponents/HabitModal.vue";
 
+
 export default {
   name: "HabitsPage",
   components: {
@@ -50,31 +51,37 @@ export default {
           id: 1,
           title: "Exercise",
           notes: "",
+          goal: 5,
           tag: "daily",
-          type: 1,
-          currentStreak: 2,
+          currentStreak: 4,
           highestStreak: 5,
           days: 0b1111111, // All days selected
+          lastUpdated: "2025-06-01",
+          color: "#FF0000",
         },
         {
           id: 2,
-          title: "Procrastination",
+          title: "Competetive Coding",
           notes: "",
+          goal: 5,
           tag: "daily",
-          type: 0,
           currentStreak: 1,
           highestStreak: 5,
           days: 0b1111101, //Tuesday disabled
+          lastUpdated: "2025-06-01",
+          color: "#00BFFF",
         },
         {
           id: 3,
-          title: "Exercise",
+          title: "Daily Reading",
           notes: "",
+          goal: 7,
           tag: "daily",
-          type: 1,
-          currentStreak: 2,
-          highestStreak: 5,
+          currentStreak: 4,
+          highestStreak: 4,
           days: 0b1111111,
+          lastUpdated: "2025-06-01",
+          color: "#7CFC00",
         },
       ],
     };
@@ -113,9 +120,12 @@ export default {
         title: "",
         notes: "",
         tag: "",
-        type: 1,
         currentStreak: 0,
         highestStreak: 0,
+        days: 0b1111111,
+        lastUpdated: null,
+        goal: 1,
+        color: "#00BFFF",
       };
       this.showHabitModal = true;
     },
@@ -128,20 +138,20 @@ export default {
 .habits-page {
   overflow: auto;
   min-height: 100%;
-  background-color: #383444;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .habit-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
-  background-color: #383444;
-  padding: 1px;
+  padding: 1rem;
+  background-color: #000000;
 }
 
-.habit-grid>* {
-  flex: 0 0 calc(33.333% - 0.67rem);
-  /* 3 cards per row with gaps */
+.habit-grid > * {
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -149,31 +159,30 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #ccc;
+  border: 2px dashed #b1b1b1;
   border-radius: 1rem;
   padding: 1rem;
   min-height: 160px;
   cursor: pointer;
-  background-color: black;
-  transition: background 0.2s ease;
+  background-color: #383444;
+  transition: background-color 0.2s ease;
+  color: #ffffff;
 }
 
 .add-card:hover {
-  background-color: #f9f9f9;
+  background-color: white;
+  color: #ffffff;
 }
-title{
-  color: red;
-    font-size: 24px;
-}
+
 .top-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  height: 10vh; /* Fixed height of 10% of the viewport */
+  height: 10vh;
   padding: 0 20px;
-  color:White;
-  background-color: black;
-  font-size:24px;
+  color: #ffffff;
+  background-color: #000000;
+  font-size: 24px;
 }
 </style>

@@ -48,9 +48,11 @@ export default {
 
 .text-input {
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid white;
     border-radius: 4px;
     font-size: 16px;
+    background-color: black;
+    color:white;
 }
 
 .char-counter {

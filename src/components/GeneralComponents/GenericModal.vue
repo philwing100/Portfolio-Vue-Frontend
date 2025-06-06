@@ -2,8 +2,8 @@
     <div v-if="isOpen" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-header">
-          <slot name="header"></slot>
           <button @click="$emit('close')">✖</button>
+          <slot name="header"></slot>
         </div>
   
         <div class="modal-body">
@@ -39,11 +39,12 @@
     justify-content: center;
   }
   .modal-content {
-    background: white;
+    background: #383444;
     padding: 20px;
     border-radius: 8px;
     width: 400px;
     position: relative;
+    overflow:auto;
   }
   .close-btn {
     position: absolute;

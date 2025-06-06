@@ -1,75 +1,110 @@
 <template>
   <div class="habit-card" :class="{ inactive: !isActiveToday }" @click="handleCardClick">
-    <!-- Top bar -->
-    <div class="habit-top">
-      <font-awesome-icon :icon="habitIcon" class="habit-icon" />
+    <div class="habit-left">
+      <span class="current-streak">🔥 {{ habit.currentStreak }}</span>
+      <span class="habit-title">{{ habit.title }}</span>
+    </div>
+
+    <div class="habit-bar-container">
+      <div class="habit-bar-background">
+        <div
+          class="habit-bar-fill"
+          :class="{ animate: shouldAnimate }"
+          :style="{
+            width: barPercentage + '%',
+            backgroundColor: habit.color,
+          }"
+          @animationend="shouldAnimate = false"
+        >
+          <div
+            v-for="(wave, index) in 3"
+            :key="index"
+            class="wave"
+            :style="{
+              background: waveColors[index],
+              animationDelay: (index * 0.3) + 's',
+            }"
+          ></div>
+        </div>
+        <div class="tick-marks">
+          <span
+            v-for="n in (habit.goal || 1) + 1"
+            :key="n"
+            class="tick"
+            :style="{ left: (n / (habit.goal || 1)) * 100 + '%' }"
+          >
+            |
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="habit-right">
+      <span class="highest-streak">🏆 {{ habit.highestStreak }}</span>
       <button class="gear-btn" @click.stop="$emit('edit', habit)">
         <font-awesome-icon :icon="gearIcon" />
       </button>
-    </div>
-
-    <!-- Title -->
-    <h3 class="habit-title">{{ habit.title }}</h3>
-
-    <!-- Tag -->
-    <span class="habit-tag">{{ habit.tag }}</span>
-
-    <!-- Streaks -->
-    <div class="streak-footer">
-      <span class="left">🏆 {{ habit.highestStreak }}</span>
-      <span class="right">🔥 {{ habit.currentStreak }}</span>
     </div>
   </div>
 </template>
 
 <script>
+import { getTodayDate } from "../../date.js";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCog, faRunning, faBook, faPrayingHands, faBolt } from "@fortawesome/free-solid-svg-icons";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+
+function lightenDarkenColor(rgb, amount) {
+  const parts = rgb.match(/\d+/g).map(Number);
+  return `rgb(${parts.map((c) => Math.min(255, Math.max(0, c + amount))).join(",")})`;
+}
 
 export default {
   name: "Habit",
-  components: {
-    FontAwesomeIcon,
-  },
+  components: { FontAwesomeIcon },
   props: {
     habit: Object,
   },
+  data() {
+    return {
+      shouldAnimate: false,
+    };
+  },
   computed: {
     todayBit() {
-      const today = new Date().getDay(); // 0 = Sunday
-      return [64, 1, 2, 4, 8, 16, 32][today]; // Match your bitmap order
+      const today = new Date().getDay();
+      return [64, 1, 2, 4, 8, 16, 32][today];
     },
     isActiveToday() {
       return (this.habit.days & this.todayBit) > 0;
     },
-    habitIcon() {
-      // You can customize this logic per habit type/tag
-      if (this.habit.title.toLowerCase().includes("exercise")) return faRunning;
-      if (this.habit.title.toLowerCase().includes("prayer")) return faPrayingHands;
-      if (this.habit.title.toLowerCase().includes("read")) return faBook;
-      return faBolt;
+    barPercentage() {
+      const pct = (this.habit.currentStreak / (this.habit.goal || 1)) * 100;
+      return Math.min(pct, 100);
+    },
+    lastUpdatedToday() {
+      return this.habit.lastUpdated === getTodayDate();
     },
     gearIcon() {
-      return faCog; // Default gear icon
+      return faCog;
     },
+    waveColors() {
+      return [
+        this.habit.color
+      ];//Later can add this back correctly to have waves going along the bars. 
+    },//Perhaps a wave from left to right along the progress bar.
   },
   methods: {
     handleCardClick() {
-      if (!this.isActiveToday) return;
+      if (!this.isActiveToday || this.lastUpdatedToday) return;
 
-      const updatedHabit = { ...this.habit };
+      const updatedHabit = {
+        ...this.habit,
+        currentStreak: this.habit.currentStreak + 1,
+        highestStreak: Math.max(this.habit.currentStreak + 1, this.habit.highestStreak),
+        lastUpdated: getTodayDate(),
+      };
 
-      if (updatedHabit.type === 1) {
-        updatedHabit.currentStreak += 1;
-        updatedHabit.highestStreak = Math.max(
-          updatedHabit.highestStreak,
-          updatedHabit.currentStreak
-        );
-      } else {
-        updatedHabit.currentStreak -= 1;
-        updatedHabit.currentStreak = Math.max(0, updatedHabit.currentStreak);
-      }
-
+      this.shouldAnimate = true;
       this.$emit("update", updatedHabit);
     },
   },
@@ -78,83 +113,151 @@ export default {
 
 <style scoped>
 .habit-card {
-  position: relative;
-  border-radius: 10px;
-  background: black;
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-  transition: transform 0.15s, opacity 0.3s;
+  color: white;
   cursor: pointer;
-}
-
-.habit-card:hover {
-  transform: scale(1.01);
+  transition: opacity 0.3s;
 }
 
 .habit-card.inactive {
   opacity: 0.4;
+  cursor: default;
 }
 
-.habit-card.inactive .gear-btn {
-  opacity: 0.5;
-}
-
-.habit-card.inactive .gear-btn:hover {
-  opacity: 0.8;
-}
-
-.habit-top {
+.habit-left {
+  width: 20%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 1rem;
 }
 
-.habit-icon {
-  font-size: 2rem;
-  color: #0077cc;
-}
-
-.gear-btn {
-  padding: 8px 16px;
-  background-color: #343541;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-right: 8px;
+.current-streak {
+  font-weight: bold;
 }
 
 .habit-title {
-  margin: 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.1rem;
   color: white;
 }
 
-.habit-tag {
-  background-color: #f0f0f0;
-  color: #666;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
-  display: inline-block;
+.habit-bar-container {
+  flex: 1;
+  position: relative;
+  height: 50px; /* increased thickness */
+  margin: 0 1rem;
 }
 
-.streak-footer {
+.habit-bar-background {
+  width: 100%;
+  height: 100%;
+  background-color: #383444;
+  border-radius: 25px;
+  overflow: hidden;
+  position: relative;
+}
+
+.habit-bar-fill {
+  height: 100%;
+  position: relative;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  transition: width 0.6s ease-in-out;
   display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  color: #444;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.streak-footer .left {
-  text-align: left;
+.habit-bar-fill.animate {
+  animation: pop-in 0.4s ease-out;
 }
 
-.streak-footer .right {
-  text-align: right;
+@keyframes pop-in {
+  0% {
+    transform: scaleY(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.wave {
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  right: 0;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  animation: waveAnim 2s infinite ease-in-out;
+}
+
+.wave:nth-child(2) {
+  animation-duration: 3s;
+}
+
+.wave:nth-child(3) {
+  animation-duration: 2.5s;
+}
+
+@keyframes waveAnim {
+  0% {
+    transform: translateY(0);
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateY(6px);
+    transform: translateX(6px);
+  }
+  100% {
+    transform: translateY(0);
+    transform: translateX(0);
+  }
+}
+
+.tick-marks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.tick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  color: #b1b1b1;
+}
+
+.habit-right {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.gear-btn {
+  background-color: #383444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.gear-btn:hover {
+  background-color: #0000dc;
 }
 </style>
