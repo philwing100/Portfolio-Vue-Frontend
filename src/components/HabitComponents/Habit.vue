@@ -7,32 +7,18 @@
 
     <div class="habit-bar-container">
       <div class="habit-bar-background">
-        <div
-          class="habit-bar-fill"
-          :class="{ animate: shouldAnimate }"
-          :style="{
-            width: barPercentage + '%',
-            backgroundColor: habit.color,
-          }"
-          @animationend="shouldAnimate = false"
-        >
-          <div
-            v-for="(wave, index) in 3"
-            :key="index"
-            class="wave"
-            :style="{
-              background: waveColors[index],
-              animationDelay: (index * 0.3) + 's',
-            }"
-          ></div>
+        <div class="habit-bar-fill" :class="{ animate: shouldAnimate }" :style="{
+          width: barPercentage + '%',
+          backgroundColor: habit.color,
+        }" @animationend="shouldAnimate = false">
+          <div v-for="(wave, index) in 3" :key="index" class="wave" :style="{
+            background: waveColors[index],
+            animationDelay: (index * 0.3) + 's',
+          }"></div>
         </div>
         <div class="tick-marks">
-          <span
-            v-for="n in (habit.goal || 1) + 1"
-            :key="n"
-            class="tick"
-            :style="{ left: (n / (habit.goal || 1)) * 100 + '%' }"
-          >
+          <span v-for="n in (habit.goal || 1) + 1" :key="n" class="tick"
+            :style="{ left: (n / (habit.goal || 1)) * 100 + '%' }">
             |
           </span>
         </div>
@@ -52,6 +38,7 @@
 import { getTodayDate } from "../../date.js";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { axiosPost } from '../../api.js';
 
 function lightenDarkenColor(rgb, amount) {
   const parts = rgb.match(/\d+/g).map(Number);
@@ -96,16 +83,25 @@ export default {
   methods: {
     handleCardClick() {
       if (!this.isActiveToday || this.lastUpdatedToday) return;
+      //Update the ui values immediately without waiting
+      let temp = this.habit.highestStreak;
 
-      const updatedHabit = {
-        ...this.habit,
-        currentStreak: this.habit.currentStreak + 1,
-        highestStreak: Math.max(this.habit.currentStreak + 1, this.habit.highestStreak),
-        lastUpdated: getTodayDate(),
-      };
+      this.habit.currentStreak = this.habit.currentStreak + 1;
+      this.habit.highestStreak = Math.max(this.habit.currentStreak, this.habit.highestStreak);
+      this.habit.lastUpdated = getTodayDate();
 
+      //Send to backend since it does its own increment calculation from internal date
+      if(this.$store.state.isAuthenticated){
+        axiosPost('/streaks/', 'incrementStreak', this.habit).then(result => {
+        if (!result.success) {
+          //If backend doesnt agree then send values back down
+          this.habit.currentStreak = this.habit.currentStreak -1;
+          this.habit.highestStreak = temp;
+          console.log("Can't increment again today");
+        }
+      });
+    }
       this.shouldAnimate = true;
-      this.$emit("update", updatedHabit);
     },
   },
 };
@@ -149,7 +145,8 @@ export default {
 .habit-bar-container {
   flex: 1;
   position: relative;
-  height: 50px; /* increased thickness */
+  height: 50px;
+  /* increased thickness */
   margin: 0 1rem;
 }
 
@@ -182,6 +179,7 @@ export default {
     transform: scaleY(0.85);
     opacity: 0.6;
   }
+
   100% {
     transform: scaleY(1);
     opacity: 1;
@@ -212,10 +210,12 @@ export default {
     transform: translateY(0);
     transform: translateX(0);
   }
+
   50% {
     transform: translateY(6px);
     transform: translateX(6px);
   }
+
   100% {
     transform: translateY(0);
     transform: translateX(0);

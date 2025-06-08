@@ -56,6 +56,13 @@ export default {
     computed: {
         colorString() {
             return `rgb(${this.red},${this.green},${this.blue})`;
+        },
+        hexColor() {
+            const toHex = (n) => {
+                const hex = n.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            return `#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}`.toUpperCase();
         }
     },
     watch: {
@@ -68,18 +75,28 @@ export default {
     },
     methods: {
         updateColor() {
-            this.$emit('update:modelValue', this.colorString);
+            // Emit both RGB and hex values
+            this.$emit('update:modelValue', this.hexColor);
         },
         selectPresetColor(color) {
             this.parseColor(color);
             this.updateColor();
         },
         parseColor(colorStr) {
-            const match = colorStr.match(/rgb\((\d+),(\d+),(\d+)\)/);
-            if (match) {
-                this.red = parseInt(match[1]);
-                this.green = parseInt(match[2]);
-                this.blue = parseInt(match[3]);
+            if (colorStr.startsWith('#')) {
+                // Parse hex color
+                const hex = colorStr.substring(1);
+                this.red = parseInt(hex.substring(0, 2), 16);
+                this.green = parseInt(hex.substring(2, 4), 16);
+                this.blue = parseInt(hex.substring(4, 6), 16);
+            } else {
+                // Parse RGB color
+                const match = colorStr.match(/rgb\((\d+),(\d+),(\d+)\)/);
+                if (match) {
+                    this.red = parseInt(match[1]);
+                    this.green = parseInt(match[2]);
+                    this.blue = parseInt(match[3]);
+                }
             }
         }
     }
@@ -147,7 +164,7 @@ export default {
     gap: 0.75rem;
     flex: 1;
     margin-left: 120px;
-    padding-left:20px;
+    padding-left: 20px;
     right: 0;
 }
 </style>

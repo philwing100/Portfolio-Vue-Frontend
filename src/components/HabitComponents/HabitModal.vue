@@ -107,10 +107,10 @@ export default {
             this.$emit("close");
         },
         deleteHabit() {
-            this.showDeleteConfirm =  false,
-            this.$emit("delete", this.editableHabit.id);
+            this.showDeleteConfirm = false,
+                this.$emit("delete", this.editableHabit.id);
             this.$emit("close");
-        }
+        },
     }
 };
 </script>

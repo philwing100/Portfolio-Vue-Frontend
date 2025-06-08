@@ -23,7 +23,7 @@ export async function createList(listData) {
     const response = await axios.post(
       '/lists/',
       {
-        action: 'createList',
+        action: 'createList', 
         data: JSON.stringify(listData),
       }
     );
@@ -71,19 +71,58 @@ export async function axiosGet(url, params = {}) {
 }
 
 // Generic POST request with token validation
-export async function axiosPost(url, data = {}) {
+export async function axiosPost(url, action, data = {}) {
+  validateToken();
+//console.log(data);
+  try {
+    const response = await axios.post(
+      url,
+      {
+        action: action,
+        data: JSON.stringify(data),
+      }
+    );
+          
+    return response.data;
+  } catch (error) {
+    console.warn('Error with POST request:', error, ...arguments);
+    throw error;
+  }
+}
+
+export async function getStreaks() {
   // Validate token before making the API call
   validateToken();
 
   try {
-    const response = await axios.post(url, data, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await axios.post(
+      '/streaks/',
+      {
+        action: 'getStreaks',
+        params: {},
       }
-    });
+    );
     return response.data;
   } catch (error) {
-    console.warn('Error with POST request:', error, ...arguments);
+    console.warn('Error fetching streaks:', error, ...arguments);
+    throw error;
+  }
+}
+
+export async function updateStreak() {
+  validateToken();
+
+  try {
+    const response = await axios.post(
+      '/streaks/',
+      {
+        action: 'updateStreak',
+        params: {},
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.warn('Error updating streak:', error, ...arguments);
     throw error;
   }
 }

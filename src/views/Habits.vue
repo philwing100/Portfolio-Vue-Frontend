@@ -8,8 +8,8 @@
 
   <div class="habits-page">
     <div class="top-row">
-      Streaks (Backend not yet implemented)
-  </div>
+      Streaks
+    </div>
     <div class="habit-grid">
       <Habit v-for="habit in habits" :key="habit.id" :habit="habit" @update="updateHabit" @edit="openHabitModal" />
 
@@ -19,7 +19,8 @@
       </div>
     </div>
 
-    <HabitModal :isOpen="showHabitModal" :habit="selectedHabit" @update="updateHabit" @close="showHabitModal = false" />
+    <HabitModal :isOpen="showHabitModal" :habit="selectedHabit" @update="updateHabit" @delete="deleteHabit"
+      @close="showHabitModal = false" />
   </div>
 </template>
 
@@ -30,7 +31,8 @@ import AddButton from "@/components/HabitComponents/AddButton.vue";
 import TestButton from "@/components/GeneralComponents/TestButton.vue";
 import GenericModal from "@/components/GeneralComponents/GenericModal.vue";
 import HabitModal from "@/components/HabitComponents/HabitModal.vue";
-
+import { axiosPost, getStreaks } from '../api.js';
+import { getTodayDate, normalizeDate } from "@/date";
 
 export default {
   name: "HabitsPage",
@@ -46,7 +48,7 @@ export default {
       showGenericModal: false,
       showHabitModal: false,
       selectedHabit: null,
-      habits: [
+      defaultHabits: [
         {
           id: 1,
           title: "Exercise",
@@ -84,12 +86,31 @@ export default {
           color: "#7CFC00",
         },
       ],
+      habits: [],
     };
+  },
+  async created() {
+    await this.fetchStreaks();
   },
   methods: {
     openHabitModal(habit) {
       this.selectedHabit = habit;
       this.showHabitModal = true;
+    },
+    loadHabitFromGet(habit) {//expects habit from api
+      let newHabit = {
+        id: habit.streakID,
+        title: habit.title,
+        notes: habit.notes,
+        goal: habit.goal,
+        tag: habit.tag,
+        currentStreak: habit.currentStreak,
+        highestStreak: habit.highestStreak,
+        days: habit.days,
+        lastUpdated: normalizeDate(habit.lastUpdated),
+        color: habit.color,
+      };
+      return newHabit;
     },
     updateHabit(updatedHabit) {
       if (updatedHabit.id != null) {
@@ -106,10 +127,10 @@ export default {
         updatedHabit.id = maxId + 1;
         this.habits.push({ ...updatedHabit });
       }
+      console.log('post test: ' + axiosPost('/streaks/', 'updateStreak', {updatedHabit}));
 
       this.showHabitModal = false;
     },
-
     openGenericModal() {
       console.log("Opening Generic Modal...");
       this.showGenericModal = true;
@@ -119,17 +140,48 @@ export default {
         id: null,
         title: "",
         notes: "",
+        goal: 1,
         tag: "",
         currentStreak: 0,
         highestStreak: 0,
         days: 0b1111111,
-        lastUpdated: null,
-        goal: 1,
+        lastUpdated: normalizeDate(new Date(Date.now() - 24 * 60 * 60 * 1000)),
         color: "#00BFFF",
       };
       this.showHabitModal = true;
     },
-
+    deleteHabit(habitId) {
+      const index = this.habits.findIndex(h => h.id === habitId);
+      if (index !== -1) {
+        this.habits.splice(index, 1);
+      }
+      this.showHabitModal = false;
+      axiosPost('/streaks/', 'deleteStreak', {habitId});
+    },
+    async fetchStreaks() {
+        try {
+            await this.$store.dispatch('checkAuth');
+            if (this.$store.state.isAuthenticated) {
+                const response = await getStreaks();
+                if (response?.message !== "No streaks found for this user") {
+                    console.dir(response, { depth: null });
+                    if (response.data) {
+                        this.habits = [];
+                        for (const habit of response.data) {
+                            this.habits.push(this.loadHabitFromGet(habit));
+                        }
+                    }
+                }
+            } else {
+                // Use default habits for unauthenticated users
+                this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
+            }
+        } catch (err) {
+            console.error("Error fetching streaks:", err);
+            // Fallback to default habits on error
+            this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
+        }
+    },
   },
 };
 
@@ -150,7 +202,7 @@ export default {
   background-color: #000000;
 }
 
-.habit-grid > * {
+.habit-grid>* {
   width: 100%;
   box-sizing: border-box;
 }
