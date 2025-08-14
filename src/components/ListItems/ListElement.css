@@ -10,7 +10,7 @@
 }
 
 .dropdown {
-  position: relative; 
+  position: relative;
   display: inline-block;
   width: 100%;
 }
@@ -18,13 +18,14 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: var(--secondaryColor);
+  background-color: var(--primaryColor);
   width: 100%;
-  box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
+  box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+  /* Shadow adjusted upwards */
   z-index: 1;
-  bottom: 100%; 
-  max-height: 25rem; 
-  overflow-y: auto; 
+  bottom: 100%;
+  max-height: 25rem;
+  overflow-y: auto;
 }
 
 .dropdown-content a {
@@ -37,7 +38,7 @@
 }
 
 .dropdown-content a:hover {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   text-decoration: line-through;
 }
 
@@ -69,14 +70,14 @@
 }
 
 .template-container {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   border-radius: 0.625rem;
   border-color: var(--accentColor);
   border-width: 0.0625rem;
   border-style: solid;
-  height:90vh;
+  height: 90vh;
   width: 25rem;
-  overflow:hidden;
+  overflow: hidden;
   color: var(--accentColor);
   padding-left: 0.3125rem;
   padding-right: 0.3125rem;
@@ -97,10 +98,10 @@
 .ListContainer {
   display: flex;
   flex-direction: column;
-  max-height:80%;
+  max-height: 80%;
   max-width: 100%;
-  overflow-y:auto;
-  flex:1;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .ListItem {
@@ -125,7 +126,7 @@
 }
 
 .ListItem {
-  padding-left:1.25rem;
+  padding-left: 1.25rem;
 }
 
 .ListItem,
@@ -146,27 +147,35 @@ li:hover {
 
 .input-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Change to 3 columns */
-  gap: 0.625rem; /* Space between items */
-  align-items: center; /* Vertically center items */
-  justify-items: center; /* Horizontally center items */
-  user-select: none; 
+  grid-template-columns: repeat(3, 1fr);
+  /* Change to 3 columns */
+  gap: 0.625rem;
+  /* Space between items */
+  align-items: center;
+  /* Vertically center items */
+  justify-items: center;
+  /* Horizontally center items */
+  user-select: none;
 }
 
 .boolean-slider {
-  display: contents; /* Allows children to participate in the grid layout */
+  display: contents;
+  /* Allows children to participate in the grid layout */
 }
 
 .settings {
-  max-width: 100%; /* Make settings fully responsive */
-  max-height: 1.25rem; /* Adjust as necessary */
-}
-
-.title{
   max-width: 100%;
-  font-size:1.5625rem;
+  /* Make settings fully responsive */
+  max-height: 1.25rem;
+  /* Adjust as necessary */
 }
 
-.input-grid > * {
-  min-width: 0; /* Prevent overflow */
+.title {
+  max-width: 100%;
+  font-size: 1.5625rem;
+}
+
+.input-grid>* {
+  min-width: 0;
+  /* Prevent overflow */
 }

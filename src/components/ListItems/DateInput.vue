@@ -153,7 +153,7 @@ export default {
 }
 
 .date-input {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   color: var(--accentColor);
   border: 0.0625rem solid var(--secondaryColor);
   border-radius: 0.25rem;
@@ -172,8 +172,8 @@ export default {
   position: absolute;
   top: 40px;
   left: -10%;
-  background-color: #2b2b2b;
-  border: 1px solid #4a4a4a;
+  background-color: var(--primaryColor);
+  border: 1px solid var(--accentColor);
   border-radius: 4px;
   padding-left: 2px;
   padding-right: 2px;
@@ -203,10 +203,10 @@ export default {
 }
 
 .day.hover {
-  background-color: rgba(0, 123, 255, 0.5);
+  background-color: var(--secondaryColor);
 }
 
 .day.selected {
-  background-color: rgba(0, 86, 179, 0.7);
+  background-color: var(--secondaryColor);
 }
 </style>
