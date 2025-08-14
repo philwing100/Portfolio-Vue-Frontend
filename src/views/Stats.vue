@@ -70,16 +70,16 @@ h1 {
 .date-input {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--secondaryColor, #555);
+  border: 0.0625rem solid var(--secondaryColor, #555);
   background: var(--secondaryColor, #555);
   color: var(--accentColor, #fff);
   font-size: 1rem;
-  min-width: 150px;
+  min-width: 9.375rem;
 }
 
 .date-input:focus {
   outline: none;
   border-color: var(--accentColor, #fff);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 0.125rem rgba(255, 255, 255, 0.2);
 }
 </style>

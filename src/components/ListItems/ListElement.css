@@ -1,11 +1,11 @@
 .dropbtn {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   background-color: #383444;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.875rem;
   width: 100%;
 }
 
@@ -20,19 +20,19 @@
   position: absolute;
   background-color:#383444;
   width: 100%;
-  box-shadow: 0 -8px 16px 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
+  box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
   z-index: 1;
   bottom: 100%; 
-  max-height: 400px; 
+  max-height: 25rem; 
   overflow-y: auto; 
 }
 
 .dropdown-content a {
   color: white;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   text-decoration: none;
   display: block;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-decoration: none;
 }
 
@@ -54,13 +54,13 @@
 }
 
 .drag-button {
-  padding: 4px;
+  padding: 0.25rem;
   background-color: #ccc;
   color: #333;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
-  margin-right: 4px;
+  margin-right: 0.25rem;
 }
 
 /* Styles for dragging */
@@ -70,28 +70,28 @@
 
 .template-container {
   background-color: black;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   border-color: white;
-  border-width: 1px;
+  border-width: 0.0625rem;
   border-style: solid;
   height:90vh;
-  width: 400px;
+  width: 25rem;
   overflow:hidden;
   color:white;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 0.3125rem;
+  padding-right: 0.3125rem;
 }
 
 .add-button,
 .toggle-popup-button {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   background-color: #343541;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 14px;
-  margin-right: 8px;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
 }
 
 .ListContainer {
@@ -113,7 +113,7 @@
 }
 
 .item-text {
-  margin-left: 6%;
+  margin-left: 3.75%;
   outline: none;
   word-break: break-all;
 }
@@ -125,7 +125,7 @@
 }
 
 .ListItem {
-  padding-left:20px;
+  padding-left:1.25rem;
 }
 
 .ListItem,
@@ -136,18 +136,18 @@
 
 li {
   list-style-type: none;
-  padding-right: 10px;
+  padding-right: 0.625rem;
 }
 
 li:hover {
   background-color: grey;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
 }
 
 .input-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Change to 3 columns */
-  gap: 10px; /* Space between items */
+  gap: 0.625rem; /* Space between items */
   align-items: center; /* Vertically center items */
   justify-items: center; /* Horizontally center items */
   user-select: none; 
@@ -159,15 +159,14 @@ li:hover {
 
 .settings {
   max-width: 100%; /* Make settings fully responsive */
-  max-height: 20px; /* Adjust as necessary */
+  max-height: 1.25rem; /* Adjust as necessary */
 }
 
 .title{
   max-width: 100%;
-  font-size:25px;
+  font-size:1.5625rem;
 }
 
 .input-grid > * {
   min-width: 0; /* Prevent overflow */
 }
-

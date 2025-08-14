@@ -142,13 +142,13 @@ export default {
 
 .calendar-header-cell {
   width: 1.2vw;
-  min-width: 18px;
-  max-width: 32px;
+  min-width: 1.125rem;
+  max-width: 2rem;
   text-align: center;
   font-size: 0.85rem;
   color: var(--accentColor);
   font-weight: 600;
-  margin-right: 2px;
+  margin-right: 0.125rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,13 +157,13 @@ export default {
 .calendar-row {
   display: flex;
   align-items: center;
-  margin-bottom: 2px;
+  margin-bottom: 0.125rem;
 }
 
 .calendar-row-label {
   width: 2.2vw;
-  min-width: 28px;
-  max-width: 38px;
+  min-width: 1.75rem;
+  max-width: 2.375rem;
   text-align: right;
   font-size: 0.85rem;
   color: var(--accentColor);
@@ -173,21 +173,21 @@ export default {
   align-items: center;
   justify-content: flex-end;
   height: 1.2vw;
-  min-height: 18px;
-  max-height: 32px;
+  min-height: 1.125rem;
+  max-height: 2rem;
 }
 
 .calendar-cell {
   width: 1.2vw;
   height: 1.2vw;
-  min-width: 18px;
-  min-height: 18px;
-  max-width: 32px;
-  max-height: 32px;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
+  max-width: 2rem;
+  max-height: 2rem;
   background: var(--primaryColor);
   border-radius: 0.2rem;
-  border: 1px solid var(--secondaryColor);
-  margin-right: 2px;
+  border: 0.0625rem solid var(--secondaryColor);
+  margin-right: 0.125rem;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -197,7 +197,7 @@ export default {
   transform: scale(1.2);
   background: var(--accentColor);
   border-color: var(--accentColor);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0.25rem 0.75rem rgba(255, 255, 255, 0.3);
   z-index: 10;
   animation: pulse 0.6s ease-out;
 }
@@ -209,34 +209,34 @@ export default {
   }
   50% {
     transform: scale(1.15);
-    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 0.5rem rgba(255, 255, 255, 0.3);
   }
   100% {
     transform: scale(1.2);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0.25rem 0.75rem rgba(255, 255, 255, 0.3);
   }
 }
 
 .calendar-cell.filled {
   background: var(--accentColor);
-  border: 1px solid var(--accentColor);
+  border: 0.0625rem solid var(--accentColor);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 56.25rem) {
 
   .calendar-header-cell,
   .calendar-row-label,
   .calendar-cell {
-    min-width: 12px;
-    max-width: 18px;
-    min-height: 12px;
-    max-height: 18px;
+    min-width: 0.75rem;
+    max-width: 1.125rem;
+    min-height: 0.75rem;
+    max-height: 1.125rem;
     font-size: 0.7rem;
   }
 
   .calendar-row-label {
-    min-height: 12px;
-    max-height: 18px;
+    min-height: 0.75rem;
+    max-height: 1.125rem;
   }
 
   .calendar-columns {
