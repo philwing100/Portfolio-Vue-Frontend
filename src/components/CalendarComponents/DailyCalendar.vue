@@ -155,7 +155,7 @@ export default {
   position: relative;
   height: 100%;
   overflow-y: auto;
-  background: #383444;
+  background: var(--secondaryColor);
 }
 
 .time-slots {
@@ -168,14 +168,14 @@ export default {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 60px;
-  border-top: 1px solid white;
+  height: 3.75rem;
+  border-top: 0.0625rem solid var(--accentColor);
   text-align: left;
-  padding-left: 10px;
+  padding-left: 0.625rem;
   box-sizing: border-box;
-  font-size: 12px;
-  color: white;
-  background-color: #383444;
+  font-size: 0.75rem;
+  color: var(--accentColor);
+  background-color: var(--secondaryColor);
 }
 
 .events {
@@ -187,10 +187,10 @@ export default {
   position: absolute;
   left: 20%;
   width: 60%;
-  color: white;
-  border-radius: 4px;
-  padding-left: 10px;
-  padding-top:5px;
+  color: var(--accentColor);
+  border-radius: 0.25rem;
+  padding-left: 0.625rem;
+  padding-top: 0.3125rem;
   box-sizing: border-box;
   cursor: pointer;
   overflow: hidden;
@@ -199,6 +199,6 @@ export default {
 }
 
 .event:hover {
-  background-color: blue;
+  background-color: var(--primary);
 }
 </style>

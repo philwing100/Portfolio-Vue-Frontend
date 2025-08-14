@@ -1,7 +1,7 @@
 .dropbtn {
   padding: 0.5rem 1rem;
-  background-color: #383444;
-  color: white;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -18,7 +18,7 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color:#383444;
+  background-color: var(--secondaryColor);
   width: 100%;
   box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.2); /* Shadow adjusted upwards */
   z-index: 1;
@@ -28,7 +28,7 @@
 }
 
 .dropdown-content a {
-  color: white;
+  color: var(--accentColor);
   padding: 0.75rem 1rem;
   text-decoration: none;
   display: block;
@@ -37,7 +37,7 @@
 }
 
 .dropdown-content a:hover {
-  background-color: grey;
+  background-color: var(--primary);
   text-decoration: line-through;
 }
 
@@ -55,8 +55,8 @@
 
 .drag-button {
   padding: 0.25rem;
-  background-color: #ccc;
-  color: #333;
+  background-color: var(--accentColor);
+  color: var(--primary);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -69,15 +69,15 @@
 }
 
 .template-container {
-  background-color: black;
+  background-color: var(--primary);
   border-radius: 0.625rem;
-  border-color: white;
+  border-color: var(--accentColor);
   border-width: 0.0625rem;
   border-style: solid;
   height:90vh;
   width: 25rem;
   overflow:hidden;
-  color:white;
+  color: var(--accentColor);
   padding-left: 0.3125rem;
   padding-right: 0.3125rem;
 }
@@ -85,8 +85,8 @@
 .add-button,
 .toggle-popup-button {
   padding: 0.5rem 1rem;
-  background-color: #343541;
-  color: white;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;

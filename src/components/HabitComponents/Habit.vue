@@ -111,11 +111,11 @@ export default {
 .habit-card {
   display: flex;
   align-items: center;
-  background-color: #000000;
-  border-radius: 12px;
+  background-color: var(--primary);
+  border-radius: 0.75rem;
   padding: 1rem;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--accentColor);
   cursor: pointer;
   transition: opacity 0.3s;
 }
@@ -139,13 +139,13 @@ export default {
 
 .habit-title {
   font-size: 1.1rem;
-  color: white;
+  color: var(--accentColor);
 }
 
 .habit-bar-container {
   flex: 1;
   position: relative;
-  height: 50px;
+  height: 3.125rem;
   /* increased thickness */
   margin: 0 1rem;
 }
@@ -153,8 +153,8 @@ export default {
 .habit-bar-background {
   width: 100%;
   height: 100%;
-  background-color: #383444;
-  border-radius: 25px;
+  background-color: var(--secondaryColor);
+  border-radius: 1.5625rem;
   overflow: hidden;
   position: relative;
 }
@@ -162,8 +162,8 @@ export default {
 .habit-bar-fill {
   height: 100%;
   position: relative;
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
+  border-top-right-radius: 1.5625rem;
+  border-bottom-right-radius: 1.5625rem;
   transition: width 0.6s ease-in-out;
   display: flex;
   align-items: center;
@@ -189,11 +189,11 @@ export default {
 .wave {
   position: absolute;
   top: 0;
-  width: 60px;
+  width: 3.75rem;
   height: 100%;
   right: 0;
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
+  border-top-right-radius: 1.5625rem;
+  border-bottom-right-radius: 1.5625rem;
   animation: waveAnim 2s infinite ease-in-out;
 }
 
@@ -212,8 +212,8 @@ export default {
   }
 
   50% {
-    transform: translateY(6px);
-    transform: translateX(6px);
+    transform: translateY(0.375rem);
+    transform: translateX(0.375rem);
   }
 
   100% {
@@ -236,7 +236,7 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.9rem;
-  color: #b1b1b1;
+  color: var(--accentColor);
 }
 
 .habit-right {
@@ -249,15 +249,16 @@ export default {
 }
 
 .gear-btn {
-  background-color: #383444;
-  color: white;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
   border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.625rem;
   cursor: pointer;
 }
 
 .gear-btn:hover {
-  background-color: #0000dc;
+  background-color: var(--accentColor);
+  color: var(--primary);
 }
 </style>

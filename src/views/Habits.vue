@@ -190,8 +190,8 @@ export default {
 .habits-page {
   overflow: auto;
   min-height: 100%;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--primary);
+  color: var(--accentColor);
 }
 
 .habit-grid {
@@ -199,7 +199,7 @@ export default {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  background-color: #000000;
+  background-color: var(--primary);
 }
 
 .habit-grid>* {
@@ -211,19 +211,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #b1b1b1;
+  border: 0.125rem dashed var(--accentColor);
   border-radius: 1rem;
   padding: 1rem;
-  min-height: 160px;
+  min-height: 10rem;
   cursor: pointer;
-  background-color: #383444;
+  background-color: var(--secondaryColor);
   transition: background-color 0.2s ease;
-  color: #ffffff;
+  color: var(--accentColor);
 }
 
 .add-card:hover {
-  background-color: white;
-  color: #ffffff;
+  background-color: var(--accentColor);
+  color: var(--primary);
 }
 
 .top-row {
@@ -232,9 +232,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   height: 10vh;
-  padding: 0 20px;
-  color: #ffffff;
-  background-color: #000000;
-  font-size: 24px;
+  padding: 0 1.25rem;
+  color: var(--accentColor);
+  background-color: var(--primary);
+  font-size: 1.5rem;
 }
 </style>

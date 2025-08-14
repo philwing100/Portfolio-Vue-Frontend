@@ -12,13 +12,13 @@ export default {
 
 <style scoped>
 .add-button {
-  width: 64px;
-  height: 64px;
-  background-color: rgba(128, 128, 128, 0.3); /* semi-transparent gray */
-  color: white;
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
   font-size: 2.5rem;
   border: none;
-  border-radius: 12px; /* Rounded but still square-ish */
+  border-radius: 0.75rem; /* Rounded but still square-ish */
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   display: flex;
@@ -27,7 +27,8 @@ export default {
 }
 
 .add-button:hover {
-  background-color: rgba(128, 128, 128, 0.5);
+  background-color: var(--accentColor);
+  color: var(--primary);
   transform: scale(1.05);
 }
 </style>

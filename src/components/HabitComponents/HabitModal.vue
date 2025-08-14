@@ -121,13 +121,13 @@ export default {
 }
 
 .toggle-circle {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
     border: none;
-    background-color: black;
-    color: white;
-    font-size: 24px;
+    background-color: var(--primary);
+    color: var(--accentColor);
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease;
