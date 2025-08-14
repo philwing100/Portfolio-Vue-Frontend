@@ -38,45 +38,61 @@ export default {
 
 <style scoped>
 .expand-container {
-    width: 100%;
-    background-color: #383444;
-    border-radius: 8px;
-    overflow: hidden;
+  border: 0.0625rem solid var(--secondaryColor);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: var(--primary);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    cursor: pointer;
-    user-select: none;
-    color: white;
+.expand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--secondaryColor);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-bottom: 0.0625rem solid var(--accentColor);
 }
 
-.label {
-    font-size: 1rem;
-    font-weight: 500;
+.expand-header:hover {
+  opacity: 0.8;
 }
 
-.arrow {
-    transition: transform 0.3s ease;
-    font-size: 0.8rem;
+.expand-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--accentColor);
+  margin: 0;
 }
 
-.arrow.rotated {
-    transform: rotate(180deg);
+.expand-icon {
+  font-size: 1.25rem;
+  color: var(--accentColor);
+  transition: transform 0.3s ease;
 }
 
-.content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    background-color: #2a2734;
+.expand-icon.rotated {
+  transform: rotate(180deg);
 }
 
-.content.expanded {
-    max-height: 1000px; /* Adjust based on your needs */
-    padding: 1rem;
+.expand-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.expand-content-inner {
+  padding: 1.25rem;
+  color: var(--accentColor);
+  line-height: 1.6;
+}
+
+.expand-content.collapsed {
+  max-height: 0;
+}
+
+.expand-content.expanded {
+  max-height: 31.25rem;
 }
 </style>

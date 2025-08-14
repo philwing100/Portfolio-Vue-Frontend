@@ -153,42 +153,49 @@ export default {
 }
 
 .time-input {
-  background-color: #343541;
-  color: white;
-  border: 1px solid white;
-  border-radius: 4px;
-  padding: 8px;
-  width: 80%;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
+  border: 0.0625rem solid var(--accentColor);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  width: 7.5rem;
   cursor: text;
+  font-size: 0.875rem;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 0.125rem rgba(255, 255, 255, 0.2);
 }
 
 .time-dropdown {
   position: absolute;
   top: 40px; /* Adjust based on your layout */
   left: 0;
-  background-color: #2b2b2b;
-  border: 1px solid #4a4a4a;
-  border-radius: 4px;
+  background-color: var(--secondaryColor);
+  border: 0.0625rem solid var(--secondaryColor);
+  border-radius: 0.25rem;
   max-height: 150px;
   overflow-y: auto;
   z-index: 10;
 }
 
 .time-option {
-  padding: 10px;
+  padding: 0.625rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .time-option:hover {
-  background-color: #007bff; /* Change color on hover */
+  background-color: var(--accentColor); /* Change color on hover */
 }
 
 .time-option.selected {
-  background-color: #0056b3; /* Change color for selected time */
+  background-color: var(--primary); /* Change color for selected time */
 }
 
 .time-option.highlighted {
-  background-color: #0056b3; /* Highlight the currently selected option */
+  background-color: var(--primary); /* Highlight the currently selected option */
 }
 </style>

@@ -30,7 +30,7 @@ export default {
   methods: {
     validateInput(event) {
       const num = Number(event.target.value);
-      this.minutes = (1440>num > 0 ? num : '');
+      this.minutes = (1440 > num && num > 0 ? num : '');
 
       // Emit update:modelValue to enable two-way binding
       this.$emit('update:modelValue', String(this.minutes));
@@ -68,7 +68,7 @@ export default {
 }
 
 .minute-input-field {
-  background-color: #343541;
+  background-color: var(--secondaryColor);
   color: #cfcfcf;
   border: 1px solid white;
   border-radius: 4px;

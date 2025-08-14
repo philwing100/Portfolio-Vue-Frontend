@@ -7,7 +7,7 @@
         <!--Need to put these in a v-if is bound to the emits of multiplayer toggle-->
           <div class="bigButton" id="previousDay" @click="decrementDay"
             :style="{ 'background-color': colors.background }">&lt;&lt;</div>
-          <DateInput :style="{margin:'0px',color:'white' }" @date-selected="handleDateChange" v-model="currentDate"/>
+          <DateInput :style="{margin:'0rem',color:'white' }" @date-selected="handleDateChange" v-model="currentDate"/>
           <div class="bigButton" id="nextDay" @click="incrementDay"
           :style="{ 'background-color': colors.background }">>></div>
       </div>
@@ -79,7 +79,30 @@ export default {
     },
   },
   mounted(){
-    
+
   }
 };
 </script>
+
+<style scoped>
+.signup-container {
+  background-color: var(--primary);
+  color: var(--accentColor);
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+button {
+  background-color: var(--accentColor);
+  color: var(--primary);
+  border: 0.0625rem solid var(--secondaryColor);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 0.625rem;
+  color: var(--accentColor);
+}
+</style>

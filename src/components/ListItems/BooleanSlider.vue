@@ -62,53 +62,44 @@ export default {
 <style scoped>
 .slider-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  outline: none;
+  gap: 0.625rem;
+  margin: 0.3125rem 0;
 }
 
 .slider-label {
-  text-align: center;
-  margin-bottom: 2px;
-  font-size: 16px;
+  font-size: 0.875rem;
+  color: var(--accentColor);
+  min-width: 7.5rem;
 }
 
-.slider {
+.slider-track {
   position: relative;
-  width: 80px;
-  height: 30px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  padding: 0 5px;
-  transition: background-color 0.3s ease;
+  width: 3.125rem;
+  height: 1.5rem;
+  background-color: var(--secondaryColor);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.slider-checked {
-  transform: translateX(40px);
+.slider-track.active {
+  background-color: var(--accentColor);
 }
 
-.slider-tab {
-  width: 40px;
-  height: 24px;
-  border-radius: 12px;
-  background-color: #fff;
+.slider-thumb {
   position: absolute;
-  transition: transform 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  user-select: none;
-  pointer-events: none;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--primary);
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
 }
 
-.slider[aria-checked="true"] {
-  background-color: blue;
-}
-
-.slider[aria-checked="false"] {
-  background-color: #383444;
+.slider-thumb.active {
+  transform: translateX(1.625rem);
 }
 </style>

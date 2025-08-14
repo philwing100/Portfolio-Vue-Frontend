@@ -61,13 +61,63 @@ export default {
 
 <style scoped>
 .signup-container {
+  background-color: var(--primary);
+  color: var(--accentColor);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 25rem;
+  margin: 2rem auto;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.signup-container h2 {
+  color: var(--accentColor);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.signup-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signup-container input {
+  padding: 0.75rem;
+  border: 0.0625rem solid var(--secondaryColor);
+  border-radius: 0.25rem;
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
+  font-size: 1rem;
+}
+
+.signup-container input:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 0.125rem rgba(255, 255, 255, 0.2);
 }
 
 button {
+  background-color: var(--accentColor);
+  color: var(--primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+  margin: 0.5rem 0;
+}
+
+button:hover {
+  opacity: 0.8;
 }
 
 .message {
-    margin-top: 10px;
-    color: green;
+  margin-top: 0.625rem;
+  color: var(--accentColor);
+  text-align: center;
+  font-size: 0.875rem;
 }
 </style>

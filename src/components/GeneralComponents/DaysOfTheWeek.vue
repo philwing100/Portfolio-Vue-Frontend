@@ -11,7 +11,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   export default {
     props: {
@@ -27,7 +27,7 @@
     data() {
       return {
         daysOfWeek: [
-          { short: "M", value: 1 }, 
+          { short: "M", value: 1 },
           { short: "T", value: 2 },
           { short: "W", value: 4 },
           { short: "TH", value: 8 },
@@ -54,29 +54,30 @@
     },
   };
   </script>
-  
+
   <style scoped>
   .days-container {
     display: flex;
-    gap: 8px;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
+
   .day-circle {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    background-color: black;
-    color: white;
+    background-color: var(--primary);
+    color: var(--accentColor);
     cursor: pointer;
     transition: background 0.3s ease;
   }
-  
+
   .day-circle.selected {
-    background-color: darkblue;
+    background-color: var(--secondaryColor);
   }
   </style>
-  

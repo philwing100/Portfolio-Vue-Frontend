@@ -38,26 +38,27 @@ export default {
 .text-field {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 0.3125rem;
     width: 100%;
 }
 
 .text-label {
     font-weight: bold;
+    color: var(--accentColor);
 }
 
 .text-input {
-    padding: 8px;
-    border: 1px solid white;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: black;
-    color:white;
+    padding: 0.5rem;
+    border: 0.0625rem solid var(--accentColor);
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    background-color: var(--primary);
+    color:var(--accentColor);
 }
 
 .char-counter {
-    font-size: 12px;
-    color: gray;
+    font-size: 0.75rem;
+    color: var(--secondaryColor);
     text-align: right;
 }
 </style>

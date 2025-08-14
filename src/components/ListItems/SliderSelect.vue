@@ -78,7 +78,7 @@ export default {
 .button-container {
   display: inline-block;
   position: relative;
-  background-color: #f1f1f1;
+  background-color: var(--secondaryColor);
   border-radius: 30px;
   width: 300px;
   height: 50px;
@@ -100,14 +100,14 @@ export default {
 }
 
 .option-button.active {
-  color: #2d5dc7;
+  color: var(--accentColor);
 }
 
 .slider {
   position: absolute;
   width: 100px;
   height: 100%;
-  background-color: #2d5dc7;
+  background-color: var(--primary);
   border-radius: 30px;
   transition: 0.3s ease;
 }
@@ -116,7 +116,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--accentColor);
   font-weight: bold;
 }
 

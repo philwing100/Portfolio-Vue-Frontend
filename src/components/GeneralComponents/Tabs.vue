@@ -1,4 +1,3 @@
-
 <template>
   <div class="tabs-root">
     <div class="tabs-list" role="tablist">
@@ -59,8 +58,8 @@ export default {
 .tabs-list {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 2px solid var(--tab-border, #e5e7eb);
-  background: var(--tab-bg, #222);
+  border-bottom: 0.125rem solid var(--secondaryColor);
+  background: var(--secondaryColor);
   padding: 0.25rem 0;
 }
 .tab-trigger {
@@ -69,39 +68,44 @@ export default {
   outline: none;
   padding: 0.5rem 1.25rem;
   font-size: 1rem;
-  color: var(--tab-color, #aaa);
+  color: var(--accentColor);
+  opacity: 0.7;
   border-radius: 0.375rem 0.375rem 0 0;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   position: relative;
 }
 .tab-trigger.active {
-  color: var(--tab-active-color, #fff);
-  background: var(--tab-active-bg, #3498db);
+  color: var(--accentColor);
+  background: var(--primary);
+  opacity: 1;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
 }
 .tab-trigger:not(.active):hover {
-  background: var(--tab-hover-bg, #383444);
-  color: var(--tab-hover-color, #fff);
+  background: var(--primary);
+  color: var(--accentColor);
+  opacity: 1;
 }
 .tabs-content {
   padding: 1.5rem 0.5rem 0.5rem 0.5rem;
-  background: var(--tab-content-bg, #343541);
-  color: var(--tab-content-color, #fff);
+  background: var(--primary);
+  color: var(--accentColor);
   border-radius: 0 0 0.5rem 0.5rem;
+  border: 0.0625rem solid var(--secondaryColor);
+  border-top: none;
   min-height: 2rem;
 }
 
 /* Use CSS vars for easy theming from global colors */
 :root, .tabs-root {
-  --tab-active-bg:  #3498db;
-  --tab-active-color: white;
-  --tab-hover-bg: #383444;
-  --tab-hover-color: white;
-  --tab-bg: #222;
-  --tab-color: #aaa;
-  --tab-border: #e5e7eb;
-  --tab-content-bg: #343541;
-  --tab-content-color: white;
+  --tab-active-bg:  var(--primary);
+  --tab-active-color: var(--accentColor);
+  --tab-hover-bg: var(--primary);
+  --tab-hover-color: var(--accentColor);
+  --tab-bg: var(--secondaryColor);
+  --tab-color: var(--accentColor);
+  --tab-border: var(--secondaryColor);
+  --tab-content-bg: var(--primary);
+  --tab-content-color: var(--accentColor);
 }
 </style>

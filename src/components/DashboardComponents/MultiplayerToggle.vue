@@ -72,45 +72,45 @@ export default {
 
 .slider-label {
   text-align: center;
-  margin-bottom: 2px;
-  font-size: 16px;
+  margin-bottom: 0.125rem;
+  font-size: 1rem;
 }
 
 .slider {
   position: relative;
-  width: 80px;
-  height: 30px;
-  border-radius: 15px;
+  width: 5rem;
+  height: 1.875rem;
+  border-radius: 0.9375rem;
   display: flex;
   align-items: center;
-  padding: 0 5px;
+  padding: 0 0.3125rem;
   transition: background-color 0.3s ease;
 }
 
 .slider-checked {
-  transform: translateX(40px);
+  transform: translateX(2.5rem);
 }
 
 .slider-tab {
-  width: 40px;
-  height: 24px;
-  border-radius: 12px;
-  background-color: #fff;
+  width: 2.5rem;
+  height: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--accentColor);
   position: absolute;
   transition: transform 0.3s ease;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   user-select: none;
   pointer-events: none;
 }
 
 .slider[aria-checked="true"] {
-  background-color: blue;
+  background-color: var(--accentColor);
 }
 
 .slider[aria-checked="false"] {
-  background-color: #383444;
+  background-color: var(--secondaryColor);
 }
 </style>

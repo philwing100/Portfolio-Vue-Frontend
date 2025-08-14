@@ -147,21 +147,25 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .date-picker {
   position: relative;
 }
 
 .date-input {
-  background-color: #343541;
-  color: white;
-  border: 1px solid white;
-  border-radius: 4px;
-  padding: 8px;
-  width: 90%;
+  background-color: var(--primary);
+  color: var(--accentColor);
+  border: 0.0625rem solid var(--secondaryColor);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  width: 9.375rem;
   cursor: text;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 0.125rem rgba(255, 255, 255, 0.2);
 }
 
 .calendar {
