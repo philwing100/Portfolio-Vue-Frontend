@@ -15,16 +15,11 @@
       <div class="calendar-grid-wrapper">
         <div class="calendar-grid">
           <div class="calendar-header-row">
-            <div class="calendar-header-cell" v-for="week in 13" :key="week">{{ week }}</div>
+            <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week }}</div>
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
             <div class="calendar-row-label">{{ row }}</div>
-            <div
-              v-for="cell in 13"
-              :key="cell"
-              class="calendar-cell"
-              :class="{ filled: isFilled(row, cell, 1) }"
-            ></div>
+            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 1) }"></div>
           </div>
         </div>
       </div>
@@ -32,18 +27,13 @@
       <div class="calendar-grid-wrapper">
         <div class="calendar-grid">
           <div class="calendar-header-row">
-            <div class="calendar-header-cell" v-for="week in 14" :key="week">
-              <span v-if="week > 13">{{ week }}</span>
+            <div class="calendar-header-cell" v-for="week in 52" :key="week">
+              <span v-if="week > 26">{{ week }}</span>
             </div>
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
             <div class="calendar-row-label"></div>
-            <div
-              v-for="cell in 13"
-              :key="cell"
-              class="calendar-cell"
-              :class="{ filled: isFilled(row, cell, 2) }"
-            ></div>
+            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 2) }"></div>
           </div>
         </div>
       </div>
@@ -72,7 +62,7 @@ export default {
     isFilled(row, cell, col) {
       // weekIndex: 0-based index for each cell
       // First column: weeks 0-1169, second column: weeks 1170-2339
-      const weekIndex = (col - 1) * (13 * 90) + (row - 1) * 13 + (cell - 1);
+      const weekIndex = (col - 1) * (26 * 90) + (row - 1) * 26 + (cell - 1);
       return weekIndex < this.weeksSinceStart;
     },
   },
@@ -142,7 +132,7 @@ export default {
   background: var(--secondaryColor);
   border-radius: 0.5rem;
   padding: 0.5rem 0.25rem;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
 }
 
 .calendar-header-row {
@@ -197,6 +187,7 @@ export default {
 }
 
 @media (max-width: 900px) {
+
   .calendar-header-cell,
   .calendar-row-label,
   .calendar-cell {
@@ -206,6 +197,7 @@ export default {
     max-height: 18px;
     font-size: 0.7rem;
   }
+
   .calendar-columns {
     gap: 1rem;
     max-width: 98vw;
