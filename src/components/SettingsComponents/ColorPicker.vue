@@ -1,64 +1,44 @@
 <template>
-  <div class="lists">
-    <h1>Theme Adjust</h1>
-  
-    <button class="button" @click="saveColors"></button>
-    <div>
-      <div class="colorItem" id="primary" :style="{ backgroundColor: colors.primary, color: colors.text }">Primary</div>
-      <div class="colorItem" id="secondary" :style="{ backgroundColor: colors.secondary, color: colors.text }">Secondary</div>
-      <div class="colorItem" id="downClick" :style="{ backgroundColor: colors.downClick, color: colors.text }">Depress Click</div>
-      <div class="colorItem" id="clicked" :style="{ backgroundColor: colors.clicked, color: colors.text }">Clicked</div>
-      <div class="colorItem" id="hover" :style="{ backgroundColor: colors.hover, color: colors.text }">Hover</div>
-      <div class="colorItem" id="text" :style="{ backgroundColor: colors.text, color: colors.text }">Text</div>
-      <div class="colorItem" id="background" :style="{ backgroundColor: colors.background, color: colors.text }">Background</div>
-      <div class="colorItem" id="sideBar" :style="{ backgroundColor: colors.sideBar, color: colors.text }">Sidebar</div>
-    </div>
+  <div class="color-picker-root">
+    <label v-if="label" class="color-picker-label">{{ label }}</label>
+    <ChromePicker :value="modelValue" @input="updateColor" />
   </div>
 </template>
 
-<script>
-import { inject, onMounted, onUnmounted } from 'vue';
+<script setup>
+import { ChromePicker } from 'vue-color';
+import 'vue-color/style.css';
 
-export default {
-  name: 'ColorPicker',
-  setup() {
-    const colors = inject('colors');
-    return {
-      colors,
-    }
+const props = defineProps({
+  label: {
+    type: String,
+    default: '',
   },
-  methods: {
-    setPrimary(){
-      document.querySelector('#primary').style.cssText = `background-color: ${this.colors.primary}; color: ${this.colors.text};`;
-    },
-    // You can define similar methods for other colors
-    
-    saveColors() {
-      // Define this method if needed
-    }
+  modelValue: {
+    type: String,
+    default: '#68CCCA',
   },
-  mounted(){
-    if (this.colors) {
-      this.setPrimary();
-      // You can call other color-setting methods here
-    }
-  }
+});
+const emit = defineEmits(['update:modelValue']);
+
+function updateColor(newColor) {
+  emit('update:modelValue', newColor.hex || newColor);
 }
 </script>
 
-<style>
-button{
-  min-width: 20px;
-  min-height:20px;
+<style scoped>
+.color-picker-root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
-
-.lists{
-  margin:auto;
-  text-align:center;
-  margin-bottom:300px;
-}
-
-.colorItem{
-  margin-top:20px;
+.color-picker-label {
+  margin-left:2rem;
+  margin-right:1rem;
+  margin-top:1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  filter: invert(100%);
 }
 </style>

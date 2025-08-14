@@ -1,112 +1,127 @@
 <template>
-   <h1> Settings page under construction</h1>
-  </template>
-
-  
-  
-  <script>
-
-  /*
-<div class="container">
-        <h1>Settings</h1>
-        <div class="settings-section">
-            <h2>General</h2>
-            <div class="setting">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username">
-            </div>
-            <div class="setting">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
-            </div>
-        </div>
-        <div class="settings-section">
-            <h2>Appearance</h2>
-            <div class="setting">
-                <label for="theme">Theme</label>
-                <select id="theme" name="theme">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
-        </div>
-        <div class="settings-section">
-            <h2>Notifications</h2>
-            <div class="setting">
-                <label for="email-notifications">Email Notifications</label>
-                <input type="checkbox" id="email-notifications" name="email-notifications">
-            </div>
-        </div>
+  <div class="settings-root">
+    <h1>Select Site Themes</h1>
+    <div class="ColorPickerContainer">
+      <colorpicker
+        class="colorpicker primary"
+        label="Primary"
+        v-model="tempColors.primary"
+      />
+      <colorpicker
+        class="colorpicker secondary"
+        label="Secondary"
+        v-model="tempColors.secondary"
+      />
+      <colorpicker
+        class="colorpicker accents"
+        label="Accent"
+        v-model="tempColors.accent"
+      />
     </div>
-    <colorPicker />
-  */
- import colorPicker from '@/components/SettingsComponents/ColorPicker.vue';
-  
-  export default {
-    name: 'SettingsWorld',
-    components: {
-      //colorPicker,
+    <div class="button-row">
+      <Button :onClick="saveColors" variant="primary">Save</Button>
+      <Button :onClick="revertColors" variant="secondary">Revert</Button>
+    </div>
+  </div>
+</template>
+
+<script>
+import colorpicker from '@/components/SettingsComponents/ColorPicker.vue';
+import Button from '@/components/GeneralComponents/Button.vue';
+
+export default {
+  name: 'Settings',
+  components: {
+    colorpicker,
+    Button,
+  },
+  data() {
+    return {
+      initialColors: {
+        primary: getComputedStyle(document.documentElement).getPropertyValue('--primaryColor').trim() || 'black',
+        secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondaryColor').trim() || '#343541',
+        accent: getComputedStyle(document.documentElement).getPropertyValue('--accentColor').trim() || 'white',
+      },
+      tempColors: {
+        primary: '',
+        secondary: '',
+        accent: '',
+      },
+    };
+  },
+  created() {
+    // Load from localStorage if available, else use initial
+    const saved = JSON.parse(localStorage.getItem('siteColors') || 'null');
+    if (saved) {
+      this.tempColors = { ...saved };
+      this.initialColors = { ...saved };
+      console.log('Loaded colors from localStorage:', this.tempColors);
+    } else {
+      this.tempColors = { ...this.initialColors };
+      console.log('Using initial colors:', this.tempColors);
     }
-  }
-  </script>
-  
-  <style>
+  },
+  watch: {
+    tempColors: {
+      handler(newColors) {
+        // Only apply colors to settings page, not global
+        this.applyColorsToSettings(newColors);
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    applyColorsToSettings(colors) {
+      // Apply colors to settings page only (scoped styles or inline)
+      // Example: could set style on root element of settings page
+      this.$el.style.setProperty('--primaryColor', colors.primary);
+      this.$el.style.setProperty('--secondaryColor', colors.secondary);
+      this.$el.style.setProperty('--accentColor', colors.accent);
+    },
+    saveColors() {
+      // Save to localStorage
+      localStorage.setItem('siteColors', JSON.stringify(this.tempColors));
+      // Apply globally
+      document.documentElement.style.setProperty('--primaryColor', this.tempColors.primary);
+      document.documentElement.style.setProperty('--secondaryColor', this.tempColors.secondary);
+      document.documentElement.style.setProperty('--accentColor', this.tempColors.accent);
+      // Skeleton for backend call
+      this.sendColorsToBackend(this.tempColors);
+    },
+    revertColors() {
+      this.tempColors = { ...this.initialColors };
+    },
+    sendColorsToBackend(colors) {
+      // Skeleton: Replace with actual API call
+      // Example:
+      // fetch('/api/user/colors', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(colors),
+      // });
+    },
+  },
+};
+</script>
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    margin: 0;
-    padding: 0;
+<style scoped>
+.settings-root {
+  background: var(--primaryColor);
+  color: var(--primaryColor);
 }
-
-.container {
-    width: 60%;
-    margin: 50px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+.ColorPickerContainer {
+  margin-left: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
 }
-
-h1 {
-    text-align: center;
-    margin-bottom: 40px;
+.colorpicker {
+  margin: 1rem;
 }
-
-.settings-section {
-    margin-bottom: 30px;
+.button-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
-
-h2 {
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-.setting {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-label {
-    flex: 1;
-}
-
-input[type="text"],
-input[type="email"],
-select {
-    flex: 2;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-input[type="checkbox"] {
-    margin-left: 20px;
-}
-
-  </style>
-  
+</style>

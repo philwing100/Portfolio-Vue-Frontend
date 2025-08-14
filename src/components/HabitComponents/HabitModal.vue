@@ -27,7 +27,7 @@
 
 
             <DownwardExpandContent label="Habit Color">
-                <RgbColorPicker v-model="editableHabit.color" label="" />
+                <ColorPicker v-model="editableHabit.color" />
             </DownwardExpandContent>
 
             <!-- Streak Display -->
@@ -61,8 +61,8 @@ import DaysOfTheWeek from "../GeneralComponents/DaysOfTheWeek.vue";
 import TextField from "../GeneralComponents/TextField.vue";
 import Dropdown from "../GeneralComponents/Dropdown.vue";
 import IntInput from "../GeneralComponents/IntInput.vue";
-import RgbColorPicker from "../GeneralComponents/RgbColorPicker.vue";
 import DownwardExpandContent from '@/components/GeneralComponents/DownwardExpandContent.vue';
+import ColorPicker from "../SettingsComponents/ColorPicker.vue";
 
 export default {
     components: {
@@ -72,8 +72,8 @@ export default {
         TextField,
         Dropdown,
         IntInput,
-        RgbColorPicker,
         DownwardExpandContent,
+        ColorPicker
     },
     props: {
         isOpen: Boolean,

@@ -1,13 +1,13 @@
 <template>
   <div class="collapse-container">
-    <div @click="toggleWidth" class="collapse-icon" 
-      :style="{ width: toggleButtonWidth + 'px', 'background-color': colors.sideBar }">
+    <div @click="toggleWidth" class="collapse-icon"
+      :style="{ width: toggleButtonWidth + 'rem'}">
       <div class="collapse-icon" :class="{ 'rotate-180': !toggleBar }">
         >
       </div>
     </div>
   </div>
-  <div :style="{ width: sidebarWidth + 'px', 'background-color': colors.sideBar }" class="sidebar">
+  <div :style="{ width: sidebarWidth + 'rem' }" class="sidebar">
     <nav class="needPadding">
       <router-link v-for="(route, index) in routes" :to="route.path" :key="index" ref="routerLinks" class="sidebarItem"
         :class="{ 'active': $route.path === route.path }" @click="setActiveItem(route.path)">
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted, inject, nextTick } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 
 export default {
   name: 'SideBar',
@@ -27,29 +27,34 @@ export default {
     const routes = [
       { path: '/', label: 'Dashboard' },
       { path: '/Streaks', label: 'Streaks' },
-     // { path: '/Lists', label: 'Lists' },
-     // { path: '/Learn', label: 'Learn' },
-     // { path: '/Type', label: 'Type' },
       { path: '/About-me', label: 'About Me' },
-    //  { path: '/Settings', label: 'Settings' },
+      { path: '/Stats', label: 'Stats' },
+      { path: '/Settings', label: 'Settings' },
       { path: '/Login', label: 'Login' },
     ];
 
-    const colors = inject('colors');
+    const getColorVar = (name, fallback) =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+
+    // Use reactive so updates propagate
+    const sidebarColors = reactive({
+      sideBar: '',
+      text: '',
+      hover: ''
+    });
+
     const toggleBar = ref(false);
-    const sidebarWidth = ref(180);
-    const toggleButtonWidth = ref(180);
+    const sidebarWidth = ref(11.25);
+    const toggleButtonWidth = ref(11.25);
     const activeItem = ref(null);
     const routerLinks = ref([]);
 
     const toggleWidth = () => {
       toggleBar.value = !toggleBar.value;
-      console.log(toggleBar.value); //Bar becomes false when the sidebar becomes exposed, bar becomes true when sidebar is hidden
-      sidebarWidth.value = toggleBar.value ? 0 : 180;
-      toggleButtonWidth.value = toggleBar.value ? 50 : 180;
+      sidebarWidth.value = toggleBar.value ? 0 : 11.25;
+      toggleButtonWidth.value = toggleBar.value ? 3.125 : 11.25;
       localStorage.setItem('isSideBarExtended', JSON.stringify(toggleBar.value));
     };
-
 
     const setActiveItem = (item) => {
       activeItem.value = item;
@@ -62,31 +67,39 @@ export default {
     };
 
     const handleHover = (link) => {
-      link.style.backgroundColor = colors.hover;
+      link.style.backgroundColor = sidebarColors.hover;
     };
 
     const handleMouseLeave = (link) => {
-      link.style.backgroundColor = ''; // Reset to default background color
+      link.style.backgroundColor = '';
+      /*console.log('Sidebar Colors:', {
+        sideBar: sidebarColors.sideBar,
+        text: sidebarColors.text,
+        hover: sidebarColors.hover
+      });*/
     };
 
     onMounted(() => {
+      // Now CSS variables are available
+      sidebarColors.sideBar = getColorVar('--primaryColor');
+      sidebarColors.text = getColorVar('--accentColor');
+      sidebarColors.hover = getColorVar('--secondaryColor');
+
       document.addEventListener('keyup', handleEscapeKey);
 
       const storedSideBarBool = localStorage.getItem('isSideBarExtended');
       if (storedSideBarBool !== null) {
         toggleBar.value = JSON.parse(storedSideBarBool);
-        sidebarWidth.value = toggleBar.value ? 0 : 180;
-        toggleButtonWidth.value = toggleBar.value ? 50 : 180;
+        sidebarWidth.value = toggleBar.value ? 0 : 11.25;
+        toggleButtonWidth.value = toggleBar.value ? 3.125 : 11.25;
       }
 
       nextTick(() => {
         routerLinks.value = Array.from(document.querySelectorAll('.sidebarItem'));
 
-        if (colors) {
-          routerLinks.value.forEach((item) => {
-            item.style.color = colors.text;
-          });
-        }
+        routerLinks.value.forEach((item) => {
+          item.style.color = sidebarColors.text;
+        });
 
         routerLinks.value.forEach((link) => {
           link.addEventListener('mouseenter', () => handleHover(link));
@@ -94,7 +107,6 @@ export default {
         });
       });
     });
-
 
     onUnmounted(() => {
       document.removeEventListener('keyup', handleEscapeKey);
@@ -112,21 +124,13 @@ export default {
       toggleWidth,
       activeItem,
       setActiveItem,
-      colors,
+      sidebarColors,
       routerLinks
     };
   },
   beforeRouteUpdate(to, from, next) {
     this.setActiveItem(to.path);
     next();
-  },
-  created(){
-   /* const storedSideBarBool = JSON.parse(localStorage.getItem('isSideBarExtended'));
-    console.log(storedSideBarBool);
-    console.log('inside');
-    if (storedSideBarBool !== null && storedSideBarBool !== 'undefined') {
-      this.toggleBar = storedSideBarBool;
-    }*/
   }
 };
 </script>
@@ -140,66 +144,80 @@ export default {
   left: 0;
   overflow-x: hidden;
   transition: 0.4s ease-out;
-  padding-top: 10px;
+  padding-top: 0.625rem;
+  /* 10px */
   display: flex;
   flex-direction: column;
+  background-color: var(--primaryColor);
 }
 
 .sidebarItem {
   width: 100%;
-  padding: 10px;
-  padding-left: 10px;
+  padding: 0.625rem 0 0.625rem 0.625rem;
+  /* 10px */
   white-space: nowrap;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 1.25rem;
+  /* 20px */
   display: block;
   transition: 0.3s ease-out;
+  color: var(--accentColor);
 }
 
 .sidebarItem.active {
-  border-radius: 12px;
+  border-radius: 0.75rem;
+  /* 12px */
   width: 85%;
-  padding-left: 15px;
-  padding-right: 5px;
-  background-color: #383444;
+  padding-left: 0.9375rem;
+  /* 15px */
+  padding-right: 0.3125rem;
+  /* 5px */
+  background-color: var(--secondaryColor);
+  /* Use CSS var for hover color */
+  color: var(--accentColor);
 }
 
 .needPadding {
-  padding-top: 30px;
+  padding-top: 1.875rem;
+  /* 30px */
 }
 
 .paddingWithoutSidebar {
-  padding-left: 0px;
+  padding-left: 0;
   transition: 0.4s ease-out;
 }
 
 .paddingWithSidebar {
-  padding-left: 180px;
+  padding-left: 11.25rem;
+  /* 180px */
   transition: 0.4s ease-out;
 }
 
 .collapse-icon {
   cursor: pointer;
   display: flex;
-  font-size: 20px;
-  color: white;
+  font-size: 1.25rem;
+  /* 20px */
+  color: var(--accentColor);
   justify-content: center;
   transition: 0.3s ease-out;
 }
 
 .collapse-container {
-  height: 30px;
-  margin-top:15px;
+  padding-top: 0.5rem;
+  /* 15px */
   position: fixed;
   top: 0;
   left: 0;
   justify-content: center;
-  z-index: 2;
+  z-index: 5;
+  background-color: var(--primaryColor);
+  border-bottom-right-radius: 0.5rem;
+  user-select: none;
 }
 
 .rotate-180 {
   transform: rotate(180deg);
-
 }
 
 .standout {
