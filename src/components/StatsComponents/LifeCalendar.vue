@@ -27,9 +27,7 @@
       <div class="calendar-grid-wrapper">
         <div class="calendar-grid">
           <div class="calendar-header-row">
-            <div class="calendar-header-cell" v-for="week in 52" :key="week">
-              <span v-if="week > 26">{{ week }}</span>
-            </div>
+            <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week + 26 }}</div>
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
             <div class="calendar-row-label"></div>
@@ -60,9 +58,11 @@ export default {
   },
   methods: {
     isFilled(row, cell, col) {
-      // weekIndex: 0-based index for each cell
-      // First column: weeks 0-1169, second column: weeks 1170-2339
-      const weekIndex = (col - 1) * (26 * 90) + (row - 1) * 26 + (cell - 1);
+      // Calculate the week number for this cell
+      // Each row represents 52 weeks (26 per column)
+      // First column: weeks 1-26 of each year, second column: weeks 27-52 of each year
+      const weekInYear = (col === 1) ? cell : cell + 26;
+      const weekIndex = (row - 1) * 52 + weekInYear - 1;
       return weekIndex < this.weeksSinceStart;
     },
   },
