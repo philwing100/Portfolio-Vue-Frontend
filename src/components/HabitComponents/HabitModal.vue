@@ -125,7 +125,7 @@ export default {
     height: 2.5rem;
     border-radius: 50%;
     border: none;
-    background-color: var(--primary);
+    background-color: var(--primaryColor);
     color: var(--accentColor);
     font-size: 1.5rem;
     font-weight: bold;

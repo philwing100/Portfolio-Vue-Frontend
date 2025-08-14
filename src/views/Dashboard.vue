@@ -1,23 +1,24 @@
 <template>
   <div>
     <!-- Top row: Hero text and navigation buttons -->
-    <div class="top-row" :style="{ 'background-color': colors.sideBar }">
+    <div class="top-row" :style="{ 'background-color': 'var(--primaryColor)' }">
       <div class="button-container">
-       <!-- <MultiplayerToggle v-model="isChecked" label="Multiplayer"/>-->
+        <!-- <MultiplayerToggle v-model="isChecked" label="Multiplayer"/>-->
         <!--Need to put these in a v-if is bound to the emits of multiplayer toggle-->
-          <div class="bigButton" id="previousDay" @click="decrementDay"
-            :style="{ 'background-color': colors.background }">&lt;&lt;</div>
-          <DateInput :style="{margin:'0rem',color:'white' }" @date-selected="handleDateChange" v-model="currentDate"/>
-          <div class="bigButton" id="nextDay" @click="incrementDay"
-          :style="{ 'background-color': colors.background }">>></div>
+        <div class="bigButton" id="previousDay" @click="decrementDay"
+          :style="{ 'background-color': 'var(--primaryColor)' }">&lt;&lt;</div>
+        <DateInput :style="{ margin: '0rem', color: 'white' }" @date-selected="handleDateChange" v-model="currentDate" />
+        <div class="bigButton" id="nextDay" @click="incrementDay" :style="{ 'background-color': 'var(--primaryColor)' }">
+          >>
+        </div>
       </div>
     </div>
 
-    <div class="page-container" :style="{ 'background-color': colors.background }">
+    <div class="page-container" :style="{ 'background-color': 'var(--primaryColor)' }">
       <div class="lists-container">
         <ListElement listName="Backburner" v-model="backburner" />
-        <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate"/>
-        <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" :date="currentDate"/>
+        <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate" />
+        <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" :date="currentDate" />
       </div>
     </div>
   </div>
@@ -78,7 +79,7 @@ export default {
       console.log(`Event clicked:`, event);
     },
   },
-  mounted(){
+  mounted() {
 
   }
 };

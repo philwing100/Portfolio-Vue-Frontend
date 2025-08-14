@@ -5,7 +5,6 @@
 //Text on black background is white
 // Most things are black, aka #000000
 <template>
-
   <div class="habits-page">
     <div class="top-row">
       Streaks
@@ -127,7 +126,7 @@ export default {
         updatedHabit.id = maxId + 1;
         this.habits.push({ ...updatedHabit });
       }
-      console.log('post test: ' + axiosPost('/streaks/', 'updateStreak', {updatedHabit}));
+      console.log('post test: ' + axiosPost('/streaks/', 'updateStreak', { updatedHabit }));
 
       this.showHabitModal = false;
     },
@@ -156,31 +155,31 @@ export default {
         this.habits.splice(index, 1);
       }
       this.showHabitModal = false;
-      axiosPost('/streaks/', 'deleteStreak', {habitId});
+      axiosPost('/streaks/', 'deleteStreak', { habitId });
     },
     async fetchStreaks() {
-        try {
-            await this.$store.dispatch('checkAuth');
-            if (this.$store.state.isAuthenticated) {
-                const response = await getStreaks();
-                if (response?.message !== "No streaks found for this user") {
-                    console.dir(response, { depth: null });
-                    if (response.data) {
-                        this.habits = [];
-                        for (const habit of response.data) {
-                            this.habits.push(this.loadHabitFromGet(habit));
-                        }
-                    }
-                }
-            } else {
-                // Use default habits for unauthenticated users
-                this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
+      try {
+        await this.$store.dispatch('checkAuth');
+        if (this.$store.state.isAuthenticated) {
+          const response = await getStreaks();
+          if (response?.message !== "No streaks found for this user") {
+            console.dir(response, { depth: null });
+            if (response.data) {
+              this.habits = [];
+              for (const habit of response.data) {
+                this.habits.push(this.loadHabitFromGet(habit));
+              }
             }
-        } catch (err) {
-            console.error("Error fetching streaks:", err);
-            // Fallback to default habits on error
-            this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
+          }
+        } else {
+          // Use default habits for unauthenticated users
+          this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
         }
+      } catch (err) {
+        console.error("Error fetching streaks:", err);
+        // Fallback to default habits on error
+        this.habits = JSON.parse(JSON.stringify(this.defaultHabits));
+      }
     },
   },
 };
@@ -190,7 +189,7 @@ export default {
 .habits-page {
   overflow: auto;
   min-height: 100%;
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   color: var(--accentColor);
 }
 
@@ -199,7 +198,7 @@ export default {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
 }
 
 .habit-grid>* {
@@ -223,7 +222,7 @@ export default {
 
 .add-card:hover {
   background-color: var(--accentColor);
-  color: var(--primary);
+  color: var(--primaryColor);
 }
 
 .top-row {
@@ -234,7 +233,7 @@ export default {
   height: 10vh;
   padding: 0 1.25rem;
   color: var(--accentColor);
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   font-size: 1.5rem;
 }
 </style>

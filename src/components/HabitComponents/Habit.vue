@@ -91,16 +91,16 @@ export default {
       this.habit.lastUpdated = getTodayDate();
 
       //Send to backend since it does its own increment calculation from internal date
-      if(this.$store.state.isAuthenticated){
+      if (this.$store.state.isAuthenticated) {
         axiosPost('/streaks/', 'incrementStreak', this.habit).then(result => {
-        if (!result.success) {
-          //If backend doesnt agree then send values back down
-          this.habit.currentStreak = this.habit.currentStreak -1;
-          this.habit.highestStreak = temp;
-          console.log("Can't increment again today");
-        }
-      });
-    }
+          if (!result.success) {
+            //If backend doesnt agree then send values back down
+            this.habit.currentStreak = this.habit.currentStreak - 1;
+            this.habit.highestStreak = temp;
+            console.log("Can't increment again today");
+          }
+        });
+      }
       this.shouldAnimate = true;
     },
   },
@@ -111,7 +111,7 @@ export default {
 .habit-card {
   display: flex;
   align-items: center;
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   border-radius: 0.75rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -259,6 +259,6 @@ export default {
 
 .gear-btn:hover {
   background-color: var(--accentColor);
-  color: var(--primary);
+  color: var(--primaryColor);
 }
 </style>

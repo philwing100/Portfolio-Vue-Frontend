@@ -1,33 +1,33 @@
 <template>
-    <div v-if="isOpen" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button @click="$emit('close')">✖</button>
-          <slot name="header"></slot>
-        </div>
+  <div v-if="isOpen" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button @click="$emit('close')">✖</button>
+        <slot name="header"></slot>
+      </div>
 
-        <div class="modal-body">
-          <slot name="body"></slot>
-        </div>
+      <div class="modal-body">
+        <slot name="body"></slot>
+      </div>
 
-        <div class="modal-footer">
-          <slot name="footer"></slot>
-        </div>
+      <div class="modal-footer">
+        <slot name="footer"></slot>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script>
-  export default {
-    props: {
-      isOpen: Boolean,
-    },
-  };
-  </script>
+<script>
+export default {
+  props: {
+    isOpen: Boolean,
+  },
+};
+</script>
 
 
-  <style scoped>
-  .modal-overlay {
+<style scoped>
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -41,7 +41,7 @@
 }
 
 .modal-container {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   border-radius: 0.5rem;
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
   max-width: 90%;
@@ -67,6 +67,16 @@
   margin: 0;
 }
 
+.modal-content {
+  background-color: var(--primaryColor);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  position: relative
+}
+
 .modal-close {
   background: none;
   border: none;
@@ -84,7 +94,7 @@
 }
 
 .modal-close:hover {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   opacity: 0.8;
 }
 
@@ -108,7 +118,7 @@
   padding: 0.5rem 1rem;
   border: 0.0625rem solid var(--secondaryColor);
   border-radius: 0.25rem;
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
   color: var(--accentColor);
   cursor: pointer;
   font-size: 0.875rem;
@@ -121,7 +131,7 @@
 
 .modal-button.primary {
   background-color: var(--accentColor);
-  color: var(--primary);
+  color: var(--primaryColor);
   border-color: var(--accentColor);
 }
 
@@ -129,11 +139,13 @@
   opacity: 0.8;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

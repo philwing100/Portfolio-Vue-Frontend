@@ -18,7 +18,8 @@ export default {
   color: var(--accentColor);
   font-size: 2.5rem;
   border: none;
-  border-radius: 0.75rem; /* Rounded but still square-ish */
+  border-radius: 0.75rem;
+  /* Rounded but still square-ish */
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   display: flex;
@@ -28,7 +29,7 @@ export default {
 
 .add-button:hover {
   background-color: var(--accentColor);
-  color: var(--primary);
+  color: var(--primaryColor);
   transform: scale(1.05);
 }
 </style>
