@@ -4,13 +4,10 @@
 
     <div class="date-picker-container">
       <label for="start-date">Birth Date:</label>
-      <input 
-        id="start-date"
-        type="date" 
-        v-model="startDate"
-        class="date-input"
-      />
+      <input id="start-date" type="date" v-model="startDate" class="date-input" />
     </div>
+
+    <DateInput />
 
     <LifeCalendar :start-date="startDate" />
   </div>
@@ -18,11 +15,13 @@
 
 <script>
 import LifeCalendar from '@/components/StatsComponents/LifeCalendar.vue';
+import DateInput from '@/components/ListItems/DateInput.vue'
 
 export default {
   name: 'Stats',
   components: {
     LifeCalendar,
+    DateInput,
   },
   data() {
     return {
