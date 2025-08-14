@@ -148,6 +148,10 @@ export default {
   font-size: 0.85rem;
   color: var(--accentColor);
   font-weight: 600;
+  margin-right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .calendar-row {
@@ -165,6 +169,12 @@ export default {
   color: var(--accentColor);
   margin-right: 0.25rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 1.2vw;
+  min-height: 18px;
+  max-height: 32px;
 }
 
 .calendar-cell {
@@ -178,7 +188,33 @@ export default {
   border-radius: 0.2rem;
   border: 1px solid var(--secondaryColor);
   margin-right: 2px;
-  transition: background 0.15s;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.calendar-cell:hover {
+  transform: scale(1.2);
+  background: var(--accentColor);
+  border-color: var(--accentColor);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  z-index: 10;
+  animation: pulse 0.6s ease-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  }
 }
 
 .calendar-cell.filled {
@@ -198,9 +234,18 @@ export default {
     font-size: 0.7rem;
   }
 
+  .calendar-row-label {
+    min-height: 12px;
+    max-height: 18px;
+  }
+
   .calendar-columns {
     gap: 1rem;
     max-width: 98vw;
+  }
+
+  .calendar-cell:hover {
+    transform: scale(1.1);
   }
 }
 </style>

@@ -7,21 +7,17 @@
       <input id="start-date" type="date" v-model="startDate" class="date-input" />
     </div>
 
-    <DateInput />
-
     <LifeCalendar :start-date="startDate" />
   </div>
 </template>
 
 <script>
 import LifeCalendar from '@/components/StatsComponents/LifeCalendar.vue';
-import DateInput from '@/components/ListItems/DateInput.vue'
 
 export default {
   name: 'Stats',
   components: {
     LifeCalendar,
-    DateInput,
   },
   data() {
     return {
