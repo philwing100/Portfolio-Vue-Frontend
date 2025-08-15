@@ -40,11 +40,14 @@ export default {
 .stats-container {
   width: 100%;
   min-height: 100vh;
+  max-height: 100vh;
   background: var(--primaryColor, #343541);
   padding: 2rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 h1 {

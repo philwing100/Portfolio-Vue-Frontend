@@ -18,26 +18,24 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.shadcn-btn {
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.375rem;
+button {
+  background-color: var(--secondaryColor);
+  color: var(--accentColor);
   border: none;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.3125rem;
   cursor: pointer;
-  background: var(--primary);
-  color: var(--accentColor);
-  transition: background 0.15s, color 0.15s;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
-.shadcn-btn.primary {
-  background: var(--primary);
-  color: var(--accentColor);
+
+button:hover {
+  background-color: var(--primaryColor);
 }
-.shadcn-btn.secondary {
-  background: var(--secondaryColor);
-  color: var(--accentColor--);
-}
-.shadcn-btn:hover {
-  opacity: 0.85;
+
+button:disabled {
+  background-color: var(--secondaryColor);
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

@@ -143,14 +143,14 @@ export default {
 }
 
 .calendar-header-placeholder {
-  width: 2.2vw;
+  width: 2.2rem;
   min-width: 1.75rem;
   max-width: 2.375rem;
   margin-right: 0.25rem;
 }
 
 .calendar-header-cell {
-  width: 1.2vw;
+  width: 1.2rem;
   min-width: 1.125rem;
   max-width: 2rem;
   text-align: center;
@@ -166,29 +166,29 @@ export default {
 .calendar-row {
   display: flex;
   align-items: center;
-  margin-bottom: 0.125rem;
+  margin-bottom: 0.25rem;
 }
 
 .calendar-row-label {
-  width: 2.2vw;
+  width: 2.2rem;
   min-width: 1.75rem;
   max-width: 2.375rem;
   text-align: right;
   font-size: 0.85rem;
   color: var(--accentColor);
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  height: 1.2vw;
+  height: 1.2rem;
   min-height: 1.125rem;
   max-height: 2rem;
 }
 
 .calendar-cell {
-  width: 1.2vw;
-  height: 1.2vw;
+  width: 1.2rem;
+  height: 1.2rem;
   min-width: 1.125rem;
   min-height: 1.125rem;
   max-width: 2rem;

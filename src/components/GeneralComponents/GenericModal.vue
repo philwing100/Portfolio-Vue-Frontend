@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <button @click="$emit('close')">✖</button>
+        <button @click="$emit('close')" class="close-button">✖</button>
         <slot name="header"></slot>
       </div>
 
@@ -33,21 +33,21 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-container {
+.modal-content {
   background-color: var(--primaryColor);
   border-radius: 0.5rem;
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
   max-width: 90%;
   max-height: 90%;
   overflow: auto;
-  position: relative;
+  position: relative
 }
 
 .modal-header {
@@ -67,17 +67,7 @@ export default {
   margin: 0;
 }
 
-.modal-content {
-  background-color: var(--primaryColor);
-  border-radius: 0.5rem;
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  position: relative
-}
-
-.modal-close {
+.close-button {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -93,7 +83,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.modal-close:hover {
+.close-button:hover {
   background-color: var(--primaryColor);
   opacity: 0.8;
 }
