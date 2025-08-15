@@ -15,6 +15,7 @@
       <div class="calendar-grid-wrapper">
         <div class="calendar-grid">
           <div class="calendar-header-row">
+            <div class="calendar-header-placeholder"></div>
             <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week }}</div>
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
@@ -27,6 +28,7 @@
       <div class="calendar-grid-wrapper">
         <div class="calendar-grid">
           <div class="calendar-header-row">
+            <div class="calendar-header-placeholder"></div>
             <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week + 26 }}</div>
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
@@ -138,6 +140,13 @@ export default {
 .calendar-header-row {
   display: flex;
   margin-bottom: 0.25rem;
+}
+
+.calendar-header-placeholder {
+  width: 2.2vw;
+  min-width: 1.75rem;
+  max-width: 2.375rem;
+  margin-right: 0.25rem;
 }
 
 .calendar-header-cell {
