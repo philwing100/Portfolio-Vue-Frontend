@@ -1,15 +1,8 @@
 <template>
   <div class="tabs-root">
     <div class="tabs-list" role="tablist">
-      <button
-        v-for="(tab, idx) in tabs"
-        :key="tab.label"
-        class="tab-trigger"
-        :class="{ active: idx === selectedIndex }"
-        :aria-selected="idx === selectedIndex"
-        :tabindex="idx === selectedIndex ? 0 : -1"
-        @click="selectTab(idx)"
-      >
+      <button v-for="(tab, idx) in tabs" :key="tab.label" class="tab-trigger" :class="{ active: idx === selectedIndex }"
+        :aria-selected="idx === selectedIndex" :tabindex="idx === selectedIndex ? 0 : -1" @click="selectTab(idx)">
         {{ tab.label }}
       </button>
     </div>
@@ -55,6 +48,7 @@ export default {
   flex-direction: column;
   width: 100%;
 }
+
 .tabs-list {
   display: flex;
   gap: 0.5rem;
@@ -62,6 +56,7 @@ export default {
   background: var(--secondaryColor);
   padding: 0.25rem 0;
 }
+
 .tab-trigger {
   background: transparent;
   border: none;
@@ -75,20 +70,23 @@ export default {
   transition: background 0.15s, color 0.15s;
   position: relative;
 }
+
 .tab-trigger.active {
   color: var(--accentColor);
-  background: var(--primary);
+  background: var(--primaryColor);
   opacity: 1;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
 }
+
 .tab-trigger:not(.active):hover {
-  background: var(--primary);
+  background: var(--primaryColor);
   color: var(--accentColor);
   opacity: 1;
 }
+
 .tabs-content {
   padding: 1.5rem 0.5rem 0.5rem 0.5rem;
-  background: var(--primary);
+  background: var(--primaryColor);
   color: var(--accentColor);
   border-radius: 0 0 0.5rem 0.5rem;
   border: 0.0625rem solid var(--secondaryColor);
@@ -97,15 +95,16 @@ export default {
 }
 
 /* Use CSS vars for easy theming from global colors */
-:root, .tabs-root {
-  --tab-active-bg:  var(--primary);
+:root,
+.tabs-root {
+  --tab-active-bg: var(--primaryColor);
   --tab-active-color: var(--accentColor);
-  --tab-hover-bg: var(--primary);
+  --tab-hover-bg: var(--primaryColor);
   --tab-hover-color: var(--accentColor);
   --tab-bg: var(--secondaryColor);
   --tab-color: var(--accentColor);
   --tab-border: var(--secondaryColor);
-  --tab-content-bg: var(--primary);
+  --tab-content-bg: var(--primaryColor);
   --tab-content-color: var(--accentColor);
 }
 </style>
