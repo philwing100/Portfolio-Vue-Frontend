@@ -4,7 +4,15 @@
     <div v-if="isCalendarVisible" class="calendar">
       <div class="calendar-header">
         <button @click="prevMonth">&lt;</button>
-        <span>{{ monthNames[currentMonth] }} {{ currentYear }}</span>
+        <div class="month-year-display">
+          <span>{{ monthNames[currentMonth] }}</span>
+          <Dropdown 
+            :options="yearOptions" 
+            v-model="currentYear" 
+            @update:modelValue="onYearChange"
+            class="year-dropdown"
+          />
+        </div>
         <button @click="nextMonth">&gt;</button>
       </div>
       <div class="calendar-grid">
@@ -19,7 +27,12 @@
   </div>
 </template>
 <script>
+import Dropdown from '@/components/GeneralComponents/Dropdown.vue';
+
 export default {
+  components: {
+    Dropdown,
+  },
   props: {
     modelValue: {
       type: String,
@@ -47,6 +60,14 @@ export default {
     },
     weekDays() {
       return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    },
+    yearOptions() {
+      const currentYear = new Date().getFullYear();
+      const years = [];
+      for (let year = currentYear; year >= 1930; year--) {
+        years.push(year);
+      }
+      return years;
     },
     displayedDates() {
       const dates = [];
@@ -137,6 +158,9 @@ export default {
 
       date.setDate(date.getDate() + 1); // Increment the date by 1
       return date.toISOString().split('T')[0]; // Return the incremented date as a string in YYYY-MM-DD format
+    },
+    onYearChange(newYear) {
+      this.currentYear = newYear;
     }
   },
   watch: {
@@ -186,6 +210,25 @@ export default {
   justify-content: space-between;
   align-items: center;
   font-size: 1.0em;
+}
+
+.month-year-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.year-dropdown {
+  min-width: 4rem;
+}
+
+.year-dropdown select {
+  background: var(--secondaryColor);
+  color: var(--accentColor);
+  border: 0.0625rem solid var(--accentColor);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.875rem;
 }
 
 .calendar-grid {
