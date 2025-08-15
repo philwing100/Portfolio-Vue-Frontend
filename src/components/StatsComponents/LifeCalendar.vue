@@ -20,7 +20,13 @@
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
             <div class="calendar-row-label">{{ row }}</div>
-            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 1) }"></div>
+            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 1), 'on-fire': isLastFilled(row, cell, 1) }">
+              <div v-if="isLastFilled(row, cell, 1)" class="fire-effect">
+                <div class="flame flame-1"></div>
+                <div class="flame flame-2"></div>
+                <div class="flame flame-3"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -33,7 +39,13 @@
           </div>
           <div v-for="row in 90" :key="row" class="calendar-row">
             <div class="calendar-row-label"></div>
-            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 2) }"></div>
+            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 2), 'on-fire': isLastFilled(row, cell, 2) }">
+              <div v-if="isLastFilled(row, cell, 2)" class="fire-effect">
+                <div class="flame flame-1"></div>
+                <div class="flame flame-2"></div>
+                <div class="flame flame-3"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -57,6 +69,9 @@ export default {
       const diffMs = now - start;
       return Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7));
     },
+    lastFilledWeek() {
+      return this.weeksSinceStart - 1;
+    },
   },
   methods: {
     isFilled(row, cell, col) {
@@ -66,6 +81,11 @@ export default {
       const weekInYear = (col === 1) ? cell : cell + 26;
       const weekIndex = (row - 1) * 52 + weekInYear - 1;
       return weekIndex < this.weeksSinceStart;
+    },
+    isLastFilled(row, cell, col) {
+      const weekInYear = (col === 1) ? cell : cell + 26;
+      const weekIndex = (row - 1) * 52 + weekInYear - 1;
+      return weekIndex === this.lastFilledWeek;
     },
   },
 };
@@ -84,28 +104,32 @@ export default {
 .calendar-labels {
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   margin-bottom: 1rem;
   max-width: 60rem;
+  position: relative;
 }
 
 .calendar-age-label {
+  position: absolute;
+  left: 0;
+  top: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 1.1rem;
   color: var(--accentColor);
-  margin-left: 2rem;
 }
 
 .calendar-weeks-label {
+  position: absolute;
+  left: 4rem;
+  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: 1.1rem;
   color: var(--accentColor);
-  margin-right: 2rem;
 }
 
 .arrow {
@@ -229,6 +253,86 @@ export default {
 .calendar-cell.filled {
   background: var(--accentColor);
   border: 0.0625rem solid var(--accentColor);
+}
+
+.calendar-cell.on-fire {
+  position: relative;
+  overflow: visible;
+  z-index: 5;
+}
+
+.fire-effect {
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 150%;
+  pointer-events: none;
+}
+
+.flame {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+.flame-1 {
+  width: 0.8rem;
+  height: 1.2rem;
+  background: linear-gradient(45deg, #ff6b35, #ff8e35, #ffaa35);
+  animation: flicker1 0.5s ease-in-out infinite alternate;
+}
+
+.flame-2 {
+  width: 0.6rem;
+  height: 1rem;
+  background: linear-gradient(45deg, #ff8e35, #ffaa35, #ffd635);
+  animation: flicker2 0.7s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+.flame-3 {
+  width: 0.4rem;
+  height: 0.8rem;
+  background: linear-gradient(45deg, #ffaa35, #ffd635, #ffff35);
+  animation: flicker3 0.3s ease-in-out infinite alternate;
+  z-index: 2;
+}
+
+@keyframes flicker1 {
+  0% {
+    transform: translateX(-50%) scale(1) rotate(-2deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.1) rotate(2deg);
+    opacity: 1;
+  }
+}
+
+@keyframes flicker2 {
+  0% {
+    transform: translateX(-50%) scale(0.9) rotate(1deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.2) rotate(-1deg);
+    opacity: 1;
+  }
+}
+
+@keyframes flicker3 {
+  0% {
+    transform: translateX(-50%) scale(0.8) rotate(-1deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.3) rotate(1deg);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 56.25rem) {

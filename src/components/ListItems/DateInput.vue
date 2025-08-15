@@ -1,6 +1,9 @@
 <template>
   <div class="date-picker">
-    <input type="text" v-model="formattedDate" @focus="showCalendar" class="date-input" readonly />
+    <div class="input-wrapper">
+      <input type="text" v-model="formattedDate" @focus="showCalendar" class="date-input" readonly />
+      <span class="dropdown-arrow">&#8595;</span>
+    </div>
     <div v-if="isCalendarVisible" class="calendar">
       <div class="calendar-header">
         <button @click="prevMonth">&lt;</button>
@@ -176,14 +179,29 @@ export default {
   position: relative;
 }
 
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .date-input {
   background-color: var(--primaryColor);
   color: var(--accentColor);
   border: 0.0625rem solid var(--secondaryColor);
   border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
   width: 9.375rem;
   cursor: text;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accentColor);
+  font-size: 0.75rem;
+  pointer-events: none;
 }
 
 .date-input:focus {

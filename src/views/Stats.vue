@@ -2,7 +2,10 @@
   <div class="stats-container">
     <h1>Life Calendar Stats</h1>
 
-    <DateInput />
+    <div class="date-picker-container">
+      <label>Birth Date:</label>
+      <DateInput v-model="startDate" />
+    </div>
 
     <LifeCalendar :start-date="startDate" />
   </div>
@@ -25,7 +28,10 @@ export default {
   },
   mounted() {
     // Load saved birth date from localStorage if available
-
+    const savedDate = localStorage.getItem('lifecalendar-birth-date');
+    if (savedDate) {
+      this.startDate = savedDate;
+    }
   },
   watch: {
     startDate(newDate) {
