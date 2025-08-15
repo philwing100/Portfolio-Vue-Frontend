@@ -2,15 +2,8 @@
     <div class="int-input-container">
         <label v-if="label">{{ label }}</label>
         <div class="input-wrapper">
-            <input
-                type="number"
-                :value="modelValue"
-                @input="updateValue"
-                :min="min"
-                :max="max"
-                class="number-input"
-            />
-         </div>
+            <input type="number" :value="modelValue" @input="updateValue" :min="min" :max="max" class="number-input" />
+        </div>
     </div>
 </template>
 
@@ -53,7 +46,7 @@ export default {
 label {
     display: block;
     margin-bottom: 0.5rem;
-    color: white;
+    color: var(--accentColor);
 }
 
 .input-wrapper {
@@ -66,18 +59,18 @@ label {
     width: 60px;
     padding: 0.5rem;
     text-align: center;
-    border: 1px solid #ccc;
+    border: 1px solid var(--accentColor);
     border-radius: 4px;
-    background: black;
-    color: white;
+    background: var(--secondaryColor);
+    color: var(--accentColor);
 }
 
 button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
-    background: #383444;
-    color: white;
+    background: var(--accentColor);
+    color: var(--accentColor);
     cursor: pointer;
 }
 
@@ -87,7 +80,7 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-    background: #0000dc;
+    background: var(--secondaryColor);
 }
 
 input::-webkit-outer-spin-button,

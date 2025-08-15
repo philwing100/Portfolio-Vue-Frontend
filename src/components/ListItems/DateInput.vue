@@ -172,7 +172,7 @@ export default {
   position: absolute;
   top: 40px;
   left: -10%;
-  background-color: var(--primaryColor);
+  background-color: var(--secondaryColor);
   border: 1px solid var(--accentColor);
   border-radius: 4px;
   padding-left: 2px;
