@@ -1,12 +1,12 @@
 <template>
   <div class="date-picker">
     <div class="input-wrapper">
-      <input type="text" v-model="formattedDate" @focus="showCalendar" class="date-input" readonly />
-      <span class="dropdown-arrow">&#8595;</span>
+      <input type="text" v-model="formattedDate" @click="showCalendar(formattedDate)" class="date-input" readonly/>
+      <span class="dropdown-arrow">&#9660;</span>
     </div>
     <div v-if="isCalendarVisible" class="calendar">
       <div class="calendar-header">
-        <button @click="prevMonth">&lt;</button>
+        <button class="calendar-nav-btn" @click="prevMonth">&lt;</button>
         <div class="month-year-display">
           <span>{{ monthNames[currentMonth] }}</span>
           <Dropdown 
@@ -16,19 +16,26 @@
             class="year-dropdown"
           />
         </div>
-        <button @click="nextMonth">&gt;</button>
+        <button class="calendar-nav-btn" @click="nextMonth">&gt;</button>
       </div>
       <div class="calendar-grid">
         <div class="day" v-for="(day, index) in weekDays" :key="index">{{ day }}</div>
-        <div v-for="date in displayedDates" :key="date.dateString" class="day"
-          :class="{ 'hover': date.isHover, 'selected': date.isSelected }" @mouseover="hoverDate(date.dateString)"
-          @mouseleave="clearHover" @click="selectDate(date.dateString)">
+        <div
+          v-for="date in displayedDates"
+          :key="date.dateString"
+          class="day"
+          :class="{ 'hover': date.isHover, 'selected': date.isSelected }"
+          @mouseover="hoverDate(date.dateString)"
+          @mouseleave="clearHover"
+          @click="handleDateClick(date.dateString)"
+        >
           {{ date.day }}
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import Dropdown from '@/components/GeneralComponents/Dropdown.vue';
 
@@ -49,6 +56,7 @@ export default {
       currentMonth: new Date().getMonth(),
       selectedDate: this.modelValue,
       hoveredDate: null,
+      lastSelectedBeforeOpen: null, // Track last selected date before opening picker
     };
   },
   computed: {
@@ -62,7 +70,7 @@ export default {
       ];
     },
     weekDays() {
-      return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      return ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     },
     yearOptions() {
       const currentYear = new Date().getFullYear();
@@ -107,8 +115,18 @@ export default {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return date ? new Date(date).toLocaleDateString(undefined, options) : '';
     },
-    showCalendar() {
+    showCalendar(dateString) {
+      if(!this.isCalendarVisible){
+        this.lastSelectedBeforeOpen = this.selectedDate; // Save current selection
       this.isCalendarVisible = true;
+      } else{
+        // If clicking the already selected date, close and revert
+        this.selectedDate = this.lastSelectedBeforeOpen;
+        this.hoveredDate = null;
+        this.isCalendarVisible = false;
+        this.$emit('update:modelValue', this.selectedDate);
+      }
+
     },
     hoverDate(dateString) {
       this.hoveredDate = dateString;
@@ -116,12 +134,21 @@ export default {
     clearHover() {
       this.hoveredDate = null;
     },
+    handleDateClick(dateString) {
+      if (dateString === this.selectedDate && this.isCalendarVisible) {
+        // If clicking the already selected date, close and revert
+        this.selectedDate = this.lastSelectedBeforeOpen;
+        this.hoveredDate = null;
+        this.isCalendarVisible = false;
+        this.$emit('update:modelValue', this.selectedDate);
+      } else {
+        this.selectDate(dateString);
+      }
+    },
     selectDate(dateString) {
       this.selectedDate = dateString;
       this.hoveredDate = null;
       this.isCalendarVisible = false;
-
-      // Emit the update to synchronize with the parent component's v-model
       this.$emit('update:modelValue', this.selectedDate);
     },
     prevMonth() {
@@ -145,22 +172,17 @@ export default {
       const year = today.getFullYear();
       const month = String(today.getMonth() + 1).padStart(2, '0');
       const day = String(today.getDate()).padStart(2, '0');
-
-      // Return formatted date as YYYY-MM-DD in local time without timezone adjustments
       return `${year}-${month}-${day}`;
     },
     incrementDate(dateString) {
       let date;
-
-      // Check if dateString is null or undefined, use current date if so
       if (!dateString) {
-        date = new Date(this.getCurrentDate()); // Convert the current date string to a Date object
+        date = new Date(this.getCurrentDate());
       } else {
-        date = new Date(dateString); // Convert the provided dateString to a Date object
+        date = new Date(dateString);
       }
-
-      date.setDate(date.getDate() + 1); // Increment the date by 1
-      return date.toISOString().split('T')[0]; // Return the incremented date as a string in YYYY-MM-DD format
+      date.setDate(date.getDate() + 1);
+      return date.toISOString().split('T')[0];
     },
     onYearChange(newYear) {
       this.currentYear = newYear;
@@ -168,7 +190,7 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.selectedDate = newValue; // Update internal date when parent model changes
+      this.selectedDate = newValue;
     },
   },
 };
@@ -185,7 +207,7 @@ export default {
 }
 
 .date-input {
-  background-color: var(--primaryColor);
+  background-color: var(--secondaryColor);
   color: var(--accentColor);
   border: 0.0625rem solid var(--secondaryColor);
   border-radius: 0.25rem;
@@ -214,13 +236,17 @@ export default {
   position: absolute;
   top: 40px;
   left: -10%;
-  background-color: var(--secondaryColor);
+  background-color: var(--primaryColor);
   border: 1px solid var(--accentColor);
+  color: var(--accentColor);
   border-radius: 4px;
   padding-left: 2px;
   padding-right: 2px;
   z-index: 1;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  min-width: 18rem; /* Ensures consistent width */
+  width: 18rem;     /* Fixed width for all months */
+  max-width: 100%;
 }
 
 .calendar-header {
@@ -228,6 +254,21 @@ export default {
   justify-content: space-between;
   align-items: center;
   font-size: 1.0em;
+}
+
+.calendar-nav-btn {
+  background: var(--secondaryColor);
+  color: var(--accentColor);
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.calendar-nav-btn:hover {
+  background: var(--accentColor);
+  color: var(--primaryColor);
 }
 
 .month-year-display {
@@ -264,10 +305,11 @@ export default {
 }
 
 .day.hover {
-  background-color: var(--secondaryColor);
+  background-color: var(--accentColor);
 }
 
 .day.selected {
-  background-color: var(--secondaryColor);
+  background-color: var(--accentColor);
+  color: var(--primaryColor);
 }
 </style>

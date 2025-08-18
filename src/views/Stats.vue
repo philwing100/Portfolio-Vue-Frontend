@@ -1,13 +1,15 @@
 <template>
-  <div class="stats-container">
-    <h1>Life Calendar Stats</h1>
+  <div>
+    <div class="stats-container">
+      <h1>Life Calendar Stats</h1>
 
-    <div class="date-picker-container">
-      <label>Birth Date:</label>
-      <DateInput v-model="startDate" />
+      <div class="date-picker-container">
+        <label>Birth Date:</label>
+        <DateInput v-model="startDate" />
+      </div>
+
+      <LifeCalendar :start-date="startDate" />
     </div>
-
-    <LifeCalendar :start-date="startDate" />
   </div>
 </template>
 

@@ -1,49 +1,58 @@
 <template>
   <div class="life-calendar-root">
-    <div class="calendar-labels">
-      <div class="calendar-age-label">
-        <span>Age</span>
-        <span class="arrow">&#8595;</span>
-      </div>
+    <div class="singleColumn">
       <div class="calendar-weeks-label">
-        <span>Weeks</span>
+        <div>Weeks</div>
         <span class="arrow">&#8594;</span>
       </div>
-    </div>
-    <div class="calendar-columns">
-      <!-- First column: 13 columns, show numbers -->
-      <div class="calendar-grid-wrapper">
-        <div class="calendar-grid">
-          <div class="calendar-header-row">
-            <div class="calendar-header-placeholder"></div>
-            <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week }}</div>
-          </div>
-          <div v-for="row in 90" :key="row" class="calendar-row">
-            <div class="calendar-row-label">{{ row }}</div>
-            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 1), 'on-fire': isLastFilled(row, cell, 1) }">
-              <div v-if="isLastFilled(row, cell, 1)" class="fire-effect">
-                <div class="flame flame-1"></div>
-                <div class="flame flame-2"></div>
-                <div class="flame flame-3"></div>
+      <div class="calendar-columns">
+        <div class="calendar-age-label">
+          <span>A</span>
+          <span>g</span>
+          <span>e</span>
+          <span style="font-size: 2rem;">&#8595;</span>
+        </div>
+        <div class="calendar-grid-wrapper">
+          <div class="calendar-grid">
+            <div class="header-row-cells">
+              <div v-for="week in 26" :key="week" class="header-row-cell">
+                {{ week }}
               </div>
             </div>
+
+            <div v-for="row in Array.from({ length: 91 }, (_, i) => i)" :key="row" class="calendar-row">
+              <div class="calendar-row-label">
+                {{ row === 0 ? 'Birth' : row }}
+              </div>
+              <div v-for="cell in 26" :key="cell" class="calendar-cell"
+                :class="{ filled: isFilled(row, cell, 1), 'on-fire': isLastFilled(row, cell, 1) }, { 'calendar-row-gap': row !== 0 && row % 10 === 0 }">
+                <div v-if="isLastFilled(row, cell, 1)" class="fire-effect">
+                  <div class="flame flame-1"></div>
+                  <div class="flame flame-2"></div>
+                  <div class="flame flame-3"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
-      <!-- Second column: 13 columns, no numbers -->
-      <div class="calendar-grid-wrapper">
-        <div class="calendar-grid">
-          <div class="calendar-header-row">
-            <div class="calendar-header-placeholder"></div>
-            <div class="calendar-header-cell" v-for="week in 26" :key="week">{{ week + 26 }}</div>
-          </div>
-          <div v-for="row in 90" :key="row" class="calendar-row">
-            <div class="calendar-row-label"></div>
-            <div v-for="cell in 26" :key="cell" class="calendar-cell" :class="{ filled: isFilled(row, cell, 2), 'on-fire': isLastFilled(row, cell, 2) }">
-              <div v-if="isLastFilled(row, cell, 2)" class="fire-effect">
-                <div class="flame flame-1"></div>
-                <div class="flame flame-2"></div>
-                <div class="flame flame-3"></div>
+        <div class="calendar-grid-wrapper">
+          <div class="calendar-grid">
+            <div class="header-row-cells">
+              <div v-for="week in 26" :key="week" class="header-row-cell">
+                {{ week + 26 }}
+              </div>
+            </div>
+
+            <div v-for="row in Array.from({ length: 91 }, (_, i) => i)" :key="row" class="calendar-row">
+              <div class="calendar-row-label"></div>
+              <div v-for="cell in 26" :key="cell" class="calendar-cell"
+                :class="{ filled: isFilled(row, cell, 2), 'on-fire': isLastFilled(row, cell, 2) }, { 'calendar-row-gap': row !== 0 && row % 10 === 0 }">
+                <div v-if="isLastFilled(row, cell, 2)" class="fire-effect">
+                  <div class="flame flame-1"></div>
+                  <div class="flame flame-2"></div>
+                  <div class="flame flame-3"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -111,9 +120,8 @@ export default {
 }
 
 .calendar-age-label {
-  position: absolute;
-  left: 0;
-  top: 3rem;
+  padding-top: 2.5rem;
+  ;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -122,19 +130,20 @@ export default {
 }
 
 .calendar-weeks-label {
-  position: absolute;
-  left: 4rem;
-  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: 1.1rem;
   color: var(--accentColor);
+  width: 100%;
+  margin-bottom: 1rem;
+  justify-content: flex-start;
+  /* Remove position, left, top */
 }
 
 .arrow {
-  font-size: 1.5rem;
-  margin-top: 0.25rem;
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
   margin-left: 0.5rem;
 }
 
@@ -159,32 +168,6 @@ export default {
   border-radius: 0.5rem;
   padding: 0.5rem 0.25rem;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
-}
-
-.calendar-header-row {
-  display: flex;
-  margin-bottom: 0.25rem;
-}
-
-.calendar-header-placeholder {
-  width: 2.2rem;
-  min-width: 1.75rem;
-  max-width: 2.375rem;
-  margin-right: 0.25rem;
-}
-
-.calendar-header-cell {
-  width: 1.2rem;
-  min-width: 1.125rem;
-  max-width: 2rem;
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--accentColor);
-  font-weight: 600;
-  margin-right: 0.125rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .calendar-row {
@@ -240,10 +223,12 @@ export default {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
   }
+
   50% {
     transform: scale(1.15);
     box-shadow: 0 0 0 0.5rem rgba(255, 255, 255, 0.3);
   }
+
   100% {
     transform: scale(1.2);
     box-shadow: 0 0.25rem 0.75rem rgba(255, 255, 255, 0.3);
@@ -307,6 +292,7 @@ export default {
     transform: translateX(-50%) scale(1) rotate(-2deg);
     opacity: 0.9;
   }
+
   100% {
     transform: translateX(-50%) scale(1.1) rotate(2deg);
     opacity: 1;
@@ -318,6 +304,7 @@ export default {
     transform: translateX(-50%) scale(0.9) rotate(1deg);
     opacity: 0.8;
   }
+
   100% {
     transform: translateX(-50%) scale(1.2) rotate(-1deg);
     opacity: 1;
@@ -329,6 +316,7 @@ export default {
     transform: translateX(-50%) scale(0.8) rotate(-1deg);
     opacity: 0.7;
   }
+
   100% {
     transform: translateX(-50%) scale(1.3) rotate(1deg);
     opacity: 1;
@@ -360,5 +348,43 @@ export default {
   .calendar-cell:hover {
     transform: scale(1.1);
   }
+}
+
+.singleColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: auto;
+}
+
+.header-row-cells {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 0.25rem;
+}
+
+.header-row-cell {
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.125rem;
+  min-height: 1.125rem;
+  max-width: 2rem;
+  max-height: 2rem;
+  background: transparent !important;
+  border-radius: 0.2rem;
+  border: 0.0625rem solid var(--secondaryColor);
+  margin-right: 0.125rem;
+  font-size: 0.85rem;
+  color: var(--accentColor);
+  font-weight: 600;
+  cursor: default !important;
+  pointer-events: none;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+.calendar-row-gap {
+  margin-top: 0.5rem;
 }
 </style>

@@ -17,8 +17,8 @@
     <div class="page-container" :style="{ 'background-color': 'var(--primaryColor)' }">
       <div class="lists-container">
         <ListElement listName="Backburner" v-model="backburner" />
-        <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate" />
         <DailyCalendar v-model:list1="backburner" v-model:list2="dailyList" :date="currentDate" />
+        <ListElement listName="Daily List" v-model="dailyList" :initialDate="currentDate" />
       </div>
     </div>
   </div>
