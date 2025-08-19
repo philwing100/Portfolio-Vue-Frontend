@@ -36,6 +36,14 @@ export default {
       type: String,
       default: null,
     },
+    minTime: {
+      type: String,
+      default: null,
+    },
+    maxTime: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -56,7 +64,11 @@ export default {
           times.push(formattedTime);
         }
       }
-      return times.filter(time => this.isFutureTime(time));
+      return times.filter(time => {
+        const isFuture = this.isFutureTime(time);
+        const isInRange = this.isTimeInRange(time);
+        return isFuture && isInRange;
+      });
     },
   },
   methods: {
@@ -133,6 +145,36 @@ export default {
     },
     updateParent() {
       this.$emit('update:modelValue', this.selectedTime); // Emit to update v-model in parent
+    },
+    isTimeInRange(time) {
+      if (!this.minTime && !this.maxTime) return true;
+      
+      const timeMinutes = this.timeToMinutes(time);
+      
+      if (this.minTime) {
+        const minMinutes = this.timeToMinutes(this.minTime);
+        if (timeMinutes < minMinutes) return false;
+      }
+      
+      if (this.maxTime) {
+        const maxMinutes = this.timeToMinutes(this.maxTime);
+        if (timeMinutes > maxMinutes) return false;
+      }
+      
+      return true;
+    },
+    timeToMinutes(timeString) {
+      const match = timeString.match(/^(\d{1,2}):(\d{2})(am|pm)$/i);
+      if (!match) return 0;
+      
+      let [_, hour, minute, period] = match;
+      hour = parseInt(hour, 10);
+      minute = parseInt(minute, 10);
+      
+      if (period.toLowerCase() === 'pm' && hour !== 12) hour += 12;
+      if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
+      
+      return hour * 60 + minute;
     },
   },
   watch: {
