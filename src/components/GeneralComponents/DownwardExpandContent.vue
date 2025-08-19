@@ -58,6 +58,8 @@ export default {
 
 .header:hover {
   background: var(--primaryColor);
+  color:var(--accentColor);
+  border-color: var(--accentColor);
 }
 
 .title {

@@ -18,7 +18,7 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: var(--primaryColor);
+  background-color: var(--secondaryColor);
   width: 100%;
   box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
   /* Shadow adjusted upwards */
@@ -38,8 +38,9 @@
 }
 
 .dropdown-content a:hover {
-  background-color: var(--primaryColor);
+  background-color: var(--accentColor);
   text-decoration: line-through;
+  color: var(--primaryColor);
 }
 
 .dropdown:hover .dropdown-content {

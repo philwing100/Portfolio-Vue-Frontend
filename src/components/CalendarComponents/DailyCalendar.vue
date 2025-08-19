@@ -3,15 +3,25 @@
     <div class="calendar-container" ref="calendarContainer" @click="handleEmptySpaceClick($event)">
       <div class="time-slots">
         <!-- Generate time slots (24 hours) -->
-        <div v-for="hour in 24" :key="hour" class="time-slot" :style="{ top: calculateTopPosition(hour) }">
+        <div
+          v-for="hour in 24"
+          :key="hour"
+          class="time-slot"
+          :style="{ top: calculateTopPosition(hour) }"
+        >
           {{ formatHour(hour) }}
         </div>
       </div>
 
       <div class="events">
         <!-- Render events dynamically -->
-        <div v-for="(event, index) in combinedEvents" :key="`${event.listType}-${index}`" class="event"
-          :style="getEventStyle(event)" @click.stop="handleEventClick(event, index)">
+        <div
+          v-for="(event, index) in combinedEvents"
+          :key="`${event.listType}-${index}`"
+          :class="['event', { 'event-complete': event.complete }]"
+          :style="getEventDynamicStyle(event)"
+          @click.stop="handleEventClick(event, index)"
+        >
           <span>{{ event.textString }}</span>
         </div>
       </div>
@@ -59,7 +69,7 @@ export default {
       activeEvent: null,
       activeEventIndex: null,
       activeEventListType: null,
-      eventCardPosition: { top: '200px', left: '30%' }, // You can improve this for better placement
+      eventCardPosition: { top: '200px', left: '30%' },
     };
   },
   computed: {
@@ -74,29 +84,30 @@ export default {
   },
   methods: {
     calculateTopPosition(hour) {
-      return `${hour * 60}px`;
+      // 1rem = 16px, so 60px = 3.75rem
+      return `${hour * 3.75}rem`;
     },
     formatHour(hour) {
       const ampm = hour >= 12 ? "PM" : "AM";
       const formattedHour = hour % 12 || 12;
       return `${formattedHour} ${ampm}`;
     },
-    getEventStyle(event) {
+    getEventDynamicStyle(event) {
       const startHour = this.parseTime(event.scheduledTime);
       let endHour = startHour + event.taskTimeEstimate / 60;
       if (endHour > 24.75) {
         endHour = 24.75;
       }
-      const topPosition = startHour * 60;
-      let height = (endHour - startHour) * 60;
-      const minHeight = 25;
+      const topPosition = startHour * 3.75; // 3.75rem per hour
+      let height = (endHour - startHour) * 3.75;
+      const minHeight = 1.5625; // 25px = 1.5625rem
       if (height < minHeight) {
         height = minHeight;
       }
       return {
-        top: `${topPosition}px`,
-        height: `${height}px`,
-        backgroundColor: event.color || "blue",
+        top: `${topPosition}rem`,
+        height: `${height}rem`,
+        backgroundColor: event.color || "var(--accentColor)",
         textDecoration: event.complete ? "line-through" : "none",
       };
     },
@@ -107,13 +118,11 @@ export default {
       this.showEventCard = true;
     },
     handleEmptySpaceClick(e) {
-      // Only trigger if clicking on empty space (not on event)
       if (e.target.classList.contains('calendar-container')) {
-        // Calculate time from click position
         const rect = this.$refs.calendarContainer.getBoundingClientRect();
         const y = e.clientY - rect.top;
         const hour = Math.floor(y / 60);
-        const minute = Math.floor((y % 60) / 1); // 1px per minute
+        const minute = Math.floor((y % 60) / 1);
         const ampm = hour >= 12 ? 'pm' : 'am';
         const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
         const timeString = `${formattedHour}:${minute.toString().padStart(2, '0')}${ampm}`;
@@ -140,7 +149,6 @@ export default {
       this.activeEventListType = null;
     },
     saveEvent(eventData) {
-      // If editing existing event
       if (this.activeEventIndex !== null && this.activeEventListType) {
         if (this.activeEventListType === "list1") {
           this.$emit("update:list1", [
@@ -156,7 +164,6 @@ export default {
           ]);
         }
       } else {
-        // New event, add to list2 by default
         this.$emit("update:list2", [...this.list2, eventData]);
       }
       this.closeEventCard();
@@ -179,7 +186,7 @@ export default {
     scrollToDefaultTime() {
       const currentTime = new Date();
       const defaultScrollTime = currentTime.getHours() - 1;
-      const scrollPosition = defaultScrollTime * 60;
+      const scrollPosition = defaultScrollTime * 3.75 * 16; // px
       this.$refs.calendarContainer.scrollTop = scrollPosition;
     },
   },
@@ -188,6 +195,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .daily-calendar {
   position: relative;
@@ -240,9 +248,16 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  background-color: var(--accentColor); /* fallback, overridden inline */
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.event-complete {
+  text-decoration: line-through;
 }
 
 .event:hover {
-  background-color: var(--primary);
+  background-color: var(--primaryColor);
 }
 </style>
