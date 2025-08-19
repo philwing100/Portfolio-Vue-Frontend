@@ -65,16 +65,23 @@ export default {
         }
       }
       return times.filter(time => {
-        const isFuture = this.isFutureTime(time);
-        const isInRange = this.isTimeInRange(time);
-        return isFuture && isInRange;
+        return this.isTimeInRange(time);
       });
     },
   },
   methods: {
     getNearestTime() {
       const now = new Date();
-      const nearestTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), Math.ceil(now.getMinutes() / 30) * 30);
+      let minutes = Math.ceil(now.getMinutes() / 30) * 30;
+      let hours = now.getHours();
+      
+      // Handle minute overflow
+      if (minutes >= 60) {
+        minutes = 0;
+        hours = (hours + 1) % 24;
+      }
+      
+      const nearestTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
       return this.formatTime(nearestTime);
     },
     formatTime(date) {
@@ -84,14 +91,7 @@ export default {
       const formattedHour = hours % 12 === 0 ? 12 : hours % 12;
       return `${formattedHour}:${String(minutes).padStart(2, '0')}${period}`;
     },
-    isFutureTime(time) {
-      const [hour, minutePart] = time.split(':');
-      const minute = parseInt(minutePart);
-      const period = minutePart.slice(-2);
-      const formattedHour = period === 'am' ? (hour === '12' ? 0 : parseInt(hour)) : (hour === '12' ? 12 : parseInt(hour) + 12);
-      const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), formattedHour, minute) > now;
-    },
+    
     showDropdown() {
       this.isDropdownVisible = true;
       this.highlightedIndex = this.selectableTimes.findIndex(time => time === this.selectedTime);
