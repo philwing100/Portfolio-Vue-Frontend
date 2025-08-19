@@ -15,17 +15,21 @@
     </div>
     <div class="event-card-body">
       <div class="event-time-row">
-        <TimeInput
-          v-model="localEvent.scheduledTime"
-          label="Start"
-          :maxTime="localEvent.endingTime"
-        />
+        <div class="time-input-group">
+          <label class="time-label">Start</label>
+          <TimeInput
+            v-model="localEvent.scheduledTime"
+            :maxTime="localEvent.endingTime"
+          />
+        </div>
         <span class="time-separator">–</span>
-        <TimeInput
-          v-model="localEvent.endingTime"
-          label="End"
-          :minTime="localEvent.scheduledTime"
-        />
+        <div class="time-input-group">
+          <label class="time-label">End</label>
+          <TimeInput
+            v-model="localEvent.endingTime"
+            :minTime="localEvent.scheduledTime"
+          />
+        </div>
       </div>
       <DownwardExpandContent label="Color">
         <ColorPicker v-model="localEvent.color" />
@@ -85,13 +89,36 @@ export default {
   },
   computed: {
     cardPositionStyle() {
-      // Shift upward by 32px but keep inside viewport
-      const shift = 32;
-      let top = this.eventPosition.top - shift;
-      if (top < 0) top = this.eventPosition.top; // Don't go above page
+      const cardWidth = 320; // min-width from CSS
+      const cardHeight = 200; // estimated height
+      const margin = 16; // margin from viewport edges
+      
+      let left = this.eventPosition.left;
+      let top = this.eventPosition.top;
+      
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Adjust horizontal position if card would go off-screen
+      if (left + cardWidth > viewportWidth - margin) {
+        left = viewportWidth - cardWidth - margin;
+      }
+      if (left < margin) {
+        left = margin;
+      }
+      
+      // Adjust vertical position if card would go off-screen
+      if (top + cardHeight > viewportHeight - margin) {
+        top = viewportHeight - cardHeight - margin;
+      }
+      if (top < margin) {
+        top = margin;
+      }
+      
       return {
-        position: 'absolute',
-        left: `${this.eventPosition.left}px`,
+        position: 'fixed',
+        left: `${left}px`,
         top: `${top}px`,
         zIndex: 2000,
       };
@@ -172,13 +199,26 @@ export default {
 
 .event-time-row {
   display: flex;
-  align-items: center;
+  align-items: end;
   gap: 0.5rem;
+}
+
+.time-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.time-label {
+  font-size: 0.875rem;
+  color: var(--accentColor);
+  font-weight: 500;
 }
 
 .time-separator {
   font-size: 1.25rem;
   color: var(--accentColor);
+  margin-bottom: 0.25rem;
 }
 
 
