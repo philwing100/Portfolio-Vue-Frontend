@@ -89,36 +89,13 @@ export default {
   },
   computed: {
     cardPositionStyle() {
-      const cardWidth = 320; // min-width from CSS
-      const cardHeight = 200; // estimated height
-      const margin = 16; // margin from viewport edges
-      
-      let left = this.eventPosition.left;
-      let top = this.eventPosition.top;
-      
-      // Get viewport dimensions
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      
-      // Adjust horizontal position if card would go off-screen
-      if (left + cardWidth > viewportWidth - margin) {
-        left = viewportWidth - cardWidth - margin;
-      }
-      if (left < margin) {
-        left = margin;
-      }
-      
-      // Adjust vertical position if card would go off-screen
-      if (top + cardHeight > viewportHeight - margin) {
-        top = viewportHeight - cardHeight - margin;
-      }
-      if (top < margin) {
-        top = margin;
-      }
-      
+      // Shift upward by 32px but keep inside viewport
+      const shift = 32;
+      let top = this.eventPosition.top - shift;
+      if (top < 0) top = this.eventPosition.top; // Don't go above page
       return {
-        position: 'fixed',
-        left: `${left}px`,
+        position: 'absolute',
+        left: `${this.eventPosition.left}px`,
         top: `${top}px`,
         zIndex: 2000,
       };
