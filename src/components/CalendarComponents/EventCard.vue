@@ -89,20 +89,13 @@ export default {
   },
   computed: {
     cardPositionStyle() {
-      const cardHeight = 280; // Estimated card height
-      const containerHeight = this.$el?.parentElement?.offsetHeight || window.innerHeight;
-      
-      let top = this.eventPosition.top;
-      let left = this.eventPosition.left;
-      
-      // If card would extend below the container, position it above the click point
-      if (top + cardHeight > containerHeight) {
-        top = Math.max(0, this.eventPosition.top - cardHeight);
-      }
-      
+      // Shift upward by 32px but keep inside viewport
+      const shift = 32;
+      let top = this.eventPosition.top - shift;
+      if (top < 0) top = this.eventPosition.top; // Don't go above page
       return {
         position: 'absolute',
-        left: `${left}px`,
+        left: `${this.eventPosition.left}px`,
         top: `${top}px`,
         zIndex: 2000,
       };
