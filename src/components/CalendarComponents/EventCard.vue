@@ -18,23 +18,13 @@
         <TimeInput
           v-model="localEvent.scheduledTime"
           label="Start"
-          :maxTime="maxEndTime"
+          :maxTime="localEvent.endingTime"
         />
         <span class="time-separator">–</span>
-        <div class="end-time-display">
-          <label>End</label>
-          <span class="calculated-end-time">{{ calculatedEndTime }}</span>
-        </div>
-      </div>
-      <div class="duration-row">
-        <label>Duration (minutes):</label>
-        <input 
-          type="number" 
-          v-model.number="localEvent.timeEstimate" 
-          min="15" 
-          max="720" 
-          step="15"
-          class="duration-input"
+        <TimeInput
+          v-model="localEvent.endingTime"
+          label="End"
+          :minTime="localEvent.scheduledTime"
         />
       </div>
       <DownwardExpandContent label="Color">
@@ -78,7 +68,7 @@ export default {
       default: () => ({
         textString: '',
         scheduledTime: '',
-        timeEstimate: 60,
+        endingTime: '',
         color: '#2196f3',
       }),
     },
@@ -106,16 +96,7 @@ export default {
         zIndex: 2000,
       };
     },
-    calculatedEndTime() {
-      if (!this.localEvent.scheduledTime || !this.localEvent.timeEstimate) {
-        return '--:--';
-      }
-      return this.addMinutesToTime(this.localEvent.scheduledTime, this.localEvent.timeEstimate);
-    },
-    maxEndTime() {
-      // Set max end time to 11:30pm to prevent overnight events
-      return '11:30pm';
-    },
+    
   },
   watch: {
     event: {
@@ -124,9 +105,6 @@ export default {
       },
       deep: true,
     },
-    // Watch for changes to timeEstimate and scheduledTime, update duration to parent
-    'localEvent.scheduledTime': 'emitDuration',
-    'localEvent.timeEstimate': 'emitDuration',
   },
   mounted() {
     this.$nextTick(() => {
@@ -146,30 +124,7 @@ export default {
       this.$emit('save', { ...data });
       this.drawerOpen = false;
     },
-    emitDuration() {
-      const duration = this.localEvent.timeEstimate || 0;
-      this.$emit('update:duration', duration);
-    },
-    addMinutesToTime(timeString, minutes) {
-      const match = timeString.match(/^(\d{1,2}):(\d{2})(am|pm)$/i);
-      if (!match) return '--:--';
-      
-      let [_, hour, minute, period] = match;
-      hour = parseInt(hour, 10);
-      minute = parseInt(minute, 10);
-      
-      if (period.toLowerCase() === 'pm' && hour !== 12) hour += 12;
-      if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
-      
-      const totalMinutes = hour * 60 + minute + minutes;
-      const newHour = Math.floor(totalMinutes / 60) % 24;
-      const newMinute = totalMinutes % 60;
-      
-      const displayHour = newHour === 0 ? 12 : newHour > 12 ? newHour - 12 : newHour;
-      const displayPeriod = newHour < 12 ? 'am' : 'pm';
-      
-      return `${displayHour}:${String(newMinute).padStart(2, '0')}${displayPeriod}`;
-    },
+    
   },
 };
 </script>
@@ -226,45 +181,7 @@ export default {
   color: var(--accentColor);
 }
 
-.duration-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
-.duration-input {
-  background-color: var(--secondaryColor);
-  color: var(--accentColor);
-  border: 0.0625rem solid var(--accentColor);
-  border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  width: 5rem;
-  font-size: 0.875rem;
-}
-
-.end-time-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.end-time-display label {
-  font-size: 0.75rem;
-  color: var(--accentColor);
-  opacity: 0.8;
-}
-
-.calculated-end-time {
-  background-color: var(--secondaryColor);
-  color: var(--accentColor);
-  border: 0.0625rem solid var(--accentColor);
-  border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  width: 7.5rem;
-  text-align: center;
-  font-size: 0.875rem;
-}
 
 .event-card-footer {
   display: flex;
