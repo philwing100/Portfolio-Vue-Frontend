@@ -20,7 +20,7 @@
           :key="`${event.listType}-${index}`"
           :class="['event', { 'event-complete': event.complete }]"
           :style="getEventDynamicStyle(event)"
-          @click.stop="handleEventClick(event, index, $event)"
+          @click.stop="handleEventClick(event, index)"
         >
           <span>{{ event.textString }}</span>
         </div>
@@ -30,7 +30,6 @@
       <EventCard
         v-if="showEventCard"
         :event="activeEvent"
-        :eventPosition="eventCardPosition"
         @close="closeEventCard"
         @save="saveEvent"
       />
@@ -70,7 +69,7 @@ export default {
       activeEvent: null,
       activeEventIndex: null,
       activeEventListType: null,
-      eventCardPosition: { top: 200, left: 200 },
+      eventCardPosition: { top: '200px', left: '30%' },
     };
   },
   computed: {
@@ -112,12 +111,7 @@ export default {
         textDecoration: event.complete ? "line-through" : "none",
       };
     },
-    handleEventClick(event, index, clickEvent) {
-      const rect = this.$refs.calendarContainer.getBoundingClientRect();
-      this.eventCardPosition = {
-        left: clickEvent.clientX - rect.left,
-        top: clickEvent.clientY - rect.top
-      };
+    handleEventClick(event, index) {
       this.activeEvent = { ...event };
       this.activeEventIndex = index;
       this.activeEventListType = event.listType;
@@ -127,10 +121,6 @@ export default {
       if (e.target.classList.contains('calendar-container')) {
         const rect = this.$refs.calendarContainer.getBoundingClientRect();
         const y = e.clientY - rect.top;
-        this.eventCardPosition = {
-          left: e.clientX - rect.left,
-          top: y
-        };
         const hour = Math.floor(y / 60);
         const minute = Math.floor((y % 60) / 1);
         const ampm = hour >= 12 ? 'pm' : 'am';
