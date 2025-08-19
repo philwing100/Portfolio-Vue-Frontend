@@ -217,6 +217,7 @@ export default {
   position: relative;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--secondaryColor);
 }
 
